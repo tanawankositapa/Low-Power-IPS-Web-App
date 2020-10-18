@@ -1,0 +1,28 @@
+{
+  "name": "low-power-ips-web-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanawankositapa/Low-Power-IPS-Web-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tanawankositapa/Low-Power-IPS-Web-App/issues"
+  },
+  "homepage": "https://github.com/tanawankositapa/Low-Power-IPS-Web-App#readme",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "mongo": "^0.1.0",
+    "mongod": "^2.0.0",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.9"
+  }
+}

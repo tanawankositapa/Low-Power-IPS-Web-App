@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/Painter.js"></script>  -->
+    <!-- <script src="../Low-Power-IPS-Web-App/src/script.js"></script>  -->
+    <!-- <script src="./Painter.js"></script>  -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+<body>
+    <div class="canvasArea">
+        <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.</canvas>
+    </div>
+    <div>
+        <h1> Welcome to the <%= position %></h1>
+    </div>
+    <script>
+       class Painter {
+            
+            drawMap() {
+                var canvas = document.getElementById("myCanvas");
+                var ctx = canvas.getContext("2d");
+                ctx.fillStyle = "#FF0000";
+                ctx.fillRect(0,0,300,150);
+            }
+        }
+
+        let painter = new Painter();
+        painter.drawMap()
+
+        </script>
+</body>
+</html>
