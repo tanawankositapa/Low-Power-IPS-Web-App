@@ -10,27 +10,52 @@
     <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 <body>
-    <div class="canvasArea">
-        <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
-            Your browser does not support the HTML5 canvas tag.</canvas>
-    </div>
     <div>
-        <h1> Welcome to the <%= position %></h1>
+        <h1> PosX: "<%= position.x %>"</h1><br>
+        <h1> PosY: "<%= position.y %>"</h1>
+
     </div>
+    <div class="canvasArea">
+        <canvas id="myCanvas" width="361" height="661" style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.</canvas>
+    </div>   
     <script>
        class Painter {
             
             drawMap() {
+                                // Box width
+                var bw = 361;
+                // Box height
+                var bh = 661;
+                // Padding
+                var p = 0;
+
                 var canvas = document.getElementById("myCanvas");
-                var ctx = canvas.getContext("2d");
-                ctx.fillStyle = "#FF0000";
-                ctx.fillRect(0,0,300,150);
+                var context = canvas.getContext("2d");
+                context.fillStyle = "#F2F2F2";
+                context.fillRect(0,0,361,661);
+                for (var x = 0; x <= bw; x += 60) {
+                    context.moveTo(0.5 + x + p, p);
+                    context.lineTo(0.5 + x + p, bh + p);
+                }
+
+                for (var x = 0; x <= bh; x += 60) {
+                    context.moveTo(p, 0.5 + x + p);
+                    context.lineTo(bw + p, 0.5 + x + p);
+                }
+                context.strokeStyle = "black";
+                context.stroke();
             }
+                
+
         }
-
+        
         let painter = new Painter();
-        painter.drawMap()
-
+        painter.drawMap();
+        var PosX = "<%= position.x %>"
+        var PosY = "<%= position.y %>"
+        console.log(PosX);
+        console.log(PosY);
         </script>
 </body>
 </html>
