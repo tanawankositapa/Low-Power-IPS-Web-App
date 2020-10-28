@@ -18,11 +18,15 @@
   },
   "homepage": "https://github.com/tanawankositapa/Low-Power-IPS-Web-App#readme",
   "dependencies": {
+    "@tensorflow/tfjs": "^2.7.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "mongo": "^0.1.0",
     "mongod": "^2.0.0",
     "mongodb": "^3.6.2",
-    "mongoose": "^5.10.9"
+    "mongoose": "^5.10.9",
+    "python-shell": "^2.0.2",
+    "tensorjs": "^0.3.1",
+    "tfjs": "^0.6.0"
   }
 }
