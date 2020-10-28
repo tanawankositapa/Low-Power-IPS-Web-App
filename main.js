@@ -1,7 +1,9 @@
 // import { tfjs } from '@tensorflow/tfjs';
 // import * as tf from '@tensorflow/tfjs-node'
 const tfjs = require("@tensorflow/tfjs");
+
 //const model =  tfjs.loadLayersModel('D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
+// const tf = require('@tensorflow/tfjs-node');
 
 const express = require('express');
 const app = express();
@@ -36,16 +38,20 @@ var testY = 1.0
 
 async function predict() {
     var example = [-48,-61,-65,-67,-68,-82];
-    const model =   await tfjs.loadLayersModel('file:///D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
-/*
-    const prediction = model.then(data =>{
-        console.log(data)
-    });*/
-    //console.log(model);
+    const model =   await tfjs.loadLayersModel('https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/model/model.json');
+    // const model =   await tfjs.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
+    //const model =   await tf.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
+    // const prediction = model.predict(example)
+    const prediction = model.predict(tfjs.stack(example))
+    // const prediction = model.then(data =>{
+    //     console.log(data)
+    // });
+    console.log(prediction);
+    
 }
 
 app.get('/',(req, res)=> {
-    console.log('get')
+    // console.log('get')
     // render webpage และ ส่งค่า parameter
     // res.render("index.ejs",{positionX:testX,positionY,testY});
 
