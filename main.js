@@ -37,17 +37,21 @@ var testY = 1.0
 
 
 async function predict() {
+    var items = [
+        [-48,-61,-65,-67,-68,-82],
+        [-48,-67,-53,-63,-72,-71],
+        [-51,-70,-65,-83,-69,-89]
+      ];
     var example = [-48,-61,-65,-67,-68,-82];
     const model =   await tfjs.loadLayersModel('https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/model/model.json');
     // const model =   await tfjs.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
     //const model =   await tf.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
-    // const prediction = model.predict(example)
-    const prediction = model.predict(tfjs.stack(example))
-    // const prediction = model.then(data =>{
-    //     console.log(data)
-    // });
-    console.log(prediction);
     
+    
+    // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
+    model.predict(tfjs.stack(items),{batchSize: 32}).print()
+   
+    // return prediction;
 }
 
 app.get('/',(req, res)=> {
@@ -58,7 +62,7 @@ app.get('/',(req, res)=> {
     // ไม่น่าจะต้อง query posx,y จาก database ก็คือให้ python คำนวณแล้วก็ get ค่ามาเลย
     // beaconModel.find({}, function(err,))
     predict();
-
+    // console.log(prediction);
     res.render('index.ejs', { position: {x: testX, y: testY } })
 });
 
