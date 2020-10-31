@@ -86,7 +86,7 @@ app.get('/',async(req, res)=> {
         [-48,-67,-53,-63,-72,-71],
         [-51,-70,-65,-83,-69,-89]
       ];
-    var example = [-48,-61,-65,-67,-68,-82];
+    // var example = [-48,-61,-65,-67,-68,-82];
     const model =   await tfjs.loadLayersModel('https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/model/model.json');
     // const model =   await tfjs.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');
     //const model =   await tf.loadLayersModel('file://D:/Work/Project/Github/Low-Power-IPS-Web-App/model/model.json');

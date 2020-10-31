@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/Painter.js"></script>  -->
+    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/PositionProcessing.js"></script>  -->
     <!-- <script src="../Low-Power-IPS-Web-App/src/script.js"></script>  -->
-    <!-- <script src="./Painter.js"></script>  -->
+    <!-- <script src="./PositionProcessing.js"></script>  -->
     <!-- <link rel="stylesheet" href="style.css"> -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.6.0"></script>
 </head>
@@ -21,10 +21,16 @@
             Your browser does not support the HTML5 canvas tag.</canvas>
     </div>   
     <script>
-       class Painter {
+       class PositionProcessing {
             
-            drawMap() {
-                                // Box width
+            drawMap(posX,posY) {
+                 /* radiomap กว้าง 60 สูง 60
+                    โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
+                    ดังนั้น อัตราส่วนคือ 1 : 60
+                    */
+                // console.log(posX+30.0);
+                // console.log(posY+30.0);
+                // Box width
                 var bw = 361;
                 // Box height
                 var bh = 661;
@@ -46,17 +52,31 @@
                 }
                 context.strokeStyle = "black";
                 context.stroke();
+                context.beginPath();
+                context.arc(posX+30.0, posY+30.0, 10, 0, 2 * Math.PI, false);
+                context.fillStyle = 'red';
+                context.fill();
+                // context.lineWidth = 5;
+                // context.strokeStyle = '#003300';
+                // context.stroke();
             }
                 
 
         }
         
-        let painter = new Painter();
-        painter.drawMap();
-        var PosX = "<%= position.x %>"
-        var PosY = "<%= position.y %>"
-        console.log(PosX);
-        console.log(PosY);
+        var posX = "<%= position.x %>"
+        var posY = "<%= position.y %>"
+        // มันส่งมาเป็น string ต้อง convert เป็น float
+        posX = parseFloat(posX)
+        posY = parseFloat(posY)
+        // console.log(typeof prePosX);
+        
+        // console.log(posX);
+        // console.log(posY);
+        let plotting = new PositionProcessing();
+        PositionProcessing.drawMap(posX,posY);
         </script>
 </body>
 </html>
+
+<!-- ค่าตัวแปรมันไม่ยอมเปลี่ยน -->

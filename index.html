@@ -8,20 +8,26 @@
     <!-- <script src="../Low-Power-IPS-Web-App/src/script.js"></script>  -->
     <!-- <script src="./Painter.js"></script>  -->
     <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.6.0"></script>
 </head>
 <body>
     <div>
-        <!-- <h1> This message come from nodejs: "<%= position %>"</h1> -->
+        <h1> PosX: "<%= position.x %>"</h1><br>
+        <h1> PosY: "<%= position.y %>"</h1>
+
     </div>
     <div class="canvasArea">
         <canvas id="myCanvas" width="361" height="661" style="border:1px solid #d3d3d3;">
             Your browser does not support the HTML5 canvas tag.</canvas>
     </div>   
     <script>
-       class Painter {
-            
+       class PositionProcessing {
+            /* radiomap กว้าง 60 สูง 60
+            โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
+            ดังนั้น อัตราส่วนคือ 1 : 60
+            */
             drawMap() {
-                                // Box width
+                // Box width
                 var bw = 361;
                 // Box height
                 var bh = 661;
@@ -32,25 +38,37 @@
                 var context = canvas.getContext("2d");
                 context.fillStyle = "#F2F2F2";
                 context.fillRect(0,0,361,661);
+                // 60 is the radiomap width
                 for (var x = 0; x <= bw; x += 60) {
-                    context.moveTo(0.5 + x + p, p);
-                    context.lineTo(0.5 + x + p, bh + p);
+                    context.moveTo(0.0 + x + p, p);
+                    context.lineTo(0.0 + x + p, bh + p);
                 }
 
                 for (var x = 0; x <= bh; x += 60) {
-                    context.moveTo(p, 0.5 + x + p);
-                    context.lineTo(bw + p, 0.5 + x + p);
+                    context.moveTo(p, 0.0 + x + p);
+                    context.lineTo(bw + p, 0.0 + x + p);
                 }
                 context.strokeStyle = "black";
+                context.stroke();
+
+                context.beginPath();
+                context.arc(pos, 1+30, 10, 0, 2 * Math.PI, false);
+                context.fillStyle = 'green';
+                context.fill();
+                context.lineWidth = 5;
+                context.strokeStyle = '#003300';
                 context.stroke();
             }
                 
 
         }
-
-        let painter = new Painter();
-        painter.drawMap()
-
+        
+        let painter = new PositionProcessing();
+        painter.drawMap();
+        var PosX = "<%= position.x %>"
+        var PosY = "<%= position.y %>"
+        console.log(PosX);
+        console.log(PosY);
         </script>
 </body>
 </html>
