@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/PositionProcessing.js"></script>  -->
+    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/PositionPlotting.js"></script>  -->
     <!-- <script src="../Low-Power-IPS-Web-App/src/script.js"></script>  -->
-    <!-- <script src="./PositionProcessing.js"></script>  -->
+    <!-- <script src="./PositionPlotting.js"></script>  -->
     <!-- <link rel="stylesheet" href="style.css"> -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.6.0"></script>
 </head>
@@ -21,7 +21,7 @@
             Your browser does not support the HTML5 canvas tag.</canvas>
     </div>   
     <script>
-       class PositionProcessing {
+       class PositionPlotting {
             
             drawMap(posX,posY) {
                  /* radiomap กว้าง 60 สูง 60
@@ -73,8 +73,8 @@
         
         // console.log(posX);
         // console.log(posY);
-        let plotting = new PositionProcessing();
-        PositionProcessing.drawMap(posX,posY);
+        let plotter = new PositionPlotting();
+        plotter.drawMap(posX,posY);
         </script>
 </body>
 </html>
