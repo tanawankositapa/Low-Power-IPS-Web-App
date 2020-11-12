@@ -22,8 +22,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 var mongoose = require('mongoose');
 // ถ้าจะ save อย่างอื่นนอกจาก string จะต้องประกาศ type แบบนี้
 // var Long = require('mongodb').Long;
-// mongoose.connect("mongodb://127.0.0.1:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
-mongoose.connect("mongodb://mongodb:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
+mongoose.connect("mongodb://127.0.0.1:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
+// mongoose.connect("mongodb://mongodb:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
 // กำหนด metadata ของ table
 var beaconSchema = new mongoose.Schema({
     MAC: String,
