@@ -3,3 +3,6 @@ mongod --dbpath=D:\Work\Project\Github\Low-Power-IPS-Web-App\data
 mongo
 
 npm start
+
+mongod --dbpath=./data
+npm start
