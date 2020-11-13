@@ -9,6 +9,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const bodyParser = require('body-parser');
+
 // เรนเดอร์ css ออกมา
 var path = require('path')
 
@@ -18,12 +20,18 @@ app.set("view engine","ejs");
 // to make css work 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ********************************ต้องใช้ body parser ในการ extract ค่า req ออกมาจาก method-
+// post ไม่งั้นมันจะเป็น req ก้อนใหญ่ที่ดูไม่รู้เรื่องเลย*****************
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+
 // ประกาศ object mongoose เพื่อที่จะใช้กับ mongodb
 var mongoose = require('mongoose');
 // ถ้าจะ save อย่างอื่นนอกจาก string จะต้องประกาศ type แบบนี้
 // var Long = require('mongodb').Long;
-mongoose.connect("mongodb://127.0.0.1:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
-// mongoose.connect("mongodb://mongodb:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
+// mongoose.connect("mongodb://127.0.0.1:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
+mongoose.connect("mongodb://mongodb:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
 // กำหนด metadata ของ table
 var beaconSchema = new mongoose.Schema({
     MAC: String,
@@ -63,6 +71,10 @@ var testY = 1.0
 // }
 
 app.get('/',async(req, res)=> {
+    // var data = await req.body;
+    // console.log("Got Data: ",data);
+    // console.log("ALSO Got Data: ",req.query);
+    // console.log("ALSO Got Data: ",req.query.event);
     // console.log('get')
     // render webpage และ ส่งค่า parameter
     // res.render("index.ejs",{positionX:testX,positionY,testY});
@@ -106,6 +118,19 @@ app.get('/',async(req, res)=> {
     res.render('index.ejs', { position: {x: ypred[0], y: ypred[1] } })
     
 });
+
+app.post('/getval',(req, res)=> {
+
+    // var data = await req.body
+    // console.log("Got Data: ",req);
+    // console.log("ALSO Got Data Use Query: ",req.query);
+    console.log("ALSO Got Data Use Body: ",req.body);
+    res.sendStatus(200);
+    // console.log("ALSO Got Data: ",req.query.event.up);
+    // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
+    // res.render('index.ejs')
+});
+
 
 // var saveData = new beaconModel({
 //     "MAC": "E0:D9:DA:22:34:1B",
