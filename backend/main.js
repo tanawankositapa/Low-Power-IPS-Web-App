@@ -23,7 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ********************************ต้องใช้ body parser ในการ extract ค่า req ออกมาจาก method-
 // post ไม่งั้นมันจะเป็น req ก้อนใหญ่ที่ดูไม่รู้เรื่องเลย*****************
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+// อันนี้ อาจะไม่ต้องใช้ ถ้าไม่ได้ encode url มา
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // ประกาศ object mongoose เพื่อที่จะใช้กับ mongodb
@@ -124,7 +125,19 @@ app.post('/getval',(req, res)=> {
     // var data = await req.body
     // console.log("Got Data: ",req);
     // console.log("ALSO Got Data Use Query: ",req.query);
-    console.log("ALSO Got Data Use Body: ",req.body);
+    console.log("full Body: ", req.body);
+    // console.log("devEui: ", req.body.devEUI);
+    // console.log(typeof req.body.rxInfo);
+    // console.log("rxInfo: ", req.body.rxInfo);
+
+    // this is how to extract rssi from rxInfo 
+    // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
+    var rssi = req.body.rxInfo.map(function (rxInfo){
+        return rxInfo.rssi;
+    });
+    console.log("rssi: ",rssi);
+    // console.log("rssi2: ", req.body.rxInfo[rssi]);
+    
     res.sendStatus(200);
     // console.log("ALSO Got Data: ",req.query.event.up);
     // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
