@@ -135,7 +135,14 @@ app.post('/getval',(req, res)=> {
     var rssi = req.body.rxInfo.map(function (rxInfo){
         return rxInfo.rssi;
     });
+    console.log(typeof rssi);
+    var rssiValue = rssi.map(function (rssi){
+        return rssi.values;
+    });
     console.log("rssi: ",rssi);
+    // console.log("rssiValue: ",rssiValue);
+    // console.log(typeof rssi.values);
+    // console.log("rssi: ",rssi.value);
     // console.log("rssi2: ", req.body.rxInfo[rssi]);
     
     res.sendStatus(200);
