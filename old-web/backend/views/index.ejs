@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script type="module" src="../Low-Power-IPS-Web-App/src/PositionPlotting.js"></script>  -->
+    <!-- <script src="../Low-Power-IPS-Web-App/src/script.js"></script>  -->
+    <!-- <script src="./PositionPlotting.js"></script>  -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.6.0"></script>
+</head>
+<body>
+    <div>
+        <h1> PosX: "<%= position.x %>"</h1><br>
+        <h1> PosY: "<%= position.y %>"</h1>
+
+    </div>
+    <div class="canvasArea">
+        <canvas id="myCanvas" width="500" height="650" style="border:1px solid #d3d3d3;" >
+            Your browser does not support the HTML5 canvas tag.</canvas>
+    </div>   
+    <script>
+       class PositionPlotting {
+            
+            drawMap(posX,posY) {
+                 /* radiomap กว้าง 60 สูง 60
+                    โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
+                    ดังนั้น อัตราส่วนคือ 1 : 60
+                    */
+                // console.log(posX+30.0);
+                // console.log(posY+30.0);
+                // Box width
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+
+                var bw = 500;
+                // Box height
+                var bh = 650;
+                // Padding
+                var p = 0;
+                var base_image;
+                make_base();
+                function make_base()
+                {
+                base_image = new Image();
+                base_image.src = '606layout.svg';
+                base_image.onload = function(){
+                    context.drawImage(base_image, 0, 0);
+                    context.beginPath();
+                    context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
+                    context.fillStyle = 'red';
+                    context.fill();
+                    context.lineWidth = 1;
+                    context.strokeStyle = '#003300';
+                    context.stroke();
+                    }
+                }
+                
+                // context.fillStyle = "#F2F2F2";
+                // context.fillRect(0,0,361,661);
+                // for (var x = 0; x <= bw; x += 60) {
+                //     context.moveTo(0.5 + x + p, p);
+                //     context.lineTo(0.5 + x + p, bh + p);
+                // }
+
+                // for (var x = 0; x <= bh; x += 60) {
+                //     context.moveTo(p, 0.5 + x + p);
+                //     context.lineTo(bw + p, 0.5 + x + p);
+                // }
+                // context.strokeStyle = "black";
+                // context.stroke();
+               
+                
+                
+
+                
+            }
+                
+
+        }
+        
+        var posX = "<%= position.x %>"
+        var posY = "<%= position.y %>"
+        // มันส่งมาเป็น string ต้อง convert เป็น float
+        posX = parseFloat(posX)
+        posY = parseFloat(posY)
+        // console.log(typeof prePosX);
+        
+        // console.log(posX);
+        // console.log(posY);
+        let plotter = new PositionPlotting();
+        plotter.drawMap(posX,posY);
+        </script>
+</body>
+</html>
+
