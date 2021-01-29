@@ -2,9 +2,10 @@ const tfjs = require("@tensorflow/tfjs");
 const express = require("express");
 const app = express();
 const port = 3000;
-var proxy = require('express-http-proxy');
+// const spawn  = require("child_process").spawn;
+var proxy = require("express-http-proxy");
 // ********************************ต้องใช้ body parser ในการ extract ค่า req ออกมาจาก method-
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 // post ไม่งั้นมันจะเป็น req ก้อนใหญ่ที่ดูไม่รู้เรื่องเลย*****************
 app.use(bodyParser.json());
 // อันนี้ อาจะไม่ต้องใช้ ถ้าไม่ได้ encode url มา
@@ -26,11 +27,52 @@ var beaconSchema = new mongoose.Schema({
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var beaconModel = mongoose.model("beaconTable", beaconSchema);
-
+const {PythonShell} =require('python-shell'); 
+const path = require('path');
+var url = '/src' 
 app.get("/", async (req, res) => {
+    /**
+     * เนื่องจากในการเรียกใช้ python shell นั้น มันจะต้องใส่ path มายัง geofencing.py ด้วย เพราะว่า
+     * มันไม่ใช่ nodejs มันคือการเรียก python interpreter ดังนั้น working directory จึงเป็น path ของ python
+     * เราจึงต้อง navigate มาที่ไฟล์ใน directory เรา แล้วเพื่อให้มันยืดหยุ่น ใช้บนคอมเครื่องอื่นได้ (path ไม่เหมือนกัน)
+     * จึงต้องใช้ process.cwd เพื่อเอา current working directory มานั่นเอง
+     */
+    var trulyPath = path.join(process.cwd(),url)
+    console.log(trulyPath);
+  
+  let options = { 
+    mode: 'text', 
+    pythonOptions: ['-u'], // get print results in real-time 
+      scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional. 
+    args: [2,3] //An argument which can be accessed in the script using sys.argv[1] 
+}; 
+PythonShell.run('geofencing.py', options, function (err, result){ 
+  if (err) throw err; 
+  // result is an array consisting of messages collected  
+  //during execution of script. 
+  console.log('result: ', result.toString()); 
+  // res.send(result.toString()) 
+}); 
+  // var spawn = require("child_process").spawn; 
+  // var python = spawn("python", ["./geofencing.py", 2, 3]);
+  // console.log("WTF IS THIS: ");
+  // // console.log(python);
+  // console.log(typeof(python));
+  // // console.log("Start:");
+  // python.stdout.on("data", function(data) {
+  //   console.log("Pipe data from python script ...");
+  //   res.sendStatus(200)
+  //   res.send(data.toString())
+  //   // dataToSend = data.toString();
+  // });
+  // python.on("close", (code) => {
+  //   console.log(`child process close all stdio with code ${code}`);
+  //   // send data to browser
+  //   // console.log("Output: ", dataToSend);
+  // });
   var items = [
-    // [-48, -61, -65, -67, -68, -82], //Position (1,1)
-    [-54, -62, -62, -69, -70, -75],
+    [-48, -61, -65, -67, -68, -82], //Position (1,1)
+    // [-54, -62, -62, -69, -70, -75],
     // [-48, -67, -53, -63, -72, -71],
     // [-51, -70, -65, -83, -69, -89],
   ];
@@ -42,31 +84,30 @@ app.get("/", async (req, res) => {
   const prediction = model.predict(tfjs.tensor(items), { batchSize: 32 });
   const ypred = prediction.dataSync();
 
-  console.log(ypred);
-  // console.log('testGet');
-  // res.render('index.ejs', { position: {x: ypred[0], y: ypred[1] } })
+  // console.log(ypred);
+  // // console.log('testGet');
+  // // res.render('index.ejs', { position: {x: ypred[0], y: ypred[1] } })
   res.send(ypred);
   res.sendStatus(200);
-  
+
   // function sendData() {
   // //   res.send(ypred);
   // // res.sendStatus(200);
   // console.log("Sent !");
   // }
   // setInterval(res.send(ypred), 5*1000);
-  setInterval(function(){
-    res.send(ypred);
-    res.sendStatus(200); 
-    console.log("Sent!");
-  }, 1000);//run this thang every 2 seconds
+  // setInterval(function() {
+  //   res.send(ypred);
+  //   res.sendStatus(200);
+  //   console.log("Sent!");
+  // }, 1000); //run this thang every 2 seconds
 });
 
 // setInterval(function(){
 //   res.send(ypred);
-//   res.sendStatus(200); 
+//   res.sendStatus(200);
 //   console.log("Sent!");
 // }, 1000);//run this thang every 2 seconds
-
 
 // // app.use('/',proxy('localhost:8080'))
 // const { createProxyMiddleware } = require('http-proxy-middleware');
@@ -79,7 +120,6 @@ app.get("/", async (req, res) => {
 //       [`^/api`]: '',
 //   },
 // }));
-
 
 app.post("/getval", (req, res) => {
   // var data = await req.body

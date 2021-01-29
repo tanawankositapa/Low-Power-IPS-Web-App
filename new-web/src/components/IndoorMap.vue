@@ -28,6 +28,7 @@ export default {
         posX: 0.0,
         posY: 0.0,
         responsePosition : {},
+        isImageAlreadyDrawData: false,
         // interval: 0,
     }
   },
@@ -42,6 +43,7 @@ export default {
   // props: ['positionX', 'positionY'],
   methods: {
     drawMap(floor,posX,posY) {
+      
                  /* radiomap กว้าง 60 สูง 60
                     โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
                     ดังนั้น อัตราส่วนคือ 1 : 60
@@ -60,25 +62,43 @@ export default {
                 var bh = 650;
                 // Padding
                 // var p = 0;
-                
+                // var isImageAlreadyDrawLocal = this.isImageAlreadyDrawData;
                 var base_image;
                 make_base();
                 // console.log(this.floorplan[0].src);
+                
                 function make_base()
                 {
+                  
                 base_image = new Image();
-                base_image.src = myImage;  
-                base_image.onload = function(){
-                    context.drawImage(base_image, 0, 0);
-                    context.beginPath();
-                    context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
-                    context.fillStyle = 'red';
-                    context.fill();
-                    context.lineWidth = 1;
-                    context.strokeStyle = '#003300';
-                    context.stroke();
-                    }
+                base_image.src = myImage;
+                // base_image.setAttribute('crossOrigin', '');
+                // base_image.crossOrigin = "Anonymous";
+                
+                  base_image.onload = function(){
+                    // if (!isImageAlreadyDrawLocal){ 
+                      context.drawImage(base_image, 0, 0);
+                      // var imageData = context.getImageData(0,0,500,650);
+                      // base_image.setAttribute('crossOrigin', '');
+                    // }
+                    // if(posX != this.posX || posY != this.posY){
+                      // context.putImageData(imageData, 0, 0);
+                      context.beginPath();
+                      context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
+                      context.fillStyle = 'red';
+                      context.fill();
+                      context.lineWidth = 1;
+                      context.strokeStyle = '#003300';
+                      context.stroke();
+                      // context.clearRect(0, 0, 500, 650);
+                      // this.isImageAlreadyDraw = true;
+                      
+                  // }
+                      }
+                  
                 } 
+                this.isImageAlreadyDrawData = true;
+
             },
             // getPredictionData(position){
             //     this.posX = position[0];
@@ -88,17 +108,29 @@ export default {
             //     this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
             //     // console.log(this.posX);
             // },
+            
             getPredictionData(){
-                this.posX = this.responsePosition[0];
-                this.posY = this.responsePosition[1];
-                console.log("PosX: ",this.posX);
-                console.log("PosY: ",this.posY);
-                this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
-                // console.log(this.posX);
+               this.posX = this.responsePosition[0];
+                  this.posY = this.responsePosition[1];
+                  console.log("PosX: ",this.posX);
+                  console.log("PosY: ",this.posY);
+                  this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
+                  // console.log(this.posX);
+              // if(this.posX != this.responsePosition[0] || this.posY != this.responsePosition[1]){
+              //     this.posX = this.responsePosition[0];
+              //     this.posY = this.responsePosition[1];
+              //     console.log("PosX: ",this.posX);
+              //     console.log("PosY: ",this.posY);
+              //     this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
+              //     // console.log(this.posX);
+              // }else{
+              //   console.log('Position not changed');
+              // }
+
             },
             fetchDataFromBackend(){
               axios
-                .get('http://b1b950c5bda9.ngrok.io')
+                .get('http://e97f47d932f8.ngrok.io')
                 // .then(response => (this.info = response))
                 .then(response => (this.responsePosition = response.data))
                 // .then(response => (console.log(response.data)))
