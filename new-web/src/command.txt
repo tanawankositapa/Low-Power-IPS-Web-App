@@ -1,0 +1,28 @@
+mongod --dbpath=D:\Work\Project\Github\Low-Power-IPS-Web-App\new-web\src\db\data
+
+mongo
+
+npm start
+
+mongod --dbpath=./db/data
+npm start
+
+apt-get update && apt-get upgrade && chmod +x /usr/local/bin && curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && docker-compose --version
+
+ใน mongodb 
+Table = collection
+
+-------------------------------------------------------
+สร้าง db
+	use indoordb
+แสดง db (ต้องมีข้อมูลใน db ก่อน)
+	show dbs
+insert ข้อมูลลงไปใน table (ไม่ต้องสร้าง table ก่อนก็ได้)
+	db.area_table.insert({"fence":"[(1, 1), (1, 4), (2, 4), (2, 5), (4, 5), (4, 	1)]","name":"Agile inner meeting 	room","floor":"5","restrictfor":"DevOps"})
+query ข้อมูล
+	db.area_table.find().pretty()
+แสดง table หรือ collection
+	show collections
+ลบ collection
+	db.area_tables.remove({"floor" : "4"})
+
