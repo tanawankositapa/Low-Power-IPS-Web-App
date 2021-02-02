@@ -3,7 +3,7 @@ from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 import sys
 from shapely.ctypes_declarations import prototype
-
+import ast
 
 test = sys.argv
 # print(len(test))
@@ -12,6 +12,16 @@ test = sys.argv
 # print(test[2])
 x = float(test[1])
 y = float(test[2])
+coorString = test[3]
+# print(test[3])
+# print(type(test[3]))
+# ast.literal_eval คือ convert string that represent list into list 
+# สุดยอดมากกก !
+coor = ast.literal_eval(coorString)
+# print(coor)
+# print(type(coor))
+# print(coor)
+# print(type(coor))
 # inputXY = input().split(',')
 # list = []
 # for i in inputXY:
@@ -20,7 +30,8 @@ y = float(test[2])
 # print(list[0])
 # print(type(list[0]))
 point = Point(x, y)
-polygon = Polygon([(1, 1), (1, 4), (2, 4), (2, 5), (4, 5), (4, 1)])
+# polygon = Polygon([[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]])
+polygon = Polygon(coor)
 print(polygon.contains(point))
 sys.stdout.flush()
 

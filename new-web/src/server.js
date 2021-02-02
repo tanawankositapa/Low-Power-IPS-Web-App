@@ -56,6 +56,57 @@ const { PythonShell } = require("python-shell");
 const path = require("path");
 var url = "/src";
 app.get("/", async (req, res) => {
+
+  /**
+   * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload
+   */
+  var major = 1;
+  var minor = 5;
+  var floor;
+  if (major === 1 && minor === 5) {
+    floor = 5;
+  }
+  var mac = "E0:D9:DA:22:34:1B";
+
+  var fence ="",name,floor,restrictFor;
+  /**
+   * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
+   * (เหตุเกิดจากการที่ใส่ argument เป็น [[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]] แล้วมันเพี้ยนไปเป็น tuple ใน python)
+   * เราจึงต้องทำให้เป็น String ก่อน เพราะในไฟล์ python มันมี logic แปลง string เป็น list เรียบร้อยแล้ว
+   * แล้วเราต้องการจะเอาค่าจาก DB ไปใส่เป็น argument ถ้าไม่ใส่ await แล้วค่า var fence จะเป็นตามค่า default มัน เช่น undefined หรือ ""
+   * ทั้งนี้เกิดจากการที่ javascript เป็น asynchronous programming คือระหว่างรอ areaModel.find() มันก็ไปทำส่วนถัดไปซะแล้ว ~ ~
+   */
+  await areaModel.find({"floor" : floor}, function(err, area) { 
+    if (err) console.log(err);
+    else {
+      // console.log(length(area));
+      
+      // console.log("OMG ",area[0].fence[0]);
+      // console.log(typeof(area[0].fence));
+      // console.log(area[1].);
+      area.map(function(area) {
+        fence = area.fence;
+        name = area.name;
+        floor = area.floor;
+        restrictFor = area.restrictfor;
+      });
+      console.log("Fence: ",fence);
+      console.log(typeof(fence));
+      // console.log("Fence: ",fence[0]);
+      // console.log(typeof(fence[1]));
+      console.log("Name: ",name);
+      console.log("Floor: ",floor);
+      console.log("Restrict for: ",restrictFor);
+      // fofo.push(fence)
+      // console.log("fofo",fofo);
+    }
+  });
+
+  // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
+  var fenceString = JSON.stringify(fence)
+  // console.log("Fence String",fenceString);
+  // console.log(typeof(fenceString));
+  
   /**
    * เนื่องจากในการเรียกใช้ python shell นั้น มันจะต้องใส่ path มายัง geofencing.py ด้วย เพราะว่า
    * มันไม่ใช่ nodejs มันคือการเรียก python interpreter ดังนั้น working directory จึงเป็น path ของ python
@@ -69,7 +120,7 @@ app.get("/", async (req, res) => {
     mode: "text",
     pythonOptions: ["-u"], // get print results in real-time
     scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
-    args: [2, 3], //An argument which can be accessed in the script using sys.argv[1]
+    args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
   };
   PythonShell.run("geofencing.py", options, function(err, result) {
     if (err) throw err;
@@ -127,71 +178,44 @@ app.get("/", async (req, res) => {
 
   
 
-  /**
-   * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload
-   */
-  var major = 1;
-  var minor = 5;
-  var floor;
-  if (major === 1 && minor === 5) {
-    floor = 5;
-  }
-  var mac = "E0:D9:DA:22:34:1B";
+  
   
 
-  // เอา mac ไปตรวจสอบว่าเป็นของ tracking ตัวไหน
-  userModel.find({"macaddress" : mac}, function(err, user) {
-    if (err) console.log(err);
-    else {
-      // res.render("index.ejs",{todo:todo});  //ส่งตัวแปร local ไปยัง view // pass a local variable to the view
-      var name,surName,isEmployee,department,company,trackerId,macAddress
-      console.log(user);
-      user.map(function(user) {
-        name = user.name;
-        surName = user.surname;
-        isEmployee = user.isemployee;
-        department = user.department;
-        company = user.company;
-        trackerId = user.trackerid;
-        macAddress = user.macaddress;
-      });
-      console.log("Name: ",name);
-      console.log("Surname: ",surName);
-      console.log("Is Employee: ",isEmployee);
-      console.log("Department: ",department);
-      console.log("Company: ",company);
-      console.log("Trackerid: ",trackerId);
-      console.log("Mac Address: ",macAddress);
-      // res.send(name);
-      // res.send(surName);
-      res.send(user)
-      // res.sendStatus(200);
-      // return;
-    }
-  });
+  // // เอา mac ไปตรวจสอบว่าเป็นของ tracking ตัวไหน
+  // userModel.find({"macaddress" : mac}, function(err, user) {
+  //   if (err) console.log(err);
+  //   else {
+  //     // res.render("index.ejs",{todo:todo});  //ส่งตัวแปร local ไปยัง view // pass a local variable to the view
+  //     var name,surName,isEmployee,department,company,trackerId,macAddress
+  //     console.log(user);
+  //     user.map(function(user) {
+  //       name = user.name;
+  //       surName = user.surname;
+  //       isEmployee = user.isemployee;
+  //       department = user.department;
+  //       company = user.company;
+  //       trackerId = user.trackerid;
+  //       macAddress = user.macaddress;
+  //     });
+  //     console.log("Name: ",name);
+  //     console.log("Surname: ",surName);
+  //     console.log("Is Employee: ",isEmployee);
+  //     console.log("Department: ",department);
+  //     console.log("Company: ",company);
+  //     console.log("Trackerid: ",trackerId);
+  //     console.log("Mac Address: ",macAddress);
+  //     // res.send(name);
+  //     // res.send(surName);
+  //     res.send(user)
+  //     // res.sendStatus(200);
+  //     // return;
+  //   }
+  // });
 
-  console.log(" ");
+  // console.log(" ");
   // var fofo =[]
-  areaModel.find({"floor" : floor}, function(err, area) {
-    if (err) console.log(err);
-    else {
-      // console.log(length(area));
-      var fence,name,floor,restrictFor;
-      area.map(function(area) {
-        fence = area.fence;
-        name = area.name;
-        floor = area.floor;
-        restrictFor = area.restrictfor;
-      });
-      console.log("Fence: ",fence);
-      console.log(typeof(fence));
-      console.log("Name: ",name);
-      console.log("Floor: ",floor);
-      console.log("Restrict for: ",restrictFor);
-      // fofo.push(fence)
-      // console.log("fofo",fofo);
-    }
-  });
+  // areaModel.f
+  
 
 });
 
@@ -236,11 +260,14 @@ app.post("/getval", (req, res) => {
   // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
   // res.render('index.ejs')
 });
+var mypoly = [
+  [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]
+];
 
 // var saveData = new areaModel({
-//   fence: "[(1, 1), (1, 4), (2, 4), (2, 5), (4, 5), (4, 1)]",
+//   fence: mypoly,
 //   name: "Agile inner meeting room",
-//   floor: "4",
+//   floor: "5",
 //   restrictfor: "DevOps",
 //   // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
 // }).save(function(err, result) {
