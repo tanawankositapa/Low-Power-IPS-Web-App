@@ -56,7 +56,7 @@ var alertSchema = new mongoose.Schema({
   trackerid: String,
   areaname: String,
   floor: String,
-  timestamp: Date,
+  timestamp: String, // เก็บเป็น String ไปก่อน เพราะพอเป็น Date แล้ว mongo มันจะไป convert ให้เป็น ISO Date อัติโนมัติ และเรายังเลือก timezone ไม่เป็น
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var alertModel = mongoose.model("alert_table", alertSchema);
@@ -77,9 +77,12 @@ app.get("/", async (req, res) => {
     floor = 5;
   }
   var mac = "E0:D9:DA:22:34:1B";
-  var name
+  var name = "Somchai"
+  var surName = "Kositapa"
+  var trackerId = "n00001"
   var company = "";
-  var department = "DevOps";
+  // var department = "DevOps";
+  var department = "Infras";
   var isInsideCompany = true;
   // var fence ="",name,floor,restrictFor;
   var database =[];
@@ -149,17 +152,24 @@ app.get("/", async (req, res) => {
         // console.log("Check Restrictfor: ",restrictForDepartment);
         if (department != restrictForDepartment){
           isAlert = true
+          var dt = new Date();
           var saveData = new alertModel({
-            name: String,
-            trackerid: String,
+            name: name+" "+surName,
+            trackerid: trackerId,
             areaname: tempAreaName,
             floor: floor,
-            timestamp: Math.floor(Date.now() / 1000),// Time of save the data in unix timestamp format
-              
+            timestamp: `${
+              (dt.getMonth()+1).toString().padStart(2, '0')}/${
+              dt.getDate().toString().padStart(2, '0')}/${
+              dt.getFullYear().toString().padStart(4, '0')} ${
+              dt.getHours().toString().padStart(2, '0')}:${
+              dt.getMinutes().toString().padStart(2, '0')}:${
+              dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
+
             }).save(function(err, result) {
               if (err) throw err;
               if (result) {
-                // console.log(result);
+                console.log(result);
                 console.log("Save Complete");
               }
             });
