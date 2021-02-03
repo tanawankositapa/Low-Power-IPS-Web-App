@@ -81,10 +81,27 @@ app.get("/", async (req, res) => {
   var surName = "Kositapa"
   var trackerId = "n00001"
   var company = "";
-  // var department = "DevOps";
-  var department = "Infras";
+  var department = "DevOps";
+  // var department = "Infras";
   var isInsideCompany = true;
   // var fence ="",name,floor,restrictFor;
+
+  var rssi = [
+    // [-48, -61, -65, -67, -68, -82], //Position (1,1)
+    [-54, -62, -62, -69, -70, -75],
+    // [-48, -67, -53, -63, -72, -71],
+    // [-51, -70, -65, -83, -69, -89],
+  ];
+  
+  const model = await tfjs.loadLayersModel(
+    "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
+  );
+  // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
+  const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
+  const ypred = prediction.dataSync();
+  // res.send(ypred)
+  // console.log(ypred);
+
   var database =[];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
@@ -130,6 +147,7 @@ app.get("/", async (req, res) => {
       pythonOptions: ["-u"], // get print results in real-time
       scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
       args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
+      // args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
     };
     let tempAreaName = database[property].name
     PythonShell.run("geofencing.py", options, function(err, result) {
@@ -209,21 +227,7 @@ app.get("/", async (req, res) => {
     
   }
   
-  var rssi = [
-    [-48, -61, -65, -67, -68, -82], //Position (1,1)
-    // [-54, -62, -62, -69, -70, -75],
-    // [-48, -67, -53, -63, -72, -71],
-    // [-51, -70, -65, -83, -69, -89],
-  ];
   
-  const model = await tfjs.loadLayersModel(
-    "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
-  );
-  // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
-  const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
-  const ypred = prediction.dataSync();
-  // res.send(ypred)
-  // console.log(ypred);
 
   // function sendData() {
   // //   res.send(ypred);
