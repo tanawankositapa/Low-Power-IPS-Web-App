@@ -50,6 +50,16 @@ var userSchema = new mongoose.Schema({
 var userModel = mongoose.model("user_table", userSchema);
 
 
+// กำหนด metadata ของ table area_table
+var alertSchema = new mongoose.Schema({
+  name: String,
+  trackerid: String,
+  areaname: String,
+  floor: String,
+  timestamp: Date,
+});
+// สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
+var alertModel = mongoose.model("alert_table", alertSchema);
 
 
 const { PythonShell } = require("python-shell");
@@ -67,8 +77,11 @@ app.get("/", async (req, res) => {
     floor = 5;
   }
   var mac = "E0:D9:DA:22:34:1B";
-
-  var fence ="",name,floor,restrictFor;
+  var name
+  var company = "";
+  var department = "DevOps";
+  var isInsideCompany = true;
+  // var fence ="",name,floor,restrictFor;
   var database =[];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
@@ -80,24 +93,7 @@ app.get("/", async (req, res) => {
   await areaModel.find({"floor" : floor}, function(err, area) { 
     if (err) console.log(err);
     else {
-      // console.log(typeof(area[0].fence));
       database = area
-      // console.log(area);
-      // area.map(function(area) {
-      //   fence = area.fence;
-      //   name = area.name;
-      //   floor = area.floor;
-      //   restrictFor = area.restrictfor;
-      // });
-      // console.log("Fence: ",fence);
-      // console.log(typeof(fence));
-      // // console.log("Fence: ",fence[0]);
-      // // console.log(typeof(fence[1]));
-      // console.log("Name: ",name);
-      // console.log("Floor: ",floor);
-      // console.log("Restrict for: ",restrictFor);
-      // // fofo.push(fence)
-      // // console.log("fofo",fofo);
     }
   });
   var fenceString
@@ -113,61 +109,103 @@ app.get("/", async (req, res) => {
    */
   var trulyPath = path.join(process.cwd(), url);
   // console.log(trulyPath);
-  
-  
+  var areaName, restrictForDepartment, isAlert, resultFromPython, readyToBreak;
   for (var property in database){
     // console.log(`${database[property].fence}`);
     // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
-    fenceString = JSON.stringify(database[property].fence)
+    readyToBreak = false
+    
+    // console.log("Fence: ",database[property].fence);
+    // console.log("Restrictfor: ",database[property].restrictfor);
+    
+    let tempRestrict = database[property].restrictfor
+    let tempFence = database[property].fence
+    let fenceString = JSON.stringify(tempFence)
+    // console.log("Fencestring ",fenceString);
     let options = {
       mode: "text",
       pythonOptions: ["-u"], // get print results in real-time
       scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
       args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
     };
+    let tempAreaName = database[property].name
     PythonShell.run("geofencing.py", options, function(err, result) {
+      // isAlert = false
+      // console.log("Inside Fencestring ",fenceString);
       if (err) throw err;
-      // result is an array consisting of messages collected
-      //during execution of script.
-      var ans = result.toString()
-      console.log("result: ", ans);
-      if (ans === "True"){
-        console.log("Holy");
+      // result is an array consisting of messages collected during execution of script.
+      var tempAns = result.toString()
+      console.log("result: ", tempAns);
+      // console.log("Inside Fence: ",database[property].fence);
+      // console.log("Inside Restrictfor: ",tempRestrict);
+      console.log("Area: ",tempAreaName);
+      if (tempAns === "True"){
+        // console.log("Holy");
+        areaName = database[property].name
+        restrictForDepartment = tempRestrict
+        // console.log("Area name: ",areaName);
+        console.log("User Department: ",department);
+        console.log("Area Restrict for: ",restrictForDepartment);
+        // console.log("Check Restrictfor: ",restrictForDepartment);
+        if (department != restrictForDepartment){
+          isAlert = true
+          var saveData = new alertModel({
+            name: String,
+            trackerid: String,
+            areaname: tempAreaName,
+            floor: floor,
+            timestamp: Math.floor(Date.now() / 1000),// Time of save the data in unix timestamp format
+              
+            }).save(function(err, result) {
+              if (err) throw err;
+              if (result) {
+                // console.log(result);
+                console.log("Save Complete");
+              }
+            });
+        }else{
+          isAlert = false
+        }
+        console.log("Alert: ",isAlert);
+        // async function f3() {
+        //   readyToBreak = await true;
+        //   // console.log(y); // 20
+        // }
+
+        // f3()
+        // readyToBreak = true;
+        //   if(readyToBreak){
+        //     console.log("break");
+        //     return
+        //   }else{
+        //     console.log("not break");
+        //   }
       }else{
-        console.log("Moly");
+        // console.log("Moly");
       }
+      // console.log("depart: ",department);
+      // console.log("restrictfor ",restrictForDepartment);
+      console.log("\n");
       // res.send(result.toString())
     });
+    // setTimeout(() => {
+    //   if(readyToBreak){
+    //     console.log("ppp");
+    //     return
+    //   }else{
+    //     console.log("Yolo");
+    //   }
+    // }, 3000);
     
   }
   
-  
-  
-  
-  // var spawn = require("child_process").spawn;
-  // var python = spawn("python", ["./geofencing.py", 2, 3]);
-  // console.log("WTF IS THIS: ");
-  // // console.log(python);
-  // console.log(typeof(python));
-  // // console.log("Start:");
-  // python.stdout.on("data", function(data) {
-  //   console.log("Pipe data from python script ...");
-  //   res.sendStatus(200)
-  //   res.send(data.toString())
-  //   // dataToSend = data.toString();
-  // });
-  // python.on("close", (code) => {
-  //   console.log(`child process close all stdio with code ${code}`);
-  //   // send data to browser
-  //   // console.log("Output: ", dataToSend);
-  // });
   var rssi = [
     [-48, -61, -65, -67, -68, -82], //Position (1,1)
     // [-54, -62, -62, -69, -70, -75],
     // [-48, -67, -53, -63, -72, -71],
     // [-51, -70, -65, -83, -69, -89],
   ];
-  // var example = [-48,-61,-65,-67,-68,-82];
+  
   const model = await tfjs.loadLayersModel(
     "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
   );
@@ -176,8 +214,6 @@ app.get("/", async (req, res) => {
   const ypred = prediction.dataSync();
   // res.send(ypred)
   // console.log(ypred);
-  // // console.log('testGet');
-  // // res.render('index.ejs', { position: {x: ypred[0], y: ypred[1] } })
 
   // function sendData() {
   // //   res.send(ypred);
@@ -192,10 +228,6 @@ app.get("/", async (req, res) => {
   // }, 1000); //run this thang every 2 seconds
 
   
-
-  
-  
-
   // // เอา mac ไปตรวจสอบว่าเป็นของ tracking ตัวไหน
   // userModel.find({"macaddress" : mac}, function(err, user) {
   //   if (err) console.log(err);
@@ -231,7 +263,8 @@ app.get("/", async (req, res) => {
   // var fofo =[]
   // areaModel.f
   
-    res.status(200).send(fence)
+    // res.status(200).send(fence)
+    res.sendStatus(200)
 });
 
 // // app.use('/',proxy('localhost:8080'))
@@ -275,24 +308,29 @@ app.post("/getval", (req, res) => {
   // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
   // res.render('index.ejs')
 });
-var mypoly = [
-  // [1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1]
-  [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]
+var myPoly = [
+  // [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1] // true DevOps
+  // [1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1] // false Test Automation
+  [5, 1], [3, 2], [2, 5], [4, 5], [5, 3] //false Infras
 ];
 
-var saveData = new areaModel({
-  fence: mypoly,
-  name: "Agile inner meeting room",
-  floor: "5",
-  restrictfor: "DevOps",
-  // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
-}).save(function(err, result) {
-  if (err) throw err;
-  if (result) {
-    // console.log(result);
-    console.log("Save Complete");
-  }
-});
+// var saveData = new areaModel({
+//   fence: myPoly,
+//   // name: "Agile inner meeting room",
+//   name: "Infras working space",
+//   // name: "Test automation data room",
+//   floor: "5",
+//   // restrictfor: "DevOps",
+//   restrictfor: "Infras",
+//   // restrictfor: "Test Automation",
+//   // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
+// }).save(function(err, result) {
+//   if (err) throw err;
+//   if (result) {
+//     // console.log(result);
+//     console.log("Save Complete");
+//   }
+// });
 
 // app.use('/test', require('./server.js'))
 
