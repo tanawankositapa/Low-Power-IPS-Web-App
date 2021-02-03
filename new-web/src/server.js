@@ -69,6 +69,7 @@ app.get("/", async (req, res) => {
   var mac = "E0:D9:DA:22:34:1B";
 
   var fence ="",name,floor,restrictFor;
+  var database =[];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
    * (เหตุเกิดจากการที่ใส่ argument เป็น [[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]] แล้วมันเพี้ยนไปเป็น tuple ใน python)
@@ -79,34 +80,31 @@ app.get("/", async (req, res) => {
   await areaModel.find({"floor" : floor}, function(err, area) { 
     if (err) console.log(err);
     else {
-      // console.log(length(area));
-      
-      // console.log("OMG ",area[0].fence[0]);
       // console.log(typeof(area[0].fence));
-      // console.log(area[1].);
-      area.map(function(area) {
-        fence = area.fence;
-        name = area.name;
-        floor = area.floor;
-        restrictFor = area.restrictfor;
-      });
-      console.log("Fence: ",fence);
-      console.log(typeof(fence));
-      // console.log("Fence: ",fence[0]);
-      // console.log(typeof(fence[1]));
-      console.log("Name: ",name);
-      console.log("Floor: ",floor);
-      console.log("Restrict for: ",restrictFor);
-      // fofo.push(fence)
-      // console.log("fofo",fofo);
+      database = area
+      // console.log(area);
+      // area.map(function(area) {
+      //   fence = area.fence;
+      //   name = area.name;
+      //   floor = area.floor;
+      //   restrictFor = area.restrictfor;
+      // });
+      // console.log("Fence: ",fence);
+      // console.log(typeof(fence));
+      // // console.log("Fence: ",fence[0]);
+      // // console.log(typeof(fence[1]));
+      // console.log("Name: ",name);
+      // console.log("Floor: ",floor);
+      // console.log("Restrict for: ",restrictFor);
+      // // fofo.push(fence)
+      // // console.log("fofo",fofo);
     }
   });
+  var fenceString
+  var objectLength = Object.keys(database).length
+  console.log(database);
+  // console.log("Object length ",objectLength);
 
-  // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
-  var fenceString = JSON.stringify(fence)
-  // console.log("Fence String",fenceString);
-  // console.log(typeof(fenceString));
-  
   /**
    * เนื่องจากในการเรียกใช้ python shell นั้น มันจะต้องใส่ path มายัง geofencing.py ด้วย เพราะว่า
    * มันไม่ใช่ nodejs มันคือการเรียก python interpreter ดังนั้น working directory จึงเป็น path ของ python
@@ -114,21 +112,38 @@ app.get("/", async (req, res) => {
    * จึงต้องใช้ process.cwd เพื่อเอา current working directory มานั่นเอง
    */
   var trulyPath = path.join(process.cwd(), url);
-  console.log(trulyPath);
-
-  let options = {
-    mode: "text",
-    pythonOptions: ["-u"], // get print results in real-time
-    scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
-    args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
-  };
-  PythonShell.run("geofencing.py", options, function(err, result) {
-    if (err) throw err;
-    // result is an array consisting of messages collected
-    //during execution of script.
-    console.log("result: ", result.toString());
-    // res.send(result.toString())
-  });
+  // console.log(trulyPath);
+  
+  
+  for (var property in database){
+    // console.log(`${database[property].fence}`);
+    // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
+    fenceString = JSON.stringify(database[property].fence)
+    let options = {
+      mode: "text",
+      pythonOptions: ["-u"], // get print results in real-time
+      scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
+      args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
+    };
+    PythonShell.run("geofencing.py", options, function(err, result) {
+      if (err) throw err;
+      // result is an array consisting of messages collected
+      //during execution of script.
+      var ans = result.toString()
+      console.log("result: ", ans);
+      if (ans === "True"){
+        console.log("Holy");
+      }else{
+        console.log("Moly");
+      }
+      // res.send(result.toString())
+    });
+    
+  }
+  
+  
+  
+  
   // var spawn = require("child_process").spawn;
   // var python = spawn("python", ["./geofencing.py", 2, 3]);
   // console.log("WTF IS THIS: ");
@@ -216,7 +231,7 @@ app.get("/", async (req, res) => {
   // var fofo =[]
   // areaModel.f
   
-
+    res.status(200).send(fence)
 });
 
 // // app.use('/',proxy('localhost:8080'))
@@ -261,21 +276,23 @@ app.post("/getval", (req, res) => {
   // res.render('index.ejs')
 });
 var mypoly = [
+  // [1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1]
   [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]
 ];
 
-// var saveData = new areaModel({
-//   fence: mypoly,
-//   name: "Agile inner meeting room",
-//   floor: "5",
-//   restrictfor: "DevOps",
-//   // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
-// }).save(function(err, result) {
-//   if (err) throw err;
-//   if (result) {
-//     console.log(result);
-//   }
-// });
+var saveData = new areaModel({
+  fence: mypoly,
+  name: "Agile inner meeting room",
+  floor: "5",
+  restrictfor: "DevOps",
+  // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
+}).save(function(err, result) {
+  if (err) throw err;
+  if (result) {
+    // console.log(result);
+    console.log("Save Complete");
+  }
+});
 
 // app.use('/test', require('./server.js'))
 
