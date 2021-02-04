@@ -66,9 +66,27 @@ const { PythonShell } = require("python-shell");
 const path = require("path");
 var url = "/src";
 app.get("/", async (req, res) => {
+  /**
+   * ชั้นตอนการทำงาน (ณ ตอนนี้)
+   * 1. Extract ค่าจาก payload ที่ส่งมาจาก Chirpstack
+   * 2. ตรวจหา floor ของผู้ใช้จาก Major Minor
+   * 3. นำ MAC Address ไป Query ใน user_tables ว่าข้อมูลที่ส่งมาเป็นของใคร แล้วดึงข้อมูลของ user นั้นออกมา
+   * 4. นำ floor ไป Query ใน area_tables เพื่อดึงข้อมูลเฉพาะชั้นที่ user อยู่ออกมา
+   * 5. ให้ model ทำนายตำแหน่ง
+   * 6. นำตำแหน่งที่ได้ไปทำ Geofencing ผ่าน PythonShell
+   * 7. ถ้ารู้แล้วว่า user อยู่ในตำแหน่งไหน ให้เช็คต่อว่า ตำแหน่งนั้นมัน restrict รึเปล่า โดยการดูจาก restrictfor ของ document นั้น
+   * 8. ถ้าละเมิดให้บันทึกค่าลงใน alert_tables
+   * 
+   * ในอนาคต
+   * 8. ถ้าละเมิดให้ปรับสภานะของ user เป็น warning ถ้ามีการละเมิดอีกครั้งภายหลัง จึงบันทึกลงใน alert_tables
+   * 9. อย่าลืมบันทึกตำแหน่งแต่ละครั้งของ user เอาไว้ด้วย ยังไม่แน่ใจว่าจะบันทึกทุก ๆ กี่นาที
+   * 10. ส่งข้อมูล ตำแหน่งไปแสดงบนหน้า map frontend และรายละเอียดอื่น ๆ เช่น ชื่อห้อง ชั้น ไปแสดงที่หน้า Info
+   * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
+   */
+
 
   /**
-   * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload
+   * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload (MAC, RSSI, Major, Minor)
    */
   var major = 1;
   var minor = 5;
@@ -77,13 +95,15 @@ app.get("/", async (req, res) => {
     floor = 5;
   }
   var mac = "E0:D9:DA:22:34:1B";
+
+
   var name = "Somchai"
   var surName = "Kositapa"
   var trackerId = "n00001"
-  var company = "";
-  var department = "DevOps";
-  // var department = "Infras";
-  var isInsideCompany = true;
+  // var company = "";
+  // var department = "DevOps";
+  var department = "Infras";
+  // var isInsideCompany = true;
   // var fence ="",name,floor,restrictFor;
 
   var rssi = [
@@ -116,8 +136,8 @@ app.get("/", async (req, res) => {
       database = area
     }
   });
-  var fenceString
-  var objectLength = Object.keys(database).length
+  // var fenceString
+  // var objectLength = Object.keys(database).length
   console.log(database);
   // console.log("Object length ",objectLength);
 

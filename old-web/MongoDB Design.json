@@ -2,7 +2,7 @@
     "GUID": "fb989970-2cca-11eb-93e3-2d9352c8a044",
     "modelName": "New Model",
     "code": "",
-    "lastModifTS": "2021-02-03T19:24:41.125Z",
+    "lastModifTS": "2021-02-04T13:05:29.876Z",
     "persistenceSchemaVersion": "4",
     "description": "",
     "comments": "",
@@ -52,8 +52,7 @@
                                     "hackoladeMeta": {},
                                     "isActivated": true,
                                     "arrayItem": true,
-                                    "arrayParentType": "array",
-                                    "error": {}
+                                    "arrayParentType": "array"
                                 },
                                 {
                                     "type": "numeric",
@@ -103,8 +102,7 @@
                             "hackoladeMeta": {},
                             "isActivated": true,
                             "arrayItem": true,
-                            "arrayParentType": "array",
-                            "error": {}
+                            "arrayParentType": "array"
                         }
                     ],
                     "primaryKey": false,
@@ -215,7 +213,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 }
             ],
             "definitions": {
@@ -284,7 +284,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -311,7 +313,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "boolean",
@@ -332,7 +336,9 @@
                     "parentRelationship": "",
                     "childRelationships": [],
                     "relationshipType": "",
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -359,7 +365,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -386,7 +394,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -413,7 +423,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -440,7 +452,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 }
             ],
             "definitions": {
@@ -509,7 +523,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -536,7 +552,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -563,7 +581,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -590,7 +610,9 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 },
                 {
                     "type": "string",
@@ -617,13 +639,250 @@
                     "id": "",
                     "hackoladeMeta": {},
                     "isActivated": true,
-                    "error": {}
+                    "error": {
+                        "name": false
+                    }
                 }
             ],
             "definitions": {
                 "type": "definitions",
                 "properties": [],
                 "GUID": "da2576f4-664f-11eb-a54d-6f9756bd9915"
+            },
+            "isActivated": true,
+            "capped": false,
+            "validationLevel": "Off",
+            "validationAction": "Warn",
+            "size": "",
+            "max": "",
+            "storageEngineName": "WiredTiger",
+            "collectionUsers": [],
+            "indexes": [],
+            "collation": {},
+            "sharding": {
+                "key": "",
+                "hashed": false,
+                "unique": true,
+                "numInitialChunks": "",
+                "collation": "null",
+                "zone": "",
+                "comments": ""
+            },
+            "bucketId": "ff4e2760-2cca-11eb-93e3-2d9352c8a044",
+            "hackoladeMeta": {
+                "validationErrors": {
+                    "collectionName": false
+                }
+            }
+        },
+        {
+            "GUID": "022563b0-66e9-11eb-a54d-6f9756bd9915",
+            "collectionName": "past_location_tables",
+            "code": "",
+            "type": "object",
+            "description": "",
+            "comments": "",
+            "$schema": "",
+            "additionalProperties": false,
+            "properties": [
+                {
+                    "type": "array",
+                    "properties": [
+                        {
+                            "type": "numeric",
+                            "mode": "",
+                            "unit": "",
+                            "minimum": "",
+                            "exclusiveMinimum": false,
+                            "maximum": "",
+                            "exclusiveMaximum": false,
+                            "multipleOf": "",
+                            "divisibleBy": "",
+                            "default": "",
+                            "primaryKey": false,
+                            "relationshipType": "",
+                            "parentRelationship": "",
+                            "childRelationships": [],
+                            "foreignCollection": "",
+                            "foreignField": [],
+                            "enum": [],
+                            "sample": "",
+                            "GUID": "1f9406e0-66e9-11eb-a54d-6f9756bd9915",
+                            "description": "",
+                            "comments": "",
+                            "required": false,
+                            "id": "",
+                            "hackoladeMeta": {},
+                            "isActivated": true,
+                            "arrayItem": true,
+                            "arrayParentType": "array",
+                            "error": {}
+                        },
+                        {
+                            "type": "numeric",
+                            "mode": "",
+                            "unit": "",
+                            "minimum": "",
+                            "exclusiveMinimum": false,
+                            "maximum": "",
+                            "exclusiveMaximum": false,
+                            "multipleOf": "",
+                            "divisibleBy": "",
+                            "default": "",
+                            "primaryKey": false,
+                            "relationshipType": "",
+                            "parentRelationship": "",
+                            "childRelationships": [],
+                            "foreignCollection": "",
+                            "foreignField": [],
+                            "enum": [],
+                            "sample": "",
+                            "GUID": "372755f0-66e9-11eb-a54d-6f9756bd9915",
+                            "description": "",
+                            "comments": "",
+                            "required": false,
+                            "id": "",
+                            "hackoladeMeta": {},
+                            "isActivated": true,
+                            "arrayItem": true
+                        }
+                    ],
+                    "primaryKey": false,
+                    "relationshipType": "",
+                    "parentRelationship": "",
+                    "childRelationships": [],
+                    "foreignCollection": "",
+                    "foreignField": [],
+                    "additionalItems": true,
+                    "minItems": "",
+                    "maxItems": "",
+                    "uniqueItems": false,
+                    "enum": [],
+                    "GUID": "1f890a60-66e9-11eb-a54d-6f9756bd9915",
+                    "name": "xy",
+                    "code": "",
+                    "description": "",
+                    "comments": "",
+                    "dependencies": [],
+                    "required": false,
+                    "id": "",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "error": {}
+                },
+                {
+                    "type": "string",
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "format": "",
+                    "default": "",
+                    "primaryKey": false,
+                    "relationshipType": "",
+                    "parentRelationship": "",
+                    "childRelationships": [],
+                    "foreignCollection": "",
+                    "foreignField": [],
+                    "enum": [],
+                    "sample": "",
+                    "GUID": "3a9db800-66e9-11eb-a54d-6f9756bd9915",
+                    "name": "floor",
+                    "code": "",
+                    "description": "",
+                    "comments": "",
+                    "dependencies": [],
+                    "required": false,
+                    "id": "",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "error": {}
+                },
+                {
+                    "type": "string",
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "format": "",
+                    "default": "",
+                    "primaryKey": false,
+                    "relationshipType": "",
+                    "parentRelationship": "",
+                    "childRelationships": [],
+                    "foreignCollection": "",
+                    "foreignField": [],
+                    "enum": [],
+                    "sample": "",
+                    "GUID": "41636c20-66e9-11eb-a54d-6f9756bd9915",
+                    "name": "areaname",
+                    "code": "",
+                    "description": "",
+                    "comments": "",
+                    "dependencies": [],
+                    "required": false,
+                    "id": "",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "error": {}
+                },
+                {
+                    "type": "string",
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "format": "",
+                    "default": "",
+                    "primaryKey": false,
+                    "relationshipType": "",
+                    "parentRelationship": "",
+                    "childRelationships": [],
+                    "foreignCollection": "",
+                    "foreignField": [],
+                    "enum": [],
+                    "sample": "",
+                    "GUID": "472321f0-66e9-11eb-a54d-6f9756bd9915",
+                    "name": "name",
+                    "code": "",
+                    "description": "",
+                    "comments": "",
+                    "dependencies": [],
+                    "required": false,
+                    "id": "",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "error": {}
+                },
+                {
+                    "type": "string",
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "format": "",
+                    "default": "",
+                    "primaryKey": false,
+                    "relationshipType": "",
+                    "parentRelationship": "",
+                    "childRelationships": [],
+                    "foreignCollection": "",
+                    "foreignField": [],
+                    "enum": [],
+                    "sample": "",
+                    "GUID": "4cb8e190-66e9-11eb-a54d-6f9756bd9915",
+                    "name": "timestamp",
+                    "code": "",
+                    "description": "",
+                    "comments": "",
+                    "dependencies": [],
+                    "required": false,
+                    "id": "",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "error": {}
+                }
+            ],
+            "definitions": {
+                "type": "definitions",
+                "properties": [],
+                "GUID": "02382860-66e9-11eb-a54d-6f9756bd9915"
             },
             "isActivated": true,
             "capped": false,
@@ -663,7 +922,8 @@
             "collectionIds": [
                 "6467bc90-2ccd-11eb-93e3-2d9352c8a044",
                 "d860bc80-664f-11eb-a54d-6f9756bd9915",
-                "da24b3a0-664f-11eb-a54d-6f9756bd9915"
+                "da24b3a0-664f-11eb-a54d-6f9756bd9915",
+                "022563b0-66e9-11eb-a54d-6f9756bd9915"
             ],
             "backgroundColor": {
                 "r": 216,
@@ -703,7 +963,13 @@
         "9715feb0-6650-11eb-a54d-6f9756bd9915": "trackerid",
         "9972b360-6650-11eb-a54d-6f9756bd9915": "macaddress",
         "54d79ca0-6652-11eb-a54d-6f9756bd9915": "floor",
-        "5aa24ef0-6652-11eb-a54d-6f9756bd9915": "timestamp"
+        "5aa24ef0-6652-11eb-a54d-6f9756bd9915": "timestamp",
+        "022563b0-66e9-11eb-a54d-6f9756bd9915": "past_location_tables",
+        "1f890a60-66e9-11eb-a54d-6f9756bd9915": "xy",
+        "3a9db800-66e9-11eb-a54d-6f9756bd9915": "floor",
+        "41636c20-66e9-11eb-a54d-6f9756bd9915": "areaname",
+        "472321f0-66e9-11eb-a54d-6f9756bd9915": "name",
+        "4cb8e190-66e9-11eb-a54d-6f9756bd9915": "timestamp"
     },
     "definitions": {
         "type": "definitions",
@@ -735,33 +1001,41 @@
                 "erd": [
                     {
                         "GUID": "6467bc90-2ccd-11eb-93e3-2d9352c8a044",
-                        "x": 148.33333333333334,
-                        "y": 166.66666666666669,
+                        "x": 97.33333333333334,
+                        "y": 162.66666666666669,
                         "width": 187,
                         "height": 131,
                         "color": {}
                     },
                     {
                         "GUID": "d860bc80-664f-11eb-a54d-6f9756bd9915",
-                        "x": 389.66666666666663,
-                        "y": 166.9333333333333,
+                        "x": 360.06666666666666,
+                        "y": 159.5333333333333,
                         "width": 197,
                         "height": 131,
                         "color": {}
                     },
                     {
                         "GUID": "da24b3a0-664f-11eb-a54d-6f9756bd9915",
-                        "x": 146.33333333333337,
-                        "y": 331.86666666666684,
+                        "x": 101.33333333333337,
+                        "y": 332.4666666666669,
                         "width": 187,
                         "height": 103,
+                        "color": {}
+                    },
+                    {
+                        "GUID": "022563b0-66e9-11eb-a54d-6f9756bd9915",
+                        "x": 341,
+                        "y": 320,
+                        "width": 236,
+                        "height": 131,
                         "color": {}
                     }
                 ],
                 "buckets": [
                     {
-                        "x": 106.33333333333337,
-                        "y": 126.66666666666669,
+                        "x": 57.33333333333334,
+                        "y": 119.5333333333333,
                         "GUID": "ff4e2760-2cca-11eb-93e3-2d9352c8a044"
                     }
                 ],
