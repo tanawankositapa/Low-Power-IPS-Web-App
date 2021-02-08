@@ -62,6 +62,17 @@ var alertSchema = new mongoose.Schema({
 var alertModel = mongoose.model("alert_table", alertSchema);
 
 
+// กำหนด metadata ของ table area_table
+var locationSchema = new mongoose.Schema({
+  xy: [],
+  areaname: String,
+  floor: String,
+  name: String,
+  timestamp: String, // เก็บเป็น String ไปก่อน เพราะพอเป็น Date แล้ว mongo มันจะไป convert ให้เป็น ISO Date อัติโนมัติ และเรายังเลือก timezone ไม่เป็น
+});
+// สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
+var locationModel = mongoose.model("location_table", locationSchema);
+
 const { PythonShell } = require("python-shell");
 const path = require("path");
 var url = "/src";
@@ -138,7 +149,7 @@ app.get("/", async (req, res) => {
   });
   // var fenceString
   // var objectLength = Object.keys(database).length
-  console.log(database);
+  // console.log("Database:", database);
   // console.log("Object length ",objectLength);
 
   /**
@@ -149,104 +160,189 @@ app.get("/", async (req, res) => {
    */
   var trulyPath = path.join(process.cwd(), url);
   // console.log(trulyPath);
-  var areaName, restrictForDepartment, isAlert, resultFromPython, readyToBreak;
-  for (var property in database){
-    // console.log(`${database[property].fence}`);
-    // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
-    readyToBreak = false
-    
-    // console.log("Fence: ",database[property].fence);
-    // console.log("Restrictfor: ",database[property].restrictfor);
-    
-    let tempRestrict = database[property].restrictfor
-    let tempFence = database[property].fence
-    let fenceString = JSON.stringify(tempFence)
-    // console.log("Fencestring ",fenceString);
-    let options = {
-      mode: "text",
-      pythonOptions: ["-u"], // get print results in real-time
-      scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
-      args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
-      // args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
-    };
-    let tempAreaName = database[property].name
-    PythonShell.run("geofencing.py", options, function(err, result) {
-      // isAlert = false
-      // console.log("Inside Fencestring ",fenceString);
-      if (err) throw err;
-      // result is an array consisting of messages collected during execution of script.
-      var tempAns = result.toString()
-      console.log("result: ", tempAns);
-      // console.log("Inside Fence: ",database[property].fence);
-      // console.log("Inside Restrictfor: ",tempRestrict);
-      console.log("Area: ",tempAreaName);
-      if (tempAns === "True"){
-        // console.log("Holy");
-        areaName = database[property].name
-        restrictForDepartment = tempRestrict
-        // console.log("Area name: ",areaName);
-        console.log("User Department: ",department);
-        console.log("Area Restrict for: ",restrictForDepartment);
-        // console.log("Check Restrictfor: ",restrictForDepartment);
-        if (department != restrictForDepartment){
-          isAlert = true
-          var dt = new Date();
-          var saveData = new alertModel({
-            name: name+" "+surName,
-            trackerid: trackerId,
-            areaname: tempAreaName,
-            floor: floor,
-            timestamp: `${
-              (dt.getMonth()+1).toString().padStart(2, '0')}/${
-              dt.getDate().toString().padStart(2, '0')}/${
-              dt.getFullYear().toString().padStart(4, '0')} ${
-              dt.getHours().toString().padStart(2, '0')}:${
-              dt.getMinutes().toString().padStart(2, '0')}:${
-              dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
-
-            }).save(function(err, result) {
-              if (err) throw err;
-              if (result) {
-                console.log(result);
-                console.log("Save Complete");
-              }
-            });
-        }else{
-          isAlert = false
-        }
-        console.log("Alert: ",isAlert);
-        // async function f3() {
-        //   readyToBreak = await true;
-        //   // console.log(y); // 20
-        // }
-
-        // f3()
-        // readyToBreak = true;
-        //   if(readyToBreak){
-        //     console.log("break");
-        //     return
-        //   }else{
-        //     console.log("not break");
-        //   }
-      }else{
-        // console.log("Moly");
-      }
-      // console.log("depart: ",department);
-      // console.log("restrictfor ",restrictForDepartment);
-      console.log("\n");
-      // res.send(result.toString())
-    });
-    // setTimeout(() => {
-    //   if(readyToBreak){
-    //     console.log("ppp");
-    //     return
-    //   }else{
-    //     console.log("Yolo");
-    //   }
-    // }, 3000);
-    
-  }
+  var areaName, restrictForDepartment, isAlert, resultFromPython, readyToBreak, locationAreaName;
   
+  var database2
+  // setInterval(async function() {
+  //   locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+  //        if (err) console.log(err);
+  //        else {
+  //         //  console.log("locationAreaName: ",locationAreaName);
+  //         //  console.log("Name: ",name);
+  //         //  console.log("location: ",location);
+  //          database2 = location
+  //          // console.log("Database2 ",database2);
+  //        }
+  //      });
+  //      }, 5000); //run this thang every ... seconds
+  // setTimeout(() => {
+  //   // setInterval(res.send(ypred), 5*1000);
+      
+  //   }, 6000);
+  async function test(){
+    console.log("Database:", database);
+    for (var property in database){
+      // console.log(`${database[property].fence}`);
+      // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
+      readyToBreak = false
+      
+      // console.log("Fence: ",database[property].fence);
+      // console.log("Restrictfor: ",database[property].restrictfor);
+      
+      let tempRestrict = database[property].restrictfor
+      let tempFence = database[property].fence
+      let fenceString = JSON.stringify(tempFence)
+      // console.log("Fencestring ",fenceString);
+      let options = {
+        mode: "text",
+        pythonOptions: ["-u"], // get print results in real-time
+        scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
+        args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
+        // args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
+      };
+      let tempAreaName = await database[property].name
+      
+      PythonShell.run("geofencing.py", options, function(err, result) {
+        // isAlert = false
+        // console.log("Inside Fencestring ",fenceString);
+        if (err) throw err;
+        // result is an array consisting of messages collected during execution of script.
+        var tempAns = result.toString()
+        console.log("result: ", tempAns);
+        // console.log("Inside Fence: ",database[property].fence);
+        // console.log("Inside Restrictfor: ",tempRestrict);
+        console.log("Area: ",tempAreaName);
+        if (tempAns === "True"){
+          // console.log("Holy");
+          locationAreaName = tempAreaName
+          areaName = database[property].name
+          restrictForDepartment = tempRestrict
+          // console.log("Area name: ",areaName);
+          console.log("User Department: ",department);
+          console.log("Area Restrict for: ",restrictForDepartment);
+          // console.log("Check Restrictfor: ",restrictForDepartment);
+          if (department != restrictForDepartment){
+            isAlert = true
+            var dt = new Date();
+            var saveData = new alertModel({
+              name: name+" "+surName,
+              trackerid: trackerId,
+              areaname: tempAreaName,
+              floor: floor,
+              timestamp: `${
+                (dt.getMonth()+1).toString().padStart(2, '0')}/${
+                dt.getDate().toString().padStart(2, '0')}/${
+                dt.getFullYear().toString().padStart(4, '0')} ${
+                dt.getHours().toString().padStart(2, '0')}:${
+                dt.getMinutes().toString().padStart(2, '0')}:${
+                dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
+  
+              }).save(function(err, result) {
+                if (err) throw err;
+                if (result) {
+                  console.log(result);
+                  console.log("Alert Save Complete");
+                }
+              });
+          }else{
+            isAlert = false
+          }
+          console.log("Alert: ",isAlert);
+          // async function f3() {
+          //   readyToBreak = await true;
+          //   // console.log(y); // 20
+          // }
+  
+          // f3()
+          // readyToBreak = true;
+          //   if(readyToBreak){
+          //     console.log("break");
+          //     return
+          //   }else{
+          //     console.log("not break");
+          //   }
+  
+          // var saveData = new locationModel({
+          //   xy: [2,3],
+          //   areaname: tempAreaName,
+          //   floor: floor,
+          //   name: name,
+          //   timestamp: `${
+          //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
+          //     dt.getDate().toString().padStart(2, '0')}/${
+          //     dt.getFullYear().toString().padStart(4, '0')} ${
+          //     dt.getHours().toString().padStart(2, '0')}:${
+          //     dt.getMinutes().toString().padStart(2, '0')}:${
+          //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
+          //   }).save(function(err, result) {
+          //     if (err) throw err;
+          //     if (result) {
+          //       console.log(result);
+          //       console.log("Location Save Complete");
+          //     }
+          //   });
+        }else{
+          // console.log("Moly");
+        }
+        // console.log("depart: ",department);
+        // console.log("restrictfor ",restrictForDepartment);
+        console.log("\n");
+        // res.send(result.toString())
+      });
+      // setTimeout(() => {
+      //   if(readyToBreak){
+      //     console.log("ppp");
+      //     return
+      //   }else{
+      //     console.log("Yolo");
+      //   }
+      // }, 3000);
+      
+    }
+  }
+  var timeArray = []
+  async function test2(){
+    
+   await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+      if (err) console.log(err);
+      else {
+        console.log("locationAreaName: ",locationAreaName);
+        console.log("Name: ",name);
+        console.log("location: ",location);
+        database2 = location
+        // console.log("Database2 ",database2);
+        console.log("Database2 ", database2);
+      
+      for (var property2 in database2){
+        let tempTimestamp = database2[property2].timestamp
+        // let tempFence = database2[property2].fence
+        // let fenceString = JSON.stringify(tempFence)   
+        console.log("time: ", tempTimestamp);
+        timeArray.push(database2[property2].timestamp)
+        // console.log("Time Array: ", timeArray);
+        // console.log("WTF: ", database2[property2].timestamp);
+      }
+      
+      // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
+      }
+    });
+    console.log("Time Array: ", timeArray);
+  }
+  async function test3(){
+    // console.log("Time Array: ", timeArray);
+  }
+
+   
+    await test()
+    
+
+    setTimeout(async () => {
+     await test2()
+    //  await test3()
+      }, 6000);
+    
+      
+    // console.log("Database2 Time ", database2.timestamp);
   
 
   // function sendData() {
@@ -298,6 +394,7 @@ app.get("/", async (req, res) => {
   // areaModel.f
   
     // res.status(200).send(fence)
+    
     res.sendStatus(200)
 });
 
@@ -365,6 +462,8 @@ var myPoly = [
 //     console.log("Save Complete");
 //   }
 // });
+
+ 
 
 // app.use('/test', require('./server.js'))
 
