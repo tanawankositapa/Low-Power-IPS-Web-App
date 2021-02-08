@@ -5,6 +5,9 @@ WiredTigerPreplog.0000000001
 WiredTigerlog.0000000002
 WiredTigerLog.0000000008
 WiredTigerLog.0000000014
+WiredTigerLog.0000000001
+WiredTigerLog.0000000017
+/src/db/journal
 /dist
 
 
