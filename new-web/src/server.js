@@ -214,6 +214,7 @@ app.get("/", async (req, res) => {
         console.log("Area: ",tempAreaName);
         if (tempAns === "True"){
           // console.log("Holy");
+          // timer
           locationAreaName = tempAreaName
           areaName = database[property].name
           restrictForDepartment = tempRestrict
@@ -221,29 +222,30 @@ app.get("/", async (req, res) => {
           console.log("User Department: ",department);
           console.log("Area Restrict for: ",restrictForDepartment);
           // console.log("Check Restrictfor: ",restrictForDepartment);
+          var dt = new Date();
           if (department != restrictForDepartment){
             isAlert = true
-            var dt = new Date();
-            var saveData = new alertModel({
-              name: name+" "+surName,
-              trackerid: trackerId,
-              areaname: tempAreaName,
-              floor: floor,
-              timestamp: `${
-                (dt.getMonth()+1).toString().padStart(2, '0')}/${
-                dt.getDate().toString().padStart(2, '0')}/${
-                dt.getFullYear().toString().padStart(4, '0')} ${
-                dt.getHours().toString().padStart(2, '0')}:${
-                dt.getMinutes().toString().padStart(2, '0')}:${
-                dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
+            
+            // var saveData = new alertModel({
+            //   name: name+" "+surName,
+            //   trackerid: trackerId,
+            //   areaname: tempAreaName,
+            //   floor: floor,
+            //   timestamp: `${
+            //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
+            //     dt.getDate().toString().padStart(2, '0')}/${
+            //     dt.getFullYear().toString().padStart(4, '0')} ${
+            //     dt.getHours().toString().padStart(2, '0')}:${
+            //     dt.getMinutes().toString().padStart(2, '0')}:${
+            //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
   
-              }).save(function(err, result) {
-                if (err) throw err;
-                if (result) {
-                  console.log(result);
-                  console.log("Alert Save Complete");
-                }
-              });
+            //   }).save(function(err, result) {
+            //     if (err) throw err;
+            //     if (result) {
+            //       console.log(result);
+            //       console.log("Alert Save Complete");
+            //     }
+            //   });
           }else{
             isAlert = false
           }
@@ -262,25 +264,25 @@ app.get("/", async (req, res) => {
           //     console.log("not break");
           //   }
   
-          // var saveData = new locationModel({
-          //   xy: [2,3],
-          //   areaname: tempAreaName,
-          //   floor: floor,
-          //   name: name,
-          //   timestamp: `${
-          //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
-          //     dt.getDate().toString().padStart(2, '0')}/${
-          //     dt.getFullYear().toString().padStart(4, '0')} ${
-          //     dt.getHours().toString().padStart(2, '0')}:${
-          //     dt.getMinutes().toString().padStart(2, '0')}:${
-          //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
-          //   }).save(function(err, result) {
-          //     if (err) throw err;
-          //     if (result) {
-          //       console.log(result);
-          //       console.log("Location Save Complete");
-          //     }
-          //   });
+          var saveData = new locationModel({
+            xy: [2, 3],
+            areaname: tempAreaName,
+            floor: floor,
+            name: name,
+            timestamp: `${
+              (dt.getMonth()+1).toString().padStart(2, '0')}/${
+              dt.getDate().toString().padStart(2, '0')}/${
+              dt.getFullYear().toString().padStart(4, '0')} ${
+              dt.getHours().toString().padStart(2, '0')}:${
+              dt.getMinutes().toString().padStart(2, '0')}:${
+              dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
+            }).save(function(err, result) {
+              if (err) throw err;
+              if (result) {
+                console.log(result);
+                console.log("Location Save Complete");
+              }
+            });
         }else{
           // console.log("Moly");
         }
@@ -300,25 +302,59 @@ app.get("/", async (req, res) => {
       
     }
   }
-  var timeArray = []
+  var timeArray = [] , areaNameArray = [];
   async function test2(){
     
-   await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+  //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+    await locationModel.find({"name" : name}, function(err, location) { 
       if (err) console.log(err);
       else {
         console.log("locationAreaName: ",locationAreaName);
         console.log("Name: ",name);
         console.log("location: ",location);
-        database2 = location
+        database2 = location;
         // console.log("Database2 ",database2);
         console.log("Database2 ", database2);
-      
+        var objectLength = Object.keys(database2).length;
+        var areaNameCounter = 0;
+        var minusDate;
       for (var property2 in database2){
-        let tempTimestamp = database2[property2].timestamp
+        let tempTimestamp = database2[property2].timestamp;
         // let tempFence = database2[property2].fence
-        // let fenceString = JSON.stringify(tempFence)   
+        // let fenceString = JSON.stringify(tempFence)  
+        console.log("Iterator: ",property2); 
         console.log("time: ", tempTimestamp);
-        timeArray.push(database2[property2].timestamp)
+        timeArray.push(database2[property2].timestamp);
+        areaNameArray.push(database2[property2].areaname);
+        // if (database2[property2].areaname){
+
+        // }
+        // console.log("Outside: ",database2[property2].areaname);
+        if (property2 < objectLength){
+          // console.log("inside: ",database2[property2].areaname);
+          // console.log("Database[property]: ",database2[property2]);
+          // console.log("Counter: ",areaNameCounter); 
+          if(property2 != 0){
+            if(database2[property2].areaname == database2[property2-1].areaname  ) {
+              areaNameCounter += 1
+            }
+            if((database2[property2].areaname != database2[property2-1].areaname) && property2 != 0){
+              var numericProperty = parseInt(property2)
+              // console.log("Exc Pro: ", numericProperty);
+              // console.log("Exc AreaNameCounter: ",areaNameCounter);
+              // console.log("TYPE: ",typeof(property2));
+              // console.log("WTF: ",numericProperty - areaNameCounter);
+              // minusDate = database2[property2-1].timestamp - database2[(property2 - 1) - (areaNameCounter+1) -1 ].timestamp
+              console.log("First timestamp:",database2[numericProperty - areaNameCounter].timestamp);
+              console.log("Last timestamp:",database2[numericProperty-1].timestamp);
+              areaNameCounter = 1
+            }
+          }
+         else if(property2 == 0){
+            areaNameCounter += 1
+          }
+         
+        }
         // console.log("Time Array: ", timeArray);
         // console.log("WTF: ", database2[property2].timestamp);
       }
@@ -327,6 +363,7 @@ app.get("/", async (req, res) => {
       }
     });
     console.log("Time Array: ", timeArray);
+    console.log("Area Name Array: ", areaNameArray);
   }
   async function test3(){
     // console.log("Time Array: ", timeArray);

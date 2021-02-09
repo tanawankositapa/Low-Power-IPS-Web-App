@@ -39,7 +39,7 @@ sys.stdout.flush()
 
 # # print(list[0])
 # # print(type(list[0]))
-# point = Point(2, 3)
+# point = Point(4, 4.9)
 # polygon = Polygon([[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]])
 # # polygon = Polygon([[1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1]])
 # # polygon = Polygon([[5, 1], [3, 2], [2, 5], [4, 5], [5, 3]])
@@ -48,6 +48,6 @@ sys.stdout.flush()
 
 # x, y = polygon.exterior.xy
 # plt.plot(x, y)
-# plt.scatter(2, 3)
+# plt.scatter(4, 4.9)
 # plt.show()
 # ##############################################################################
