@@ -318,6 +318,7 @@ app.get("/", async (req, res) => {
         var objectLength = Object.keys(database2).length;
         var areaNameCounter = 0;
         var minusDate;
+      /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
       for (var property2 in database2){
         let tempTimestamp = database2[property2].timestamp;
         // let tempFence = database2[property2].fence
@@ -330,14 +331,21 @@ app.get("/", async (req, res) => {
 
         // }
         // console.log("Outside: ",database2[property2].areaname);
+
+        /** ไม่ให้ overflow */
         if (property2 < objectLength){
           // console.log("inside: ",database2[property2].areaname);
           // console.log("Database[property]: ",database2[property2]);
           // console.log("Counter: ",areaNameCounter); 
+          /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
+           * ถ้าเป็น 0 มันจะติด - และ error undefined
+          */
           if(property2 != 0){
+            /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
             if(database2[property2].areaname == database2[property2-1].areaname  ) {
               areaNameCounter += 1
             }
+            /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
             if((database2[property2].areaname != database2[property2-1].areaname) && property2 != 0){
               var numericProperty = parseInt(property2)
               // console.log("Exc Pro: ", numericProperty);
@@ -350,6 +358,7 @@ app.get("/", async (req, res) => {
               areaNameCounter = 1
             }
           }
+          /** กรณีเฉพาะตัวแรก */
          else if(property2 == 0){
             areaNameCounter += 1
           }
