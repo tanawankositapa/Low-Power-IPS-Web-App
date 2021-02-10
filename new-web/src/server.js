@@ -353,8 +353,18 @@ app.get("/", async (req, res) => {
               // console.log("TYPE: ",typeof(property2));
               // console.log("WTF: ",numericProperty - areaNameCounter);
               // minusDate = database2[property2-1].timestamp - database2[(property2 - 1) - (areaNameCounter+1) -1 ].timestamp
-              console.log("First timestamp:",database2[numericProperty - areaNameCounter].timestamp);
-              console.log("Last timestamp:",database2[numericProperty-1].timestamp);
+              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
+              var lastTimeStamp = database2[numericProperty-1].timestamp
+              console.log("First timestamp:",firstTimeStamp);
+              console.log("Last timestamp:",lastTimeStamp);
+              const date1 = new Date(firstTimeStamp);
+              const date2 = new Date(lastTimeStamp);
+
+              var diff = Math.abs(date1 - date2)/1000/60/60;
+              // if (diff >= 1){
+
+              // }
+              console.log(diff)
               areaNameCounter = 1
             }
           }
