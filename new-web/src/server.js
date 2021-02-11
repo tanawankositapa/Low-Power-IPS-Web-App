@@ -264,25 +264,25 @@ app.get("/", async (req, res) => {
           //     console.log("not break");
           //   }
   
-          var saveData = new locationModel({
-            xy: [2, 3],
-            areaname: tempAreaName,
-            floor: floor,
-            name: name,
-            timestamp: `${
-              (dt.getMonth()+1).toString().padStart(2, '0')}/${
-              dt.getDate().toString().padStart(2, '0')}/${
-              dt.getFullYear().toString().padStart(4, '0')} ${
-              dt.getHours().toString().padStart(2, '0')}:${
-              dt.getMinutes().toString().padStart(2, '0')}:${
-              dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
-            }).save(function(err, result) {
-              if (err) throw err;
-              if (result) {
-                console.log(result);
-                console.log("Location Save Complete");
-              }
-            });
+          // var saveData = new locationModel({
+          //   xy: [2, 3],
+          //   areaname: tempAreaName,
+          //   floor: floor,
+          //   name: name,
+          //   timestamp: `${
+          //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
+          //     dt.getDate().toString().padStart(2, '0')}/${
+          //     dt.getFullYear().toString().padStart(4, '0')} ${
+          //     dt.getHours().toString().padStart(2, '0')}:${
+          //     dt.getMinutes().toString().padStart(2, '0')}:${
+          //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
+          //   }).save(function(err, result) {
+          //     if (err) throw err;
+          //     if (result) {
+          //       console.log(result);
+          //       console.log("Location Save Complete");
+          //     }
+          //   });
         }else{
           // console.log("Moly");
         }
@@ -321,10 +321,12 @@ app.get("/", async (req, res) => {
       /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
       for (var property2 in database2){
         let tempTimestamp = database2[property2].timestamp;
+        let tempLocationName = database2[property2].areaname;
         // let tempFence = database2[property2].fence
         // let fenceString = JSON.stringify(tempFence)  
-        console.log("Iterator: ",property2); 
-        console.log("time: ", tempTimestamp);
+        // console.log("Iterator: ",property2); 
+        // console.log("time: ", tempTimestamp);
+        console.log("Area Name: ",tempLocationName);
         timeArray.push(database2[property2].timestamp);
         areaNameArray.push(database2[property2].areaname);
         // if (database2[property2].areaname){
@@ -355,16 +357,28 @@ app.get("/", async (req, res) => {
               // minusDate = database2[property2-1].timestamp - database2[(property2 - 1) - (areaNameCounter+1) -1 ].timestamp
               var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
               var lastTimeStamp = database2[numericProperty-1].timestamp
+              var pastLocationName = database2[property2-1].areaname
               console.log("First timestamp:",firstTimeStamp);
               console.log("Last timestamp:",lastTimeStamp);
               const date1 = new Date(firstTimeStamp);
               const date2 = new Date(lastTimeStamp);
-
-              var diff = Math.abs(date1 - date2)/1000/60/60;
-              // if (diff >= 1){
-
-              // }
-              console.log(diff)
+              var diff = +(Math.round((Math.abs(date1 - date2)/1000) + "e+2") + "e-2");
+              var diffInMin, diffInHour
+              // var diff = Math.abs(date1 - date2)/1000;
+              // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
+              if (diff < 60){
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diff+ " Second");
+              }
+              if (diff >=60 && diff <3600){
+                diffInMin = +(Math.round((diff/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
+              }
+              if (diff >=3600){
+                diffInHour = +(Math.round((diff/60/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
+              }
+              // console.log(diff)
+              
               areaNameCounter = 1
             }
           }
