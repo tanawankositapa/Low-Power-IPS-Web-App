@@ -37,7 +37,7 @@ var areaModel = mongoose.model("area_table", areaSchema);
 
 // กำหนด metadata ของ table area_table
 var userSchema = new mongoose.Schema({
-  fence: [],
+  // fence: [],
   name: String,
   surname: String,
   isemployee: Boolean,
@@ -179,7 +179,7 @@ app.get("/", async (req, res) => {
   //   // setInterval(res.send(ypred), 5*1000);
       
   //   }, 6000);
-  async function test(){
+  async function geoFence(){
     console.log("Database:", database);
     for (var property in database){
       // console.log(`${database[property].fence}`);
@@ -303,7 +303,7 @@ app.get("/", async (req, res) => {
     }
   }
   var timeArray = [] , areaNameArray = [];
-  async function test2(){
+  async function workForceManage(){
     
   //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
     await locationModel.find({"name" : name}, function(err, location) { 
@@ -311,10 +311,10 @@ app.get("/", async (req, res) => {
       else {
         console.log("locationAreaName: ",locationAreaName);
         console.log("Name: ",name);
-        console.log("location: ",location);
+        // console.log("location: ",location);
         database2 = location;
         // console.log("Database2 ",database2);
-        console.log("Database2 ", database2);
+        // console.log("Database2 ", database2);
         var objectLength = Object.keys(database2).length;
         var areaNameCounter = 0;
         var minusDate;
@@ -398,18 +398,33 @@ app.get("/", async (req, res) => {
     console.log("Time Array: ", timeArray);
     console.log("Area Name Array: ", areaNameArray);
   }
-  async function test3(){
-    // console.log("Time Array: ", timeArray);
+  async function countPeopleInArea(){
+    for (var property in database){
+      let tempLocationName = database[property].name;
+      // console.log(database[property].name);
+      await locationModel.distinct("name", { areaname: database[property].name }, function(err, username) {
+        if (err) console.log(err);
+        else {
+          console.log("Area Name: ",tempLocationName);
+          console.log("People: ",username);
+          var objectLength = Object.keys(username).length;
+          console.log("Number of People: ",objectLength);
+        }
+        
+      }); 
+    }
+    
   }
 
    
-    await test()
+    await geoFence()
     
 
     setTimeout(async () => {
-     await test2()
+     await workForceManage();
+     countPeopleInArea();
     //  await test3()
-      }, 6000);
+      }, 5500);
     
       
     // console.log("Database2 Time ", database2.timestamp);
