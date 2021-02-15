@@ -1,11 +1,12 @@
 <template>
   <div class="main">
     <div class="sider">
-      <ul id="side">
+      <side-navbar></side-navbar>
+      <!-- <ul id="side">
         <li>
           <a href="#" >Room 606</a>
         </li>
-      </ul>
+      </ul> -->
     </div>
     <div class="content">
       <!-- <indoor-map :position-x="this.responsePosition[0]" :position-y="this.responsePosition[1]"></indoor-map> -->
@@ -17,11 +18,16 @@
 
 <script>
 import IndoorMap from './components/IndoorMap.vue';
+/** อย่าตั้งชื่อ component ให้มันซ้ำกับ component ของ primevue ไม่งั้นมันจะขึ้น error ว่า Maximum call stack size exceeded เช่น ตอนแรกเราตั้งชื่อ component ว่า SideBar 
+ * ซ
+*/
+import SideNavbar from './components/SideNavbar.vue';
 // import axios from 'axios';
 export default {
   
   components: {
     IndoorMap,
+    SideNavbar,
   },
   data() {
     return {
@@ -45,69 +51,6 @@ export default {
 };
 </script>
 
-<style>
-body {
-  margin: 0px;
-  font-family: Helvetica, Verdana, sans-serif;
-}
-
-.main {
-  width: 100vw;
-  height: 100vh;
-}
-
-.content {
-  width: calc(100% - 222px);
-  height: calc(100% - 22px);
-  float: left;
-  position: relative;
-  margin: 10px;
-}
-
-.sider {
-  float: left;
-  width: 200px;
-  height: 100vh;
-}
-
-#full_div {
-  /* overflow-x: auto; */
-  width: calc(100% - 2px);
-  height: calc(100% - 3px);
-  border: 1px solid #ccc;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  font: 200 15px/1.5 Helvetica, Verdana, sans-serif;
-  border-bottom: 1px solid #ccc;
-}
-
-li:last-child {
-  border: none;
-}
-
-li a {
-  font-size: 15px;
-  padding-left: 8px;
-  text-decoration: none;
-  color: #000;
-  display: block;
-
-  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
-  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
-  transition: font-size 0.3s ease, background-color 0.3s ease;
-}
-
-li a:hover {
-  font-size: 20px;
-  background: #f6f6f6;
-}
+<style lang="scss">
+@import "./App.scss";
 </style>
