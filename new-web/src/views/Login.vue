@@ -16,7 +16,8 @@
 </div>
 
         <div class="p-field p-grid">
-            <Button class="navBtn p-mt-2" label="Login" />
+            <router-link :to="{ name: 'Map' }" class="navBtn"><Button class="p-mt-2" label="Login" ></Button></router-link>
+            
         </div>
         </div>
     </div>
@@ -41,5 +42,7 @@ export default {
 .navBtn{
     margin-left: 74%;
 }
-    
+ a {
+    text-decoration: none;
+}   
 </style>
