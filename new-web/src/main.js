@@ -12,13 +12,16 @@ import Button from "primevue/button";
 import Avatar from "primevue/avatar";
 import AvatarGroup from "primevue/avatargroup";
 import BadgeDirective from "primevue/badgedirective";
+import InputText from "primevue/inputtext";
+import router from './router'
 
 const app = createApp(App);
 app.use(PrimeVue, { ripple: true });
-
+app.use(router);
 app.component('indoor-map', IndoorMap);
 app.component("Sidebar", Sidebar);
 app.component("Button", Button);
+app.component("InputText", InputText);
 app.directive("badge", BadgeDirective);
 
 app.component("Avatar", Avatar);

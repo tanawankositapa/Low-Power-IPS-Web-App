@@ -7,16 +7,22 @@
                 
 
                 <Sidebar v-model:visible="visibleLeft" :baseZIndex="1000" class="navBar">
+                    <div class="invisBox">
+
+                    </div>
                     <human-avatar></human-avatar>
                     <!-- <h3 class="text">Left Sidebar</h3> -->
-                    <ul>
+                    <div class="invisBox">
 
-                            <span class="p-buttonset navBtn">
-                                <Button label="Map" icon="pi pi-map" iconPos="left" /><br>
+                    </div>
+
                             
-                            </span>
+                                <Button class="navBtn p-mt-2" label="Map" icon="pi pi-map" iconPos="left" />
+                                <Button class="navBtn p-mt-2" label="Infomation" icon="pi pi-chart-bar" iconPos="left" />
+                                <Button class="navBtn p-mt-2" label="Register" icon="pi pi-user-plus" iconPos="left" />
+                            
                         
-                    </ul>
+                    
                 </Sidebar>
 
                 
@@ -42,6 +48,7 @@ export default {
 <style scoped>
     .navBar {
   background: #022F6F;
+  /* width: 250px; */
   /* color: tomato; */
   
   
@@ -52,8 +59,19 @@ export default {
 
 .navBtn{
     width: 100%;
+    background: #022F6F;
+    outline-color:#022F6F ;
+    /* margin-top: 10px; */
+    outline:0;
 }
-
+.navSpan{
+    /* margin-top: 100px; */
+    /* padding-top: 100px; */
+    outline:0
+}
+.invisBox{
+    height: 50px;
+}
     
 </style>
 
