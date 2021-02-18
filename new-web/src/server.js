@@ -73,6 +73,15 @@ var locationSchema = new mongoose.Schema({
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var locationModel = mongoose.model("location_table", locationSchema);
 
+
+var staffSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+});
+// สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
+var staffModel = mongoose.model("staff_table", staffSchema);
+
+
 const { PythonShell } = require("python-shell");
 const path = require("path");
 const { Log } = require("@tensorflow/tfjs");
@@ -636,7 +645,43 @@ var myPoly = [
 // });
 
  
+app.post("/login", (req,res) =>{
+  // console.log("full Body: ", req.body);
+  var staffUsername = req.body.username;
+  var staffPassword = req.body.password;
+  console.log("Username: ",staffUsername);
+  console.log("Password: ",staffPassword);
+  // staffSchema.statics.findByCredentials = async (staffUsername, staffPassword) => {
+  //   const staff = await staffModel.findOne({staffUsername});
+  //   if (!staff) {
+  //     throw new Error({ error: "Invalid login username" });
+  //     console.log("Invalid login username");
+  //   }
+    
+  //   if (staffPassword != staff.password) {
+  //     throw new Error({ error: "Invalid password " });
+  //     console.log("Invalid login password");
+  //   }
+  //   // return staff;
+  // };
 
+  staffModel.findOne({ username: staffUsername, password: staffPassword }, function(err, user) {
+    // console.log();
+    if (err) console.log(err);
+    else {
+      if (user == null){
+        console.log("Credential failed");
+      }else{
+        console.log("Login Success");
+      }
+      // console.log("Area Name: ",tempLocationName);
+      // console.log("Hoho: ",username);
+      // var objectLength = Object.keys(username).length;
+      // console.log("Number of People: ",objectLength);
+      // console.log(username);
+    }
+  }); 
+});
 // app.use('/test', require('./server.js'))
 
 app.listen(port, () => console.log("Server running at port " + port));

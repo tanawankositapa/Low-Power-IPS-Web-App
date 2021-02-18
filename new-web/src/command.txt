@@ -23,6 +23,6 @@ query ข้อมูล
 	db.area_table.find().pretty()
 แสดง table หรือ collection
 	show collections
-ลบ collection
+ลบ document
 	db.area_tables.remove({"floor" : "4"})
 
