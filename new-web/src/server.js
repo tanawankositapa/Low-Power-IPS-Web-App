@@ -671,8 +671,10 @@ app.post("/login", (req,res) =>{
     else {
       if (user == null){
         console.log("Credential failed");
+        res.send(false);
       }else{
         console.log("Login Success");
+        res.send(true);
       }
       // console.log("Area Name: ",tempLocationName);
       // console.log("Hoho: ",username);
@@ -681,6 +683,7 @@ app.post("/login", (req,res) =>{
       // console.log(username);
     }
   }); 
+  
 });
 // app.use('/test', require('./server.js'))
 

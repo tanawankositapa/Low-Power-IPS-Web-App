@@ -26,3 +26,5 @@ query ข้อมูล
 ลบ document
 	db.area_tables.remove({"floor" : "4"})
 
+
+

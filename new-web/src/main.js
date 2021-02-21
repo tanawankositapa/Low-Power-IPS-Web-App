@@ -13,6 +13,7 @@ import Avatar from "primevue/avatar";
 import AvatarGroup from "primevue/avatargroup";
 import BadgeDirective from "primevue/badgedirective";
 import InputText from "primevue/inputtext";
+import Dialog from 'primevue/dialog';
 import router from './router'
 
 const app = createApp(App);
@@ -23,7 +24,7 @@ app.component("Sidebar", Sidebar);
 app.component("Button", Button);
 app.component("InputText", InputText);
 app.directive("badge", BadgeDirective);
-
+app.component("Dialog",Dialog);
 app.component("Avatar", Avatar);
 app.component("AvatarGroup", AvatarGroup);
 app.mount('#app');

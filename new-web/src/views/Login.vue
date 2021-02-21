@@ -15,8 +15,8 @@
                         <InputText id="lastname" type="text" placeholder="enter your password" v-model="password" />
                     </div>
                     <div class="p-field p-grid">
-            <!-- <router-link :to="{ name: 'Map' }" class="navBtn"><Button class="p-mt-2" label="Login" type="submit" ></Button></router-link> -->
-            <Button class="p-mt-2 navBtn" label="Login" type="submit" ></Button>
+            <!-- <router-link :to="{ name: 'Map' }" class="navBtn" :disabled="!isLoginSucess"><Button class="p-mt-2 navBtn" label="Login" type="submit" ></Button></router-link> -->
+            <Button class="p-mt-2 navBtn" label="Login" type="submit"  ></Button>
         </div>
                 </form>
 </div>
@@ -26,25 +26,42 @@
     </div>
     </div>
 </div>
-
+<Dialog header="Alert!" v-model:visible="display" :modal="true" >
+	Please check your username or password
+</Dialog>
 </template>
 <script>
 import axios from 'axios';
+
+
 export default {
     data() {
         return {
             username: "",
             password: "",
             isLoginSucess: false,
+            display: false,
         }
     },
     methods: {
         sendLoginDataToBackend(){
             //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
-            axios.post('http://e6894548ed58.ngrok.io/login', {username: this.username, password: this.password})
-            .then(function () {
-       //do something
-    });
+            axios.post('http://c6efeeb045b0.ngrok.io/login', {username: this.username, password: this.password})
+            .then(response => (this.isLoginSucess = response.data))
+            .catch(error => console.log(error))
+            .finally(() => this.checkLoginStatus())
+    //         .then(function () {
+    //    //do something
+    // });
+            
+            },
+            checkLoginStatus(){
+                console.log("Login Status: ",this.isLoginSucess);
+                if(this.isLoginSucess){
+                    this.$router.push('/map');
+                }else{
+                    this.display = true;
+                }
             }
     },
     created() {
@@ -58,8 +75,8 @@ export default {
 }
 .content{
     margin-top: 150px;
-    margin-left: 35%;
-    margin-right: 40%;
+    margin-left: 37%;
+    margin-right: 37%;
 }
 .navBtn{
     margin-left: 74%;
