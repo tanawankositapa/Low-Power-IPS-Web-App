@@ -17,11 +17,11 @@
                     </div>
 
                             
-                                <Button class="navBtn p-mt-2" label="Map" icon="pi pi-map" iconPos="left" />
-                                <Button class="navBtn p-mt-2" label="Infomation" icon="pi pi-chart-bar" iconPos="left" />
-                                <Button class="navBtn p-mt-2" label="Register" icon="pi pi-user-plus" iconPos="left" />
-                                <Button class="navBtn p-mt-2" label="Log out" icon="pi pi-sign-out" iconPos="left" @click="logoutHandle"/>
-                            
+                                <router-link :to="{ name: 'Map' }" ><Button class="navBtn p-mt-2" label="Map" icon="pi pi-map" iconPos="left" /></router-link>
+                                <router-link :to="{ name: 'Information' }" ><Button class="navBtn p-mt-2" label="Infomation" icon="pi pi-chart-bar" iconPos="left" /></router-link>
+                                <router-link :to="{ name: 'Register' }" ><Button class="navBtn p-mt-2" label="Register" icon="pi pi-user-plus" iconPos="left" /></router-link>
+                                <Button class="navBtn p-mt-2" label="Log out" icon="pi pi-sign-out" iconPos="left" @click="logoutHandle"/> 
+                            <!-- ในอนาคตเราจะต้องทำบางอย่างตอน logout เราจึงให้มัน route ผ่าน onclick function ดีกว่า จะได้เขียน logic เพิ่มไปได้ภายหลัง เช่น การตั้งสภานะเป็น logout -->
                         
                     
                 </Sidebar>
@@ -78,6 +78,8 @@ export default {
 .invisBox{
     height: 50px;
 }
-    
+a {
+    text-decoration: none;
+}   
 </style>
 

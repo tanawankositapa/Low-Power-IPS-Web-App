@@ -685,6 +685,54 @@ app.post("/login", (req,res) =>{
   }); 
   
 });
+
+app.post("/register", (req,res) =>{
+  console.log("full Body: ", req.body);
+  var name = req.body.data.name;
+  var surname = req.body.data.surname;
+  var isEmployee = Boolean(req.body.data.isemployee);
+  var department = req.body.data.department;
+  var company = req.body.data.company;
+  var trackerId = req.body.data.trackerid;
+  var macaddress = req.body.data.macaddress;
+  /** ในอนาคตเราต้องมีการตรวจสอบด้วยว่า มีการลงทะเบียนคนนี้ไปแล้วหรือยัง ถ้ามี แล้วมีการลงทะเบียนซ้ำ ให้ทำการอัพเดท */
+  // userModel.findOne({ username: staffUsername, password: staffPassword }, function(err, user) {
+  //   // console.log();
+  //   if (err) console.log(err);
+  //   else {
+  //     if (user == null){
+  //       console.log("Credential failed");
+  //       res.send(false);
+  //     }else{
+  //       console.log("Login Success");
+  //       res.send(true);
+  //     }
+  //     // console.log("Area Name: ",tempLocationName);
+  //     // console.log("Hoho: ",username);
+  //     // var objectLength = Object.keys(username).length;
+  //     // console.log("Number of People: ",objectLength);
+  //     // console.log(username);
+  //   }
+  // });
+  
+  var saveData = new userModel({
+    name: name,
+    surname: surname,
+    isemployee: isEmployee,
+    department: department,
+    company: company,
+    trackerid: trackerId,
+    macaddress: macaddress,
+}).save(function(err, result) {
+  if (err) throw err;
+  if (result) {
+    
+    console.log("Save Complete");
+    console.log(result);
+  }
+});
+  
+});
 // app.use('/test', require('./server.js'))
 
 app.listen(port, () => console.log("Server running at port " + port));

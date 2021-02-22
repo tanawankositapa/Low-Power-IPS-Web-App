@@ -7,17 +7,21 @@
             <div class="p-fluid">
                 <form @submit.prevent="sendLoginDataToBackend">
                     <div class="p-field">
-                        <label for="firstname">Username</label>
-                        <InputText id="firstname" type="text" placeholder="enter your username" v-model="username" />
+                        <span class="p-float-label">
+                            <InputText id="firstname" type="text"  v-model="username" />
+                            <label for="firstname">Username</label>
+                        </span>
                     </div>
                     <div class="p-field">
-                        <label for="lastname">Password</label>
-                        <InputText id="lastname" type="text" placeholder="enter your password" v-model="password" />
+                        <span class="p-float-label">
+                            <InputText id="lastname" type="text"  v-model="password" />
+                            <label for="lastname">Password</label>
+                        </span>
                     </div>
                     <div class="p-field p-grid">
             <!-- <router-link :to="{ name: 'Map' }" class="navBtn" :disabled="!isLoginSucess"><Button class="p-mt-2 navBtn" label="Login" type="submit" ></Button></router-link> -->
-            <Button class="p-mt-2 navBtn" label="Login" type="submit"  ></Button>
-        </div>
+                    <Button class="p-mt-2 navBtn" label="Login" type="submit"  ></Button>
+                    </div>
                 </form>
 </div>
 
@@ -46,7 +50,7 @@ export default {
     methods: {
         sendLoginDataToBackend(){
             //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
-            axios.post('http://c6efeeb045b0.ngrok.io/login', {username: this.username, password: this.password})
+            axios.post('http://81ffb0a9aeec.ngrok.io/login', {username: this.username, password: this.password})
             .then(response => (this.isLoginSucess = response.data))
             .catch(error => console.log(error))
             .finally(() => this.checkLoginStatus())
@@ -77,11 +81,15 @@ export default {
     margin-top: 150px;
     margin-left: 37%;
     margin-right: 37%;
+    
 }
 .navBtn{
     margin-left: 74%;
 }
  a {
     text-decoration: none;
-}   
+} 
+.p-field{
+    margin-top: 25px;
+}
 </style>

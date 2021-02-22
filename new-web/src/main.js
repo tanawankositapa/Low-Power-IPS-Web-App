@@ -14,6 +14,7 @@ import AvatarGroup from "primevue/avatargroup";
 import BadgeDirective from "primevue/badgedirective";
 import InputText from "primevue/inputtext";
 import Dialog from 'primevue/dialog';
+import RadioButton from 'primevue/radiobutton';
 import router from './router'
 
 const app = createApp(App);
@@ -27,4 +28,5 @@ app.directive("badge", BadgeDirective);
 app.component("Dialog",Dialog);
 app.component("Avatar", Avatar);
 app.component("AvatarGroup", AvatarGroup);
+app.component("RadioButton", RadioButton);
 app.mount('#app');
