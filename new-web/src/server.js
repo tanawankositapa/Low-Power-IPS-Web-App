@@ -714,23 +714,64 @@ app.post("/register", (req,res) =>{
   //     // console.log(username);
   //   }
   // });
-  
-  var saveData = new userModel({
-    name: name,
-    surname: surname,
-    isemployee: isEmployee,
-    department: department,
-    company: company,
-    trackerid: trackerId,
-    macaddress: macaddress,
-}).save(function(err, result) {
-  if (err) throw err;
-  if (result) {
-    
-    console.log("Save Complete");
-    console.log(result);
-  }
-});
+  // userModel.findOneAndUpdate({name: name, surname: surname},{name: name, surname: surname, isemployee: isemployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
+
+    userModel.findOneAndUpdate({name: name, surname: surname},{name: name, surname: surname, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
+
+    // console.log();
+    if (err) console.log(err);
+    if (user == null){
+        var saveData = new userModel({
+          name: name,
+          surname: surname,
+          isemployee: isEmployee,
+          department: department,
+          company: company,
+          trackerid: trackerId,
+          macaddress: macaddress,
+      }).save(function(err, result) {
+        if (err) throw err;
+        if (result) {
+          
+          console.log("Save Complete");
+          console.log(result);
+        }
+      });
+    }
+    else {
+      console.log("Update data complete!");
+      console.log("User: ",user);
+      // if (user == null){
+      //   console.log("Credential failed");
+      //   res.send(false);
+      // }else{
+      //   console.log("Login Success");
+      //   res.send(true);
+      // }
+      // console.log("Area Name: ",tempLocationName);
+      // console.log("Hoho: ",username);
+      // var objectLength = Object.keys(username).length;
+      // console.log("Number of People: ",objectLength);
+      // console.log(username);
+    }
+    });
+
+    // var saveData = new userModel({
+    //     name: name,
+    //     surname: surname,
+    //     isemployee: isEmployee,
+    //     department: department,
+    //     company: company,
+    //     trackerid: trackerId,
+    //     macaddress: macaddress,
+    // }).save(function(err, result) {
+    //   if (err) throw err;
+    //   if (result) {
+        
+    //     console.log("Save Complete");
+    //     console.log(result);
+    //   }
+    // });
   
 });
 // app.use('/test', require('./server.js'))
