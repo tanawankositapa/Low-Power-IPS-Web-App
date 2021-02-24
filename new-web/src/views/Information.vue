@@ -5,7 +5,7 @@
             <div class="card">
                 <h5>Subheader Grouping</h5>
                 <p>Group customers by their representative.</p>
-                <DataTable :value="customers.data" rowGroupMode="subheader" groupRowsBy="department"
+                <DataTable :value="user.data" rowGroupMode="subheader" groupRowsBy="department"
                     sortMode="single" sortField="department" :sortOrder="1" scrollable scrollHeight="400px">
                     <!-- <Column field="name" header="Representative"></Column> -->
                     <Column field="name" header="Name"></Column>
@@ -18,11 +18,11 @@
                     <Column field="date" header="Date"></Column>
                    <template #groupheader="slotProps">
                         <!-- <img :alt="slotProps.data.representative.name" :src="'demo/images/avatar/' + slotProps.data.representative.image" width="32" style="vertical-align: middle" /> -->
-                        <span class="image-text">{{slotProps.data.representative.name}}</span>
+                        <span class="image-text">{{slotProps.data.department}}</span>
                     </template>
                     <template #groupfooter="slotProps">
                         <!-- <td colspan="4" style="text-align: right">Total Customers</td> -->
-                        <td>{{calculateCustomerTotal(slotProps.data.representative.name)}}</td>
+                        <td>{{calculateCustomerTotal(slotProps.data.department)}}</td>
                     </template>
                 </DataTable>
             </div>
@@ -93,22 +93,26 @@
 </template>
 
 <script>
-import CustomerService from '../service/CustomerService';
+// import CustomerService from '../service/CustomerService';
 import data from '../../public/data/test.json'
+import axios from 'axios';
 export default {
     data() {
         return {
-            customers: data,
+            user: data,
             expandedRowGroups: null
         }
     },
     customerService: null,
     created() {
-        this.customerService = new CustomerService();
+        // this.customerService = new CustomerService();
+        this.fetchDataFromBackend();
+        this.interval = setInterval(() => this.fetchDataFromBackend(), 10000);
     },
     mounted() {
-        this.customerService.getCustomersMedium().then(data => this.customers = data);
-        this.interval = setInterval(() => this.printf(), 10000);
+        // this.customerService.getCustomersMedium().then(data => this.customers = data);
+        // this.interval = setInterval(() => this.printf(), 10000);
+        this.fetchDataFromBackend();
     },
     methods: {
         // onRowGroupExpand(event) {
@@ -120,13 +124,13 @@ export default {
         calculateCustomerTotal(name) {
             let total = 0;
             console.log("name: ",name);
-            if (this.customers) {
-                // console.log("name: ",name);
-                for (var customer in this.customers.data) {
+            if (this.user) {
+                console.log("name: ",name);
+                for (var use in this.user.data) {
                     console.log("yolo: ",name);
-                    console.log("namqe: ",customer);
-                    console.log("nameee: ",this.customers.data[customer]);
-                    if (this.customers.data[customer].department === name) {
+                    console.log("namqe: ",use);
+                    console.log("nameee: ",this.user.data[use].department);
+                    if (this.user.data[use].department === name) {
                         total++;
                     }
                 }
@@ -134,9 +138,27 @@ export default {
 
             return total;
         },
-        printf(){
-            console.log("Type of data: ",this.customers);
-        }
+        fetchDataFromBackend(){
+              axios
+                .get('http://9765d24a760f.ngrok.io/getemployee')
+                // .then(response => (this.info = response))
+                .then(response => (this.user = response.data))
+                // .then(response => (console.log(response.data)))
+                .catch(error => console.log(error))
+                .finally(() => this.checkUser())
+            },
+        checkUser(){
+            // console.log("User is here: ",this.user[0].name);
+            for(var i in this.user){
+                console.log("Name: ",this.user[i].department);
+            }
+            // console.log("Type of User is here: ",typeof(this.user));
+            console.log("Type of User is here: ",this.user.data);
+        },
+        // printf(){
+        //     console.log("Type of data: ",this.customers);
+        // }
+
     }
 }
 </script>
