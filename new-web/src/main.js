@@ -21,6 +21,7 @@ import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';
 import Toast from "primevue/toast";
 import ToastService from "primevue/toastservice";
+import Chart from 'primevue/chart';
 import router from './router'
 
 const app = createApp(App);
@@ -40,4 +41,5 @@ app.component("DataTable", DataTable);
 app.component("Column", Column);
 app.component("ColumnGroup", ColumnGroup);
 app.component("Toast", Toast);
+app.component("Chart", Chart);
 app.mount('#app');
