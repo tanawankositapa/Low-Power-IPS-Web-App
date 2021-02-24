@@ -50,7 +50,7 @@ export default {
     methods: {
         sendLoginDataToBackend(){
             //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
-            axios.post('http://81ffb0a9aeec.ngrok.io/login', {username: this.username, password: this.password})
+            axios.post('http://9765d24a760f.ngrok.io/login', {username: this.username, password: this.password})
             .then(response => (this.isLoginSucess = response.data))
             .catch(error => console.log(error))
             .finally(() => this.checkLoginStatus())

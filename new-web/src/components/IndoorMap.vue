@@ -139,7 +139,7 @@ export default {
             }
   },
   created() {
-    this.interval = setInterval(() => this.fetchDataFromBackend(), 10000);
+    // this.interval = setInterval(() => this.fetchDataFromBackend(), 10000);
   },
   mounted() {
     console.log('Mounted'); 

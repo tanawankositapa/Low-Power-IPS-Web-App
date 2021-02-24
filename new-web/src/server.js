@@ -774,6 +774,25 @@ app.post("/register", (req,res) =>{
     // });
   
 });
+
+app.get("/getemployee", (req,res) =>{
+  
+  userModel.find({}, function(err, user) {
+    // console.log();
+    if (err) console.log(err);
+    else {
+      console.log(user);
+      // res.send(user)
+      res.json({data:user});
+      // console.log("Area Name: ",tempLocationName);
+      // console.log("Hoho: ",username);
+      // var objectLength = Object.keys(username).length;
+      // console.log("Number of People: ",objectLength);
+      // console.log(username);
+    }
+  }); 
+  
+});
 // app.use('/test', require('./server.js'))
 
 app.listen(port, () => console.log("Server running at port " + port));

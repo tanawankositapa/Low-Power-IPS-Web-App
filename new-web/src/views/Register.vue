@@ -84,7 +84,7 @@ export default {
     },
     methods: {
         sendRegisterDataToBackend(){
-            axios.post('http://81ffb0a9aeec.ngrok.io/register', {data: this.$data})
+            axios.post('http://9765d24a760f.ngrok.io/register', {data: this.$data})
             // axios.post('http://81ffb0a9aeec.ngrok.io/register', {username: this.username, password: this.password})
             .then(response => (this.isLoginSucess = response.data))
             .catch(error => console.log(error))
