@@ -83,6 +83,7 @@ export default {
         return {
             user: null,
             alertUser: null,
+            workTime:null,
             expandedRowGroups: null,
             basicData: {
 				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -112,12 +113,15 @@ export default {
         this.interval = setInterval(() => this.fetchUserFromBackend(), 10000);
         this.fetchAlertFromBackend();
         this.interval = setInterval(() => this.fetchAlertFromBackend(), 10000);
+        this.fetchWorkTimeFromBackend();
+        this.interval = setInterval(() => this.fetchWorkTimeFromBackend(), 10000);
     },
     mounted() {
         // this.customerService.getCustomersMedium().then(data => this.customers = data);
         // this.interval = setInterval(() => this.printf(), 10000);
         this.fetchUserFromBackend();
         this.fetchAlertFromBackend();
+        this.fetchWorkTimeFromBackend();
     },
     methods: {
         // onRowGroupExpand(event) {
@@ -162,7 +166,7 @@ export default {
         },
         fetchUserFromBackend(){
               axios
-                .get('http://9765d24a760f.ngrok.io/getemployee')
+                .get('http://15ff031dccaf.ngrok.io/getemployee')
                 // .then(response => (this.info = response))
                 .then(response => (this.user = response.data))
                 // .then(response => (console.log(response.data)))
@@ -182,12 +186,21 @@ export default {
         // }
         fetchAlertFromBackend(){
               axios
-                .get('http://9765d24a760f.ngrok.io/alert')
+                .get('http://15ff031dccaf.ngrok.io/alert')
                 // .then(response => (this.info = response))
                 .then(response => (this.alertUser = response.data))
                 // .then(response => (console.log(response.data)))
                 .catch(error => console.log(error))
                 // .finally(() => this.checkUser())
+            },
+        fetchWorkTimeFromBackend(){
+              axios
+                .get('http://15ff031dccaf.ngrok.io/worktime')
+                // .then(response => (this.info = response))
+                .then(response => (this.workTime = response.data))
+                // .then(response => (console.log(response.data)))
+                .catch(error => console.log(error))
+                .finally(() => console.log("Worktime: ", this.workTime.data));
             },
     }
 }

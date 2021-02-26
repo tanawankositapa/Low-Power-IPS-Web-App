@@ -81,32 +81,21 @@ var staffSchema = new mongoose.Schema({
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var staffModel = mongoose.model("staff_table", staffSchema);
 
+var workTimeSchema = new mongoose.Schema({
+  name: String,
+  areaname: String,
+  duration: Number,
+});
+// สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
+var workTimeModel = mongoose.model("worktime_table", workTimeSchema);
+
 
 const { PythonShell } = require("python-shell");
 const path = require("path");
 const { Log } = require("@tensorflow/tfjs");
 var url = "/src";
-app.get("/", async (req, res) => {
-  /**
-   * ชั้นตอนการทำงาน (ณ ตอนนี้)
-   * 1. Extract ค่าจาก payload ที่ส่งมาจาก Chirpstack
-   * 2. ตรวจหา floor ของผู้ใช้จาก Major Minor
-   * 3. นำ MAC Address ไป Query ใน user_tables ว่าข้อมูลที่ส่งมาเป็นของใคร แล้วดึงข้อมูลของ user นั้นออกมา
-   * 4. นำ floor ไป Query ใน area_tables เพื่อดึงข้อมูลเฉพาะชั้นที่ user อยู่ออกมา
-   * 5. ให้ model ทำนายตำแหน่ง
-   * 6. นำตำแหน่งที่ได้ไปทำ Geofencing ผ่าน PythonShell
-   * 7. ถ้ารู้แล้วว่า user อยู่ในตำแหน่งไหน ให้เช็คต่อว่า ตำแหน่งนั้นมัน restrict รึเปล่า โดยการดูจาก restrictfor ของ document นั้น
-   * 8. ถ้าละเมิดให้บันทึกค่าลงใน alert_tables
-   * 
-   * ในอนาคต
-   * 8. ถ้าละเมิดให้ปรับสภานะของ user เป็น warning ถ้ามีการละเมิดอีกครั้งภายหลัง จึงบันทึกลงใน alert_tables
-   * 9. อย่าลืมบันทึกตำแหน่งแต่ละครั้งของ user เอาไว้ด้วย ยังไม่แน่ใจว่าจะบันทึกทุก ๆ กี่นาที
-   * 10. ส่งข้อมูล ตำแหน่งไปแสดงบนหน้า map frontend และรายละเอียดอื่น ๆ เช่น ชื่อห้อง ชั้น ไปแสดงที่หน้า Info
-   * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
-   */
 
-
-  /**
+/**
    * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload (MAC, RSSI, Major, Minor)
    */
   var major = 1;
@@ -133,6 +122,28 @@ app.get("/", async (req, res) => {
     // [-48, -67, -53, -63, -72, -71],
     // [-51, -70, -65, -83, -69, -89],
   ];
+
+app.get("/", async (req, res) => {
+  /**
+   * ชั้นตอนการทำงาน (ณ ตอนนี้)
+   * 1. Extract ค่าจาก payload ที่ส่งมาจาก Chirpstack
+   * 2. ตรวจหา floor ของผู้ใช้จาก Major Minor
+   * 3. นำ MAC Address ไป Query ใน user_tables ว่าข้อมูลที่ส่งมาเป็นของใคร แล้วดึงข้อมูลของ user นั้นออกมา
+   * 4. นำ floor ไป Query ใน area_tables เพื่อดึงข้อมูลเฉพาะชั้นที่ user อยู่ออกมา
+   * 5. ให้ model ทำนายตำแหน่ง
+   * 6. นำตำแหน่งที่ได้ไปทำ Geofencing ผ่าน PythonShell
+   * 7. ถ้ารู้แล้วว่า user อยู่ในตำแหน่งไหน ให้เช็คต่อว่า ตำแหน่งนั้นมัน restrict รึเปล่า โดยการดูจาก restrictfor ของ document นั้น
+   * 8. ถ้าละเมิดให้บันทึกค่าลงใน alert_tables
+   * 
+   * ในอนาคต
+   * 8. ถ้าละเมิดให้ปรับสภานะของ user เป็น warning ถ้ามีการละเมิดอีกครั้งภายหลัง จึงบันทึกลงใน alert_tables
+   * 9. อย่าลืมบันทึกตำแหน่งแต่ละครั้งของ user เอาไว้ด้วย ยังไม่แน่ใจว่าจะบันทึกทุก ๆ กี่นาที
+   * 10. ส่งข้อมูล ตำแหน่งไปแสดงบนหน้า map frontend และรายละเอียดอื่น ๆ เช่น ชื่อห้อง ชั้น ไปแสดงที่หน้า Info
+   * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
+   */
+
+
+  
   
   const model = await tfjs.loadLayersModel(
     "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
@@ -312,124 +323,8 @@ app.get("/", async (req, res) => {
       
     }
   }
-  var timeArray = [] , areaNameArray = [], lastTimeStampArray =[], lastAreaNameArray = [];
-  async function workForceManage(){
-    
-  //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
-    await locationModel.find({"name" : name}, function(err, location) { 
-      if (err) console.log(err);
-      else {
-        console.log("locationAreaName: ",locationAreaName);
-        console.log("Name: ",name);
-        // console.log("location: ",location);
-        database2 = location;
-        // console.log("Database2 ",database2);
-        // console.log("Database2 ", database2);
-        var objectLength = Object.keys(database2).length;
-        var areaNameCounter = 0;
-        var minusDate;
-      /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
-      for (var property in database2){
-        let tempTimestamp = database2[property].timestamp;
-        let tempLocationName = database2[property].areaname;
-        // let tempFence = database2[property].fence
-        // let fenceString = JSON.stringify(tempFence)  
-        // console.log("Iterator: ",property); 
-        // console.log("time: ", tempTimestamp);
-        console.log("Area Name: ",tempLocationName);
-        timeArray.push(database2[property].timestamp);
-        areaNameArray.push(database2[property].areaname);
-        // if (database2[property].areaname){
-
-        // }
-        // console.log("Outside: ",database2[property].areaname);
-
-        /** ไม่ให้ overflow */
-        if (property < objectLength){
-          // console.log("inside: ",database2[property].areaname);
-          // console.log("Database[property]: ",database2[property]);
-          // console.log("Counter: ",areaNameCounter); 
-          /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
-           * ถ้าเป็น 0 มันจะติด - และ error undefined
-          */
-          if(property != 0 && property != objectLength -1 ){
-            /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
-            if(database2[property].areaname == database2[property-1].areaname  ) {
-              areaNameCounter += 1
-            }
-            /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
-            if((database2[property].areaname != database2[property-1].areaname) && property != 0){
-              var numericProperty = parseInt(property)
-              // console.log("Exc Pro: ", numericProperty);
-              // console.log("Exc AreaNameCounter: ",areaNameCounter);
-              // console.log("TYPE: ",typeof(property));
-              // console.log("WTF: ",numericProperty - areaNameCounter);
-              // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
-              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
-              var lastTimeStamp = database2[numericProperty-1].timestamp
-              var pastLocationName = database2[property-1].areaname
-              console.log("First timestamp:",firstTimeStamp);
-              console.log("Last timestamp:",lastTimeStamp);
-              const date1 = new Date(firstTimeStamp);
-              const date2 = new Date(lastTimeStamp);
-              var diff = +(Math.round((Math.abs(date1 - date2)/1000) + "e+2") + "e-2");
-              var diffInMin, diffInHour
-              // var diff = Math.abs(date1 - date2)/1000;
-              // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
-              // lastTimeStampArray.push(lastTimeStamp);
-              // lastAreaNameArray.push(pastLocationName);
-              if (diff < 60){
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diff+ " Second");
-              }
-              if (diff >=60 && diff <3600){
-                diffInMin = +(Math.round((diff/60) + "e+2") + "e-2")
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
-              }
-              if (diff >=3600){
-                diffInHour = +(Math.round((diff/60/60) + "e+2") + "e-2")
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
-              }
-              // console.log(diff)
-              
-              areaNameCounter = 1
-            }
-          }
-          /** กรณีเฉพาะตัวแรก */
-         else if(property == 0){
-            areaNameCounter += 1
-          }
-          else if (property == objectLength -1){
-            // console.log("pro ",property);
-            // console.log("wf ",lastTimeStamp);
-            // console.log("wiq ",pastLocationName);
-            lastTimeStampArray.push(database2[property].timestamp);
-            lastAreaNameArray.push(database2[property].areaname);
-          }
-         
-        }
-        
-        // console.log("Time Array: ", timeArray);
-        // console.log("WTF: ", database2[property].timestamp);
-      }
-      
-      // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
-      }
-    });
-    //end of find()
-
-    // console.log("dB2: ",database2);
-    console.log("Time Array: ", timeArray);
-    console.log("Area Name Array: ", areaNameArray);
-    console.log("Last Area Array: ", lastAreaNameArray);
-    console.log("Last Timestamp Array: ", lastTimeStampArray);
-    // var indexOfMaxValue = lastTimeStampArray.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-    // console.log("Index of max: ",indexOfMaxValue);
-    // var maxDate = new Date(Math.max.apply(null, lastTimeStampArray.map(function(e) {
-    //   return new Date(e.MeasureDate);
-    // })));
-    // console.log("Max DAET: ",maxDate);
-    // end of workForceManage()
-  }
+  
+  
   // for (var property in lastTimeStampArray){
   //   var objectLength = Object.keys(lastTimeStampArray).length
   //   if(property < objectLength){
@@ -516,11 +411,11 @@ app.get("/", async (req, res) => {
     await geoFence()
     
 
-    setTimeout(async () => {
-     await workForceManage();
-     countPeopleInArea();
-    //  await test3()
-      }, 5500);
+    // setTimeout(async () => {
+    //  await workForceManage();
+    //  countPeopleInArea();
+    // //  await test3()
+    //   }, 5500);
     
       
     // console.log("Database2 Time ", database2.timestamp);
@@ -793,6 +688,192 @@ app.get("/alert", (req,res) =>{
       res.json({data:alert});
     }
   }); 
+});
+
+app.get("/worktime", (req,res) =>{
+  async function workForceManage(){
+    var timeArray = [] , areaNameArray = [], lastTimeStampArray =[], lastAreaNameArray = [];
+  //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+    await locationModel.find({"name" : name}, function(err, location) { 
+      if (err) console.log(err);
+      else {
+        // console.log("locationAreaName: ",locationAreaName);
+        console.log("Name: ",name);
+        // console.log("location: ",location);
+        database2 = location;
+        // console.log("Database2 ",database2);
+        // console.log("Database2 ", database2);
+        var objectLength = Object.keys(database2).length;
+        var areaNameCounter = 0;
+        var minusDate;
+      /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
+      for (var property in database2){
+        let tempTimestamp = database2[property].timestamp;
+        let tempLocationName = database2[property].areaname;
+        // let tempFence = database2[property].fence
+        // let fenceString = JSON.stringify(tempFence)  
+        // console.log("Iterator: ",property); 
+        // console.log("time: ", tempTimestamp);
+        console.log("Area Name: ",tempLocationName);
+        timeArray.push(database2[property].timestamp);
+        areaNameArray.push(database2[property].areaname);
+        // if (database2[property].areaname){
+
+        // }
+        // console.log("Outside: ",database2[property].areaname);
+
+        /** ไม่ให้ overflow */
+        if (property < objectLength){
+          // console.log("inside: ",database2[property].areaname);
+          // console.log("Database[property]: ",database2[property]);
+          // console.log("Counter: ",areaNameCounter); 
+          /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
+           * ถ้าเป็น 0 มันจะติด - และ error undefined
+          */
+          if(property != 0 && property != objectLength -1 ){
+            /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
+            if(database2[property].areaname == database2[property-1].areaname  ) {
+              areaNameCounter += 1
+            }
+            /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
+            if((database2[property].areaname != database2[property-1].areaname) && property != 0){
+              var numericProperty = parseInt(property)
+              // console.log("Exc Pro: ", numericProperty);
+              // console.log("Exc AreaNameCounter: ",areaNameCounter);
+              // console.log("TYPE: ",typeof(property));
+              // console.log("WTF: ",numericProperty - areaNameCounter);
+              // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
+              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
+              var lastTimeStamp = database2[numericProperty-1].timestamp
+              var pastLocationName = database2[property-1].areaname
+              console.log("First timestamp:",firstTimeStamp);
+              console.log("Last timestamp:",lastTimeStamp);
+              const date1 = new Date(firstTimeStamp);
+              const date2 = new Date(lastTimeStamp);
+              var diff = +(Math.round((Math.abs(date1 - date2)/1000) + "e+2") + "e-2");
+              var diffInMin, diffInHour
+              // var diff = Math.abs(date1 - date2)/1000;
+              // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
+              // lastTimeStampArray.push(lastTimeStamp);
+              // lastAreaNameArray.push(pastLocationName);
+
+              
+
+              if (diff < 60){
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diff+ " Second");
+                // res.json({name: name, areaname: pastLocationName, time:diff});
+              }
+              if (diff >=60 && diff <3600){
+                diffInMin = +(Math.round((diff/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
+                // res.json({name: name, areaname: pastLocationName, time:diffInMin});
+              }
+              if (diff >=3600){
+                diffInHour = +(Math.round((diff/60/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
+                // res.json({name: name, areaname: pastLocationName, time:diffInHour});
+              }
+              // console.log(diff)
+              // var saveData = new workTimeModel({
+              //   name: name+" "+surName,
+              //   areaname: pastLocationName,
+              //   duration: diff,
+              // }).save(function(err, result) {
+              //   if (err) throw err;
+              //   if (result) {
+              //     console.log("Save Worktime Complete");
+              //     console.log(result);
+              //   }
+              // });
+              areaNameCounter = 1
+            }
+          }
+          /** กรณีเฉพาะตัวแรก */
+         else if(property == 0){
+            areaNameCounter += 1
+          }
+          else if (property == objectLength -1){
+            // console.log("pro ",property);
+            // console.log("wf ",lastTimeStamp);
+            // console.log("wiq ",pastLocationName);
+            lastTimeStampArray.push(database2[property].timestamp);
+            lastAreaNameArray.push(database2[property].areaname);
+          }
+         
+        }
+        
+        // console.log("Time Array: ", timeArray);
+        // console.log("WTF: ", database2[property].timestamp);
+      }
+      
+      // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
+      }
+    });
+    //end of find()
+
+    // console.log("dB2: ",database2);
+    console.log("Time Array: ", timeArray);
+    console.log("Area Name Array: ", areaNameArray);
+    console.log("Last Area Array: ", lastAreaNameArray);
+    console.log("Last Timestamp Array: ", lastTimeStampArray);
+    // var indexOfMaxValue = lastTimeStampArray.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+    // console.log("Index of max: ",indexOfMaxValue);
+    // var maxDate = new Date(Math.max.apply(null, lastTimeStampArray.map(function(e) {
+    //   return new Date(e.MeasureDate);
+    // })));
+    // console.log("Max DAET: ",maxDate);
+    var database3 = [] , areaWorkTimeName = [], uniqueAreaWorkTimeName = [];
+    await workTimeModel.find({"name" : name+" "+surName}, function(err, user) {
+      console.log("User name: ",name);
+      console.log("All location of this user: ",user);
+      database3 = user;
+      console.log("Database3: ",database3);
+      // console.log("haha ",user[0].areaname);
+    //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
+    //     if (err) res.send(err);
+    //     res.json(apartments);
+    // });
+    });
+    for(var i in database3){
+      // console.log("OO:", database3[i].areaname);
+      areaWorkTimeName.push(database3[i].areaname);
+    }
+    // end of workForceManage()
+    function removeDuplicate(data){
+      return data.filter((value,index) => data.indexOf(value) == index);
+    }
+    uniqueAreaWorkTimeName = removeDuplicate(areaWorkTimeName);
+    console.log("Unique: ",uniqueAreaWorkTimeName);
+
+    // for(var i in uniqueAreaWorkTimeName){
+      // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
+      workTimeModel.aggregate(
+        [
+          {
+            $group: {
+              // _id: "$areaname",
+              "_id": {
+                "name": "$name",
+                "areaname": "$areaname"
+            },
+              total: {
+                $sum: "$duration"
+              }
+            }
+          }
+        ],
+        function(err, result) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.json({data: result});
+            // console.log("Result: ",result);
+          }
+        }
+      );
+    // }
+  }
+  workForceManage();
 });
 
 
