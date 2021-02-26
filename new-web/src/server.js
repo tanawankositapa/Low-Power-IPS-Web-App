@@ -864,10 +864,11 @@ app.get("/worktime", (req,res) =>{
         ],
         function(err, result) {
           if (err) {
-            res.send(err);
+            // res.send(err);
+            console.log(err);
           } else {
             res.json({data: result});
-            // console.log("Result: ",result);
+            console.log("Result: ",result);
           }
         }
       );

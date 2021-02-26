@@ -12,7 +12,7 @@
                     sortMode="single" sortField="department" :sortOrder="1" v-model:expandedRows="expandedRows" scrollable scrollHeight="400px">
                     <!-- <Column :expander="true" ></Column> -->
                     
-                    <Column field="name" header="Name"></Column>
+                    <Column field="name" header="Name" ></Column>
                     <Column field="surname" header="surname"></Column>
                     <Column field="status" header="Status">
                         <!-- <template #body="slotProps">
@@ -29,11 +29,13 @@
                         <!-- <td colspan="4" style="text-align: right">Total Customers</td> -->
                         <td>{{calculateUserTotal(slotProps.data.department)}}</td>
                     </template>
-                    <template #expansion="slotProps">
+                    <template #expansion="slotProps" @click="test">
                         <div class="orders-subtable">
-                            <h5>Orders for {{slotProps.data.name}}</h5>
+                            <h5>เวลาทำงานของ {{slotProps.data.name +" "+ slotProps.data.surname}}</h5>
                              <h3>Vertical</h3>
-                            <Chart type="bar" :data="basicData" />
+                             {{slotpropName = slotProps.data.name + slotProps.data.surname}}
+                             {{test(slotpropName)}}
+                            <Chart type="bar" :data="basicData.SomchaiKositapa" />
 
                         </div>
                     </template>
@@ -85,20 +87,37 @@ export default {
             alertUser: null,
             workTime:null,
             expandedRowGroups: null,
+            slotpropName: "",
             basicData: {
-				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-				datasets: [
-					{
-						label: 'My First dataset',
-						backgroundColor: '#42A5F5',
-						data: [65, 59, 80, 81, 56, 55, 40]
-					},
-					{
-						label: 'My Second dataset',
-						backgroundColor: '#FFA726',
-						data: [28, 48, 40, 19, 86, 27, 90]
-					}
-				]
+                // username: "",
+				// labels: [],
+				// datasets: [
+				// 	{
+				// 		label: 'My First dataset',
+				// 		backgroundColor: '#42A5F5',
+				// 		data: []
+				// 	},
+				// 	{
+				// 		label: 'My Second dataset',
+				// 		backgroundColor: '#FFA726',
+				// 		data: [28, 48, 40, 19, 86, 27, 90]
+				// 	}
+				// ]
+                SomchaiKositapa:{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                
+                    datasets: [
+                    {
+                        label: 'My First dataset',
+                        backgroundColor: '#42A5F5',
+                        data: [65, 59, 80, 81, 56, 55, 40]
+                    },
+                    {
+                        label: 'My Second dataset',
+                        backgroundColor: '#FFA726',
+                        data: [28, 48, 40, 19, 86, 27, 90]
+                    }
+                ]}
 			},
             expandedRows: [],
         }
@@ -164,6 +183,25 @@ export default {
 
             return total;
         },
+        insertLabel(){
+          for(var label in this.workTime.data){
+              if(this.basicData.labels.indexOf(this.workTime.data[label]._id.areaname) == -1){
+                    // console.log("Labels: ", this.workTime.data[label]._id.areaname);
+                    this.basicData.labels.push(this.workTime.data[label]._id.areaname)
+                }
+                // this.basicData.datasets.data.push(this.workTime.data[label].total/60)
+                // console.log("Ho ",this.basicData.datasets[0].label);
+          }  
+          this.workTime.data[label]._id.name
+          this.basicData.push({})
+        //   this.workTime.data[label].total
+        //   console.log("OLO", this.basicData.labels);
+        },
+        test(objectKey){
+            // alert("OMG");
+            console.log(objectKey);
+            // this.basicData.push()
+        },
         fetchUserFromBackend(){
               axios
                 .get('http://15ff031dccaf.ngrok.io/getemployee')
@@ -200,7 +238,8 @@ export default {
                 .then(response => (this.workTime = response.data))
                 // .then(response => (console.log(response.data)))
                 .catch(error => console.log(error))
-                .finally(() => console.log("Worktime: ", this.workTime.data));
+                // .finally(() => console.log("Worktime: ", this.workTime.data));
+                .finally(() => this.insertLabel());
             },
     }
 }
