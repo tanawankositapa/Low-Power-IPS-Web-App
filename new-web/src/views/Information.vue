@@ -33,10 +33,14 @@
                         <div class="orders-subtable">
                             <h5>เวลาทำงานของ {{slotProps.data.name +" "+ slotProps.data.surname}}</h5>
                              <h3>Vertical</h3>
+                            
                              {{slotpropName = slotProps.data.name + slotProps.data.surname}}
-                             {{test(slotpropName)}}
-                            <Chart type="bar" :data="basicData.SomchaiKositapa" />
-
+                             <!-- {{oloz = basicData.indexOf(slotpropName)}} -->
+                             
+                             {{index = basicData.findIndex(x => x.username === slotpropName)}}
+                             <!-- {{test(index)}} -->
+                            <Chart type="bar" :data="basicData[index]" />
+<!-- เราจะต้องอ้างอิงด้วย slotProps.data.name ก็อาจจะให้มัน insert object เข้าไปใน basicData โดยinsert slotProps.data.name เป็น key เข้าไป -->
                         </div>
                     </template>
                    
@@ -88,14 +92,15 @@ export default {
             workTime:null,
             expandedRowGroups: null,
             slotpropName: "",
-            basicData: {
+            basicData: [
+                // {
                 // username: "",
 				// labels: [],
 				// datasets: [
 				// 	{
 				// 		label: 'My First dataset',
 				// 		backgroundColor: '#42A5F5',
-				// 		data: []
+				// 		data: [28, 48, 40, 19, 86, 27, 90]
 				// 	},
 				// 	{
 				// 		label: 'My Second dataset',
@@ -103,22 +108,40 @@ export default {
 				// 		data: [28, 48, 40, 19, 86, 27, 90]
 				// 	}
 				// ]
-                SomchaiKositapa:{
+                // }
+                {
+                    username: "ArpaKositapa",
                     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                
                     datasets: [
-                    {
-                        label: 'My First dataset',
-                        backgroundColor: '#42A5F5',
-                        data: [65, 59, 80, 81, 56, 55, 40]
-                    },
-                    {
-                        label: 'My Second dataset',
-                        backgroundColor: '#FFA726',
-                        data: [28, 48, 40, 19, 86, 27, 90]
-                    }
-                ]}
-			},
+                        {
+                            label: 'My First dataset',
+                            backgroundColor: '#42A5F5',
+                            data: [65, 59, 80, 81, 56, 55, 40]
+                        },
+                        {
+                            label: 'My Second dataset',
+                            backgroundColor: '#FFA726',
+                            data: [28, 48, 40, 19, 86, 27, 90]
+                        }
+                    ]
+                },
+                {
+                    username: "SomchaiKositapa",
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                        {
+                            label: 'My First dataset',
+                            backgroundColor: '#42A5F5',
+                            data: [65, 59, 80, 81, 56, 55, 40]
+                        },
+                        {
+                            label: 'My Second dataset',
+                            backgroundColor: '#FFA726',
+                            data: [28, 48, 40, 19, 86, 27, 90]
+                        }
+                    ]
+                }
+            ],
             expandedRows: [],
         }
     },
@@ -192,8 +215,8 @@ export default {
                 // this.basicData.datasets.data.push(this.workTime.data[label].total/60)
                 // console.log("Ho ",this.basicData.datasets[0].label);
           }  
-          this.workTime.data[label]._id.name
-          this.basicData.push({})
+        //   this.workTime.data[label]._id.name
+        //   this.basicData.push({})
         //   this.workTime.data[label].total
         //   console.log("OLO", this.basicData.labels);
         },
