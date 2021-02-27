@@ -34,9 +34,9 @@
                             <h5>เวลาทำงานของ {{slotProps.data.name +" "+ slotProps.data.surname}}</h5>
                              <h3>Vertical</h3>
                             
-                             {{slotpropName = slotProps.data.name + slotProps.data.surname}}
+                             {{slotpropName = slotProps.data.name+" " + slotProps.data.surname}}
                              <!-- {{oloz = basicData.indexOf(slotpropName)}} -->
-                             
+                              
                              {{index = basicData.findIndex(x => x.username === slotpropName)}}
                              <!-- {{test(index)}} -->
                             <Chart type="bar" :data="basicData[index]" />
@@ -84,6 +84,8 @@
 // import data from '../../public/data/test.json'
 import axios from 'axios';
 import SideNavbar from '../components/SideNavbar';
+
+
 export default {
     data() {
         return {
@@ -110,7 +112,7 @@ export default {
 				// ]
                 // }
                 {
-                    username: "ArpaKositapa",
+                    username: "Tana Kositapa",
                     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                     datasets: [
                         {
@@ -126,19 +128,14 @@ export default {
                     ]
                 },
                 {
-                    username: "SomchaiKositapa",
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    username: "Somchai Kositapa",
+                    labels: [],
                     datasets: [
                         {
-                            label: 'My First dataset',
+                            label: 'Time in each area in hour(s)',
                             backgroundColor: '#42A5F5',
-                            data: [65, 59, 80, 81, 56, 55, 40]
+                            data: []
                         },
-                        {
-                            label: 'My Second dataset',
-                            backgroundColor: '#FFA726',
-                            data: [28, 48, 40, 19, 86, 27, 90]
-                        }
                     ]
                 }
             ],
@@ -207,15 +204,34 @@ export default {
             return total;
         },
         insertLabel(){
+        // index = basicData.findIndex(x => x.username === slotpropName)
+        // console.log("this work: ",this.workTime.data);
+            var index;
           for(var label in this.workTime.data){
-              if(this.basicData.labels.indexOf(this.workTime.data[label]._id.areaname) == -1){
-                    // console.log("Labels: ", this.workTime.data[label]._id.areaname);
-                    this.basicData.labels.push(this.workTime.data[label]._id.areaname)
+            //   console.log("this work: ",this.workTime.data[label]._id.name) //somchai
+            // console.log("this work: ",this.workTime.data[label]);
+            //   var index = this.workTime.data.findIndex(x => x._id.name === "Somchai Kositapa")
+             index = this.basicData.findIndex(x => x.username === this.workTime.data[label]._id.name)
+            //   var index = this.workTime.data.findIndex(x => x.username === this.workTime.data[label]._id.name)
+            // if(this.workTime.data[label]._id.name)
+            //   console.log("Index: ",index);
+            //   console.log("User: ",this.workTime.data[label]._id.name);
+            //   console.log("Labels: ", this.workTime.data[label]._id.areaname);
+              
+              if(this.basicData[index].labels.indexOf(this.workTime.data[label]._id.areaname) == -1){
+                    console.log("Labelseee: ", this.workTime.data[label]._id.areaname);
+                    // this.basicData[1].labels.push(this.workTime.data[label]._id.areaname)
+                    this.basicData[index].labels.push(this.workTime.data[label]._id.areaname)
                 }
+                // console.log("gg", this.basicData[index].datasets[0].label);
+                this.basicData[index].datasets[0].data.push(this.workTime.data[label].total/3600)
+                // console.log("oo ",this.basicData[index].datasets[0].data);
+                // this.basicData[index].datasets.push({label: 'Dataset',backgroundColor: '#42A5F5',
+                //             data: []})
                 // this.basicData.datasets.data.push(this.workTime.data[label].total/60)
                 // console.log("Ho ",this.basicData.datasets[0].label);
           }  
-        //   this.workTime.data[label]._id.name
+          
         //   this.basicData.push({})
         //   this.workTime.data[label].total
         //   console.log("OLO", this.basicData.labels);
