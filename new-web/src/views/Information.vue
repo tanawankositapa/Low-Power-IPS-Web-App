@@ -111,33 +111,28 @@ export default {
 				// 	}
 				// ]
                 // }
-                {
-                    username: "Tana Kositapa",
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                    datasets: [
-                        {
-                            label: 'My First dataset',
-                            backgroundColor: '#42A5F5',
-                            data: [65, 59, 80, 81, 56, 55, 40]
-                        },
-                        {
-                            label: 'My Second dataset',
-                            backgroundColor: '#FFA726',
-                            data: [28, 48, 40, 19, 86, 27, 90]
-                        }
-                    ]
-                },
-                {
-                    username: "Somchai Kositapa",
-                    labels: [],
-                    datasets: [
-                        {
-                            label: 'Time in each area in hour(s)',
-                            backgroundColor: '#42A5F5',
-                            data: []
-                        },
-                    ]
-                }
+                // {
+                //     username: "Tana Kositapa",
+                //     labels: [],
+                //     datasets: [
+                //         {
+                //             label: 'Time in each area in hour(s)',
+                //             backgroundColor: '#42A5F5',
+                //             data: []
+                //         },
+                //     ]
+                // },
+                // {
+                //     username: "Somchai Kositapa",
+                //     labels: [],
+                //     datasets: [
+                //         {
+                //             label: 'Time in each area in hour(s)',
+                //             backgroundColor: '#42A5F5',
+                //             data: []
+                //         },
+                //     ]
+                // }
             ],
             expandedRows: [],
         }
@@ -203,6 +198,30 @@ export default {
 
             return total;
         },
+        insertData(){
+            console.log("Test: ",this.workTime.data);
+            for(var label in this.workTime.data){
+                console.log("Testist: ",this.workTime.data[label]._id.name);
+                var index = this.basicData.findIndex(x => x.username === this.workTime.data[label]._id.name)
+                console.log("Inde ",index);
+                if (index == -1){
+                        this.basicData.push({
+                        username: this.workTime.data[label]._id.name,
+                        labels:[],
+                        datasets: [
+                        {
+                            label: 'Time in each area in hour(s)',
+                            backgroundColor: '#42A5F5',
+                            data: []
+                        },
+                            ],
+                        })
+                }
+            
+            }
+            console.log("Work time dataset: ",this.basicData);
+            this.insertLabel();
+        },
         insertLabel(){
         // index = basicData.findIndex(x => x.username === slotpropName)
         // console.log("this work: ",this.workTime.data);
@@ -243,7 +262,7 @@ export default {
         },
         fetchUserFromBackend(){
               axios
-                .get('http://15ff031dccaf.ngrok.io/getemployee')
+                .get('http://eb3973450244.ngrok.io/getemployee')
                 // .then(response => (this.info = response))
                 .then(response => (this.user = response.data))
                 // .then(response => (console.log(response.data)))
@@ -263,7 +282,7 @@ export default {
         // }
         fetchAlertFromBackend(){
               axios
-                .get('http://15ff031dccaf.ngrok.io/alert')
+                .get('http://eb3973450244.ngrok.io/alert')
                 // .then(response => (this.info = response))
                 .then(response => (this.alertUser = response.data))
                 // .then(response => (console.log(response.data)))
@@ -272,13 +291,14 @@ export default {
             },
         fetchWorkTimeFromBackend(){
               axios
-                .get('http://15ff031dccaf.ngrok.io/worktime')
+                .get('http://eb3973450244.ngrok.io/worktime')
                 // .then(response => (this.info = response))
                 .then(response => (this.workTime = response.data))
                 // .then(response => (console.log(response.data)))
                 .catch(error => console.log(error))
                 // .finally(() => console.log("Worktime: ", this.workTime.data));
-                .finally(() => this.insertLabel());
+                // .finally(() => this.insertLabel());
+                .finally(() => this.insertData());
             },
     }
 }
