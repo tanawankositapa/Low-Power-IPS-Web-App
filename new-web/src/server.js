@@ -877,6 +877,16 @@ app.get("/worktime", (req,res) =>{
   workForceManage();
 });
 
+app.get("/historyroute", (req,res) =>{
+  locationModel.find({name:name},'xy floor timestamp',{sort: { "timestamp" : 1 }}, function(err, location) {
+    // console.log();
+    if (err) console.log(err);
+    else {
+      // res.json({data:alert});
+      console.log("location: ",location);
+    }
+  }); 
+});
 
 // app.use('/test', require('./server.js'))
 
