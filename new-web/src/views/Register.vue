@@ -6,11 +6,14 @@
     <div class="content-section implementation wrapper">
     <div class="card content">
         <h3>ลงทะเบียนบุคคลใหม่</h3>
+        <!-- dummy tag สำหรับการคำนวณ name = tempname+" "+surname เพราะไม่สามารถไป + กันใน data ได้-->
+        <h3 v-show=false>{{name = tempname+" "+surname}}</h3>
+        
         <form @submit.prevent="sendRegisterDataToBackend">
         <div class="p-field p-grid">
             <label for="firstname3" class="p-col-fixed" style="width:100px">ชื่อ</label>
             <div class="p-col">
-                <InputText id="firstname3" type="text" v-model="name"/>
+                <InputText id="firstname3" type="text" v-model="tempname"/>
             </div>
         </div>
         <div class="p-field p-grid">
@@ -70,8 +73,9 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            name: "",
+            tempname: "",
             surname: "",
+            name: "",
             isemployee: false,
             department: "",
             company: "",
@@ -84,7 +88,7 @@ export default {
     },
     methods: {
         sendRegisterDataToBackend(){
-            axios.post('http://9765d24a760f.ngrok.io/register', {data: this.$data})
+            axios.post('http://eb3973450244.ngrok.io/register', {data: this.$data})
             // axios.post('http://81ffb0a9aeec.ngrok.io/register', {username: this.username, password: this.password})
             .then(response => (this.isLoginSucess = response.data))
             .catch(error => console.log(error))

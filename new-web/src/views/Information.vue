@@ -6,20 +6,20 @@
         
         <div class="content-section implementation">
             <div class="card">
-                <h5>Subheader Grouping</h5>
-                <p>Group customers by their representative.</p>
+                <h5>เวลาที่พนักงานอยู่ในพื้นที่ หน่วยเป็นชั่วโมง</h5>
+                <p>แสดงเป็นกลุ่มตามแผนก</p>
                 <DataTable :value="user.data" rowGroupMode="subheader" groupRowsBy="department"
-                    sortMode="single" sortField="department" :sortOrder="1" v-model:expandedRows="expandedRows" scrollable scrollHeight="400px">
+                    sortMode="single" sortField="department" :sortOrder="1" v-model:expandedRows="expandedRows" scrollable scrollHeight="1100px">
                     <!-- <Column :expander="true" ></Column> -->
                     
                     <Column field="name" header="Name" ></Column>
-                    <Column field="surname" header="surname"></Column>
-                    <Column field="status" header="Status">
+                    
+                    <!-- <Column field="status" header="Status"> -->
                         <!-- <template #body="slotProps">
                             <span :class="'customer-badge status-' + slotProps.data.status">{{slotProps.data.status}}</span>
                         </template> -->
-                    </Column>
-                    <Column field="date" header="Date"></Column>
+                    <!-- </Column> -->
+                    <!-- <Column field="date" header="Date"></Column> -->
                     <Column :expander="true" headerStyle="width: 3rem" />
                    <template #groupheader="slotProps">
                         <!-- <img :alt="slotProps.data.representative.name" :src="'demo/images/avatar/' + slotProps.data.representative.image" width="32" style="vertical-align: middle" /> -->
@@ -31,13 +31,11 @@
                     </template>
                     <template #expansion="slotProps" @click="test">
                         <div class="orders-subtable">
-                            <h5>เวลาทำงานของ {{slotProps.data.name +" "+ slotProps.data.surname}}</h5>
-                             <h3>Vertical</h3>
-                            
-                             {{slotpropName = slotProps.data.name+" " + slotProps.data.surname}}
+                            <h5>เวลาทำงานของ {{slotProps.data.name}}</h5>
+                             {{slotpropName = slotProps.data.name}}
                              <!-- {{oloz = basicData.indexOf(slotpropName)}} -->
                               
-                             {{index = basicData.findIndex(x => x.username === slotpropName)}}
+                             <h3 v-show="false">{{index = basicData.findIndex(x => x.username === slotpropName)}}</h3>
                              <!-- {{test(index)}} -->
                             <Chart type="bar" :data="basicData[index]" />
 <!-- เราจะต้องอ้างอิงด้วย slotProps.data.name ก็อาจจะให้มัน insert object เข้าไปใน basicData โดยinsert slotProps.data.name เป็น key เข้าไป -->

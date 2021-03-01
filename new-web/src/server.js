@@ -39,7 +39,6 @@ var areaModel = mongoose.model("area_table", areaSchema);
 var userSchema = new mongoose.Schema({
   // fence: [],
   name: String,
-  surname: String,
   isemployee: Boolean,
   department: String,
   company: String,
@@ -105,11 +104,8 @@ var url = "/src";
     floor = 5;
   }
   var mac = "E0:D9:DA:22:34:1B";
-
-
-  var name = "Somchai"
-  var surName = "Kositapa"
-  var trackerId = "n00001"
+  var name = "Somchai Kositapa";
+  var trackerId = "n00001";
   // var company = "";
   // var department = "DevOps";
   var department = "Infras";
@@ -248,7 +244,7 @@ app.get("/", async (req, res) => {
             isAlert = true
             
             // var saveData = new alertModel({
-            //   name: name+" "+surName,
+            //   name: name,
             //   trackerid: trackerId,
             //   areaname: tempAreaName,
             //   floor: floor,
@@ -439,11 +435,10 @@ app.get("/", async (req, res) => {
   //   if (err) console.log(err);
   //   else {
   //     // res.render("index.ejs",{todo:todo});  //ส่งตัวแปร local ไปยัง view // pass a local variable to the view
-  //     var name,surName,isEmployee,department,company,trackerId,macAddress
+  //     var name,isEmployee,department,company,trackerId,macAddress
   //     console.log(user);
   //     user.map(function(user) {
   //       name = user.name;
-  //       surName = user.surname;
   //       isEmployee = user.isemployee;
   //       department = user.department;
   //       company = user.company;
@@ -451,14 +446,12 @@ app.get("/", async (req, res) => {
   //       macAddress = user.macaddress;
   //     });
   //     console.log("Name: ",name);
-  //     console.log("Surname: ",surName);
   //     console.log("Is Employee: ",isEmployee);
   //     console.log("Department: ",department);
   //     console.log("Company: ",company);
   //     console.log("Trackerid: ",trackerId);
   //     console.log("Mac Address: ",macAddress);
   //     // res.send(name);
-  //     // res.send(surName);
   //     res.send(user)
   //     // res.sendStatus(200);
   //     // return;
@@ -583,8 +576,8 @@ app.post("/login", (req,res) =>{
 
 app.post("/register", (req,res) =>{
   console.log("full Body: ", req.body);
+  console.log("Hoho: ",req.body.data.name);
   var name = req.body.data.name;
-  var surname = req.body.data.surname;
   var isEmployee = Boolean(req.body.data.isemployee);
   var department = req.body.data.department;
   var company = req.body.data.company;
@@ -609,16 +602,14 @@ app.post("/register", (req,res) =>{
   //     // console.log(username);
   //   }
   // });
-  // userModel.findOneAndUpdate({name: name, surname: surname},{name: name, surname: surname, isemployee: isemployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
-
-    userModel.findOneAndUpdate({name: name, surname: surname},{name: name, surname: surname, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
+  
+    userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
 
     // console.log();
     if (err) console.log(err);
     if (user == null){
         var saveData = new userModel({
           name: name,
-          surname: surname,
           isemployee: isEmployee,
           department: department,
           company: company,
@@ -653,7 +644,6 @@ app.post("/register", (req,res) =>{
 
     // var saveData = new userModel({
     //     name: name,
-    //     surname: surname,
     //     isemployee: isEmployee,
     //     department: department,
     //     company: company,
@@ -775,7 +765,7 @@ app.get("/worktime", (req,res) =>{
               }
               // console.log(diff)
               // var saveData = new workTimeModel({
-              //   name: name+" "+surName,
+              //   name: name,
               //   areaname: pastLocationName,
               //   duration: diff,
               // }).save(function(err, result) {
@@ -823,7 +813,7 @@ app.get("/worktime", (req,res) =>{
     // })));
     // console.log("Max DAET: ",maxDate);
     var database3 = [] , areaWorkTimeName = [], uniqueAreaWorkTimeName = [];
-    await workTimeModel.find({"name" : name+" "+surName}, function(err, user) {
+    await workTimeModel.find({"name" : name}, function(err, user) {
       console.log("User name: ",name);
       console.log("All location of this user: ",user);
       database3 = user;
@@ -877,15 +867,53 @@ app.get("/worktime", (req,res) =>{
   workForceManage();
 });
 
-app.get("/historyroute", (req,res) =>{
-  locationModel.find({name:name},'xy floor timestamp',{sort: { "timestamp" : 1 }}, function(err, location) {
+app.get("/historyroute", async (req,res) =>{
+  var database4 = [];
+  var firstTimeStamp ,secondTimeStamp;
+  await locationModel.find({name:name},'xy floor timestamp',{sort: { "timestamp" : -1 }}, function(err, location) {
     // console.log();
     if (err) console.log(err);
     else {
       // res.json({data:alert});
-      console.log("location: ",location);
+      // console.log("location: ",location);
+      
+      database4 = location
     }
   }); 
+  var lengthOfDatabase4 = Object.keys(database4).length
+  var index = 0, diff;
+  var informationArray = [];
+  while( index < lengthOfDatabase4 -1){
+    diff = 0;
+    // console.log("firstdiff: ",diff);
+    // console.log(database4[index].timestamp);
+    firstTimeStamp = database4[0].timestamp;
+    secondTimeStamp = database4[index+1].timestamp;
+    immediateTimestamp = database4[index].timestamp;
+    // console.log(firstTimeStamp);
+    // console.log(secondTimeStamp);
+    var date1 = new Date(firstTimeStamp);
+    var date2 = new Date(secondTimeStamp);
+    var date3 = new Date(immediateTimestamp);
+    diff = +(Math.round((Math.abs(date1 - date2)/1000/60) + "e+2") + "e-2");
+    diff = Math.floor(diff);
+    diff2 = +(Math.round((Math.abs(date2 - date3)/1000/60) + "e+2") + "e-2");
+    // console.log("diff: ",diff);
+    // console.log("seconddiff: ",diff);
+    if (diff2 >= 1){
+      if(diff <= 60){
+        console.log("diff: ",diff);
+        informationArray.push({
+            xy: database4[index+1].xy,
+            floor:  database4[index+1].floor,
+            past: diff,
+        })
+        res.json({data:informationArray});
+      }
+    }
+    index = index+1
+  }
+  
 });
 
 // app.use('/test', require('./server.js'))
