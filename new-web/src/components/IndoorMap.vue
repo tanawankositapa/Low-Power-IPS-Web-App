@@ -1,5 +1,11 @@
 <template lang="">
   <div>
+    <i class="pi pi-check" @click="toggle" aria:haspopup="true" aria-controls="overlay_panel"></i>
+                <!-- <Button type="button" icon="pi pi-search" :label="selectedProduct ? selectedProduct.name : 'Select a Product'" @click="toggle" aria:haspopup="true" aria-controls="overlay_panel" /> -->
+
+                <OverlayPanel ref="op" appendTo="body" :showCloseIcon="false" id="overlay_panel" style="width: 450px">
+                    <h3>OMG</h3>
+                </OverlayPanel>
     <div class="canvasArea">
         <canvas ref="myCanvas" width="500" height="650"  >
             Your browser does not support the HTML5 canvas tag.</canvas>
@@ -30,6 +36,16 @@ export default {
         responsePosition : {},
         isImageAlreadyDrawData: false,
         // interval: 0,
+        userPosition:[
+          {
+
+          }
+        ],
+        historyPosition:[
+          {
+
+          }
+        ]
     }
   },
    components: {
@@ -42,72 +58,111 @@ export default {
   // },
   // props: ['positionX', 'positionY'],
   methods: {
-    drawMap(floor,posX,posY) {
+    toggle(event) {
+            this.$refs.op.toggle(event);
+        },
+   async drawMap(floor,posX,posY) {
       
                  /* radiomap กว้าง 60 สูง 60
                     โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
                     ดังนั้น อัตราส่วนคือ 1 : 60
                     */
                 // console.log("draw");
-                // console.log(posX);
-                // console.log(posY);
+                console.log(posX);
+                console.log(posY);
+                console.log(floor);
                 // Box width
                 
                 var canvas = this.$refs.myCanvas
                 var context = canvas.getContext("2d");
+
+                var elemLeft = canvas.offsetLeft + canvas.clientLeft,
+                elemTop = canvas.offsetTop + canvas.clientTop,
+                elements = [];
+
+
+                // Add event listener for `click` events.
+                canvas.addEventListener('click', function(event) {
+                    var x = event.pageX - elemLeft,
+                        y = event.pageY - elemTop;
+
+                    // Collision detection between clicked offset and element.
+                    elements.forEach(function(element) {
+                        if (y < element.y + element.r && y > element.y - element.r 
+                            && x < element.x + element.r && x > element.x - element.r) {
+                            alert(element.user);
+                        }
+                    });
+
+                }, false);
+
+                
                 // console.log(canvas);
                 // console.log(typeof(canvas));
                 // var bw = 500;
                 // Box height
-                var bh = 650;
+                // var bh = 650;
                 // Padding
                 // var p = 0;
                 // var isImageAlreadyDrawLocal = this.isImageAlreadyDrawData;
-                var base_image;
-                make_base();
-                // console.log(this.floorplan[0].src);
+                // var base_image;
+                // await make_base();
+                // // console.log(this.floorplan[0].src);
                 
-                function make_base()
-                {
+                // function make_base()
+                // {
                   
-                base_image = new Image();
-                base_image.src = myImage;
-                // base_image.setAttribute('crossOrigin', '');
-                // base_image.crossOrigin = "Anonymous";
+                // base_image = new Image();
+                // base_image.src = myImage;
+                // // base_image.setAttribute('crossOrigin', '');
+                // // base_image.crossOrigin = "Anonymous";
                 
-                  base_image.onload = function(){
-                    // if (!isImageAlreadyDrawLocal){ 
-                      context.drawImage(base_image, 0, 0);
-                      // var imageData = context.getImageData(0,0,500,650);
-                      // base_image.setAttribute('crossOrigin', '');
-                    // }
-                    // if(posX != this.posX || posY != this.posY){
-                      // context.putImageData(imageData, 0, 0);
-                      context.beginPath();
-                      context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
-                      context.fillStyle = 'red';
-                      context.fill();
+                //   base_image.onload = function(){
+                //     // if (!isImageAlreadyDrawLocal){ 
+                //       context.drawImage(base_image, 0, 0);
+                //       // var imageData = context.getImageData(0,0,500,650);
+                //       // base_image.setAttribute('crossOrigin', '');
+                //     // }
+                //     // if(posX != this.posX || posY != this.posY){
+                //       // context.putImageData(imageData, 0, 0);
+                //       context.beginPath();
+                //       context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
+                //       context.fillStyle = 'red';
+                //       context.fill();
+                //       context.lineWidth = 1;
+                //       context.strokeStyle = '#003300';
+                //       context.stroke();
+                //       // context.clearRect(0, 0, 500, 650);
+                //       // this.isImageAlreadyDraw = true;
+                      
+                //   // }
+                //       }
+                // } 
+                this.isImageAlreadyDrawData = true;
+                // Add element.
+                elements.push({
+                    colour: '#05EFFF',
+                    x: 150,
+                    y: 100,
+                    r: 20,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: "Somchai Kositapa",
+                });
+
+                elements.forEach(function(element){
+                    context.fillStyle = element.colour;
+                    // context.fillRect(element.left, element.top, element.width, element.height);
+                    context.beginPath();
+                    context.arc(element.x, element.y, element.r, element.sAngle, element.eAngle, element.counterclockwise);
+                    context.fill();
                       context.lineWidth = 1;
                       context.strokeStyle = '#003300';
                       context.stroke();
-                      // context.clearRect(0, 0, 500, 650);
-                      // this.isImageAlreadyDraw = true;
-                      
-                  // }
-                      }
-                  
-                } 
-                this.isImageAlreadyDrawData = true;
-
+                });
             },
-            // getPredictionData(position){
-            //     this.posX = position[0];
-            //     this.posY = position[1];
-            //     console.log("PosX: ",this.posX);
-            //     console.log("PosY: ",this.posY);
-            //     this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
-            //     // console.log(this.posX);
-            // },
+            
             
             getPredictionData(){
                this.posX = this.responsePosition[0];

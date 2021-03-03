@@ -603,60 +603,60 @@ app.post("/register", (req,res) =>{
   //   }
   // });
   
-    userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
+    // userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
 
-    // console.log();
-    if (err) console.log(err);
-    if (user == null){
-        var saveData = new userModel({
-          name: name,
-          isemployee: isEmployee,
-          department: department,
-          company: company,
-          trackerid: trackerId,
-          macaddress: macaddress,
-      }).save(function(err, result) {
-        if (err) throw err;
-        if (result) {
+    // // console.log();
+    // if (err) console.log(err);
+    // if (user == null){
+    //     var saveData = new userModel({
+    //       name: name,
+    //       isemployee: isEmployee,
+    //       department: department,
+    //       company: company,
+    //       trackerid: trackerId,
+    //       macaddress: macaddress,
+    //   }).save(function(err, result) {
+    //     if (err) throw err;
+    //     if (result) {
           
-          console.log("Save Complete");
-          console.log(result);
-        }
-      });
-    }
-    else {
-      console.log("Update data complete!");
-      console.log("User: ",user);
-      // if (user == null){
-      //   console.log("Credential failed");
-      //   res.send(false);
-      // }else{
-      //   console.log("Login Success");
-      //   res.send(true);
-      // }
-      // console.log("Area Name: ",tempLocationName);
-      // console.log("Hoho: ",username);
-      // var objectLength = Object.keys(username).length;
-      // console.log("Number of People: ",objectLength);
-      // console.log(username);
-    }
-    });
-
-    // var saveData = new userModel({
-    //     name: name,
-    //     isemployee: isEmployee,
-    //     department: department,
-    //     company: company,
-    //     trackerid: trackerId,
-    //     macaddress: macaddress,
-    // }).save(function(err, result) {
-    //   if (err) throw err;
-    //   if (result) {
-        
-    //     console.log("Save Complete");
-    //     console.log(result);
-    //   }
+    //       console.log("Save Complete");
+    //       console.log(result);
+    //     }
+    //   });
+    // }
+    // else {
+    //   console.log("Update data complete!");
+    //   console.log("User: ",user);
+    //   // if (user == null){
+    //   //   console.log("Credential failed");
+    //   //   res.send(false);
+    //   // }else{
+    //   //   console.log("Login Success");
+    //   //   res.send(true);
+    //   // }
+    //   // console.log("Area Name: ",tempLocationName);
+    //   // console.log("Hoho: ",username);
+    //   // var objectLength = Object.keys(username).length;
+    //   // console.log("Number of People: ",objectLength);
+    //   // console.log(username);
+    // }
     // });
+
+    // // var saveData = new userModel({
+    // //     name: name,
+    // //     isemployee: isEmployee,
+    // //     department: department,
+    // //     company: company,
+    // //     trackerid: trackerId,
+    // //     macaddress: macaddress,
+    // // }).save(function(err, result) {
+    // //   if (err) throw err;
+    // //   if (result) {
+        
+    // //     console.log("Save Complete");
+    // //     console.log(result);
+    // //   }
+    // // });
   
 });
 
@@ -870,12 +870,12 @@ app.get("/worktime", (req,res) =>{
 app.get("/historyroute", async (req,res) =>{
   var database4 = [];
   var firstTimeStamp ,secondTimeStamp;
-  await locationModel.find({name:name},'xy floor timestamp',{sort: { "timestamp" : -1 }}, function(err, location) {
+  await locationModel.find({name:name},'xy floor timestamp name',{sort: { "timestamp" : -1 }}, function(err, location) {
     // console.log();
     if (err) console.log(err);
     else {
       // res.json({data:alert});
-      // console.log("location: ",location);
+      console.log("location: ",location);
       
       database4 = location
     }
@@ -900,6 +900,7 @@ app.get("/historyroute", async (req,res) =>{
     diff2 = +(Math.round((Math.abs(date2 - date3)/1000/60) + "e+2") + "e-2");
     // console.log("diff: ",diff);
     // console.log("seconddiff: ",diff);
+    console.log(database4[index+1]);
     if (diff2 >= 1){
       if(diff <= 60){
         console.log("diff: ",diff);
@@ -907,13 +908,15 @@ app.get("/historyroute", async (req,res) =>{
             xy: database4[index+1].xy,
             floor:  database4[index+1].floor,
             past: diff,
+            name: database4[index+1].name,
         })
-        res.json({data:informationArray});
+        
       }
     }
     index = index+1
   }
-  
+  console.log(informationArray);
+  res.json({data:informationArray});
 });
 
 // app.use('/test', require('./server.js'))
