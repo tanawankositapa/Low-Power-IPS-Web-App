@@ -1,14 +1,25 @@
 <template lang="">
-  <div>
-    <i class="pi pi-check" @click="toggle" aria:haspopup="true" aria-controls="overlay_panel"></i>
-                <!-- <Button type="button" icon="pi pi-search" :label="selectedProduct ? selectedProduct.name : 'Select a Product'" @click="toggle" aria:haspopup="true" aria-controls="overlay_panel" /> -->
 
-                <OverlayPanel ref="op" appendTo="body" :showCloseIcon="false" id="overlay_panel" style="width: 450px">
-                    <h3>OMG</h3>
-                </OverlayPanel>
+  <div>
+   
+               
+                <Dialog header="ข้อมูลบุคคล" v-model:visible="display" :style="{width: '50vw'}">
+                    <p>{{take}} </p>
+                    
+                </Dialog>
+    <!-- <i class="pi pi-check" @click="toggle" ></i> -->
+               
+
+                
     <div class="canvasArea">
         <canvas ref="myCanvas" width="500" height="650"  >
-            Your browser does not support the HTML5 canvas tag.</canvas>
+            Your browser does not support the HTML5 canvas tag.
+            <!-- <OverlayPanel ref="op" appendTo="body" :showCloseIcon="false" id="overlay_panel" style="width: 450px">
+                    <h3>OMG</h3>
+                </OverlayPanel> -->
+                
+                </canvas> 
+               
     </div>
     <div >
       <!-- <neural-model @prediction-data="getPredictionData"></neural-model> -->
@@ -36,16 +47,14 @@ export default {
         responsePosition : {},
         isImageAlreadyDrawData: false,
         // interval: 0,
-        userPosition:[
-          {
-
-          }
-        ],
+        userDetail:[],
         historyPosition:[
           {
 
           }
-        ]
+        ],
+        display: false,
+        take: ""
     }
   },
    components: {
@@ -58,10 +67,11 @@ export default {
   // },
   // props: ['positionX', 'positionY'],
   methods: {
-    toggle(event) {
+    toggle(event,display) {
+      console.log(display);
             this.$refs.op.toggle(event);
         },
-   async drawMap(floor,posX,posY) {
+  async drawMap(floor,posX,posY) {
       
                  /* radiomap กว้าง 60 สูง 60
                     โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
@@ -79,24 +89,32 @@ export default {
                 var elemLeft = canvas.offsetLeft + canvas.clientLeft,
                 elemTop = canvas.offsetTop + canvas.clientTop,
                 elements = [];
-
-
+                // var isToggle =false;
+                
+              
                 // Add event listener for `click` events.
-                canvas.addEventListener('click', function(event) {
+              let vm = this;
+               canvas.addEventListener('click', function(event) {
+          
                     var x = event.pageX - elemLeft,
                         y = event.pageY - elemTop;
-
+                    
                     // Collision detection between clicked offset and element.
                     elements.forEach(function(element) {
                         if (y < element.y + element.r && y > element.y - element.r 
                             && x < element.x + element.r && x > element.x - element.r) {
-                            alert(element.user);
+                            
+                            
+                            // vm.toggle(event,element.user);
+                            vm.display = true;
+                            vm.take = element.user
+                           
                         }
                     });
 
                 }, false);
-
                 
+
                 // console.log(canvas);
                 // console.log(typeof(canvas));
                 // var bw = 500;
