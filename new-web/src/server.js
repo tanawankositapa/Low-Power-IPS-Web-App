@@ -147,7 +147,7 @@ app.get("/", async (req, res) => {
   // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
   const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
   const ypred = prediction.dataSync();
-  // res.send(ypred)
+  res.send(ypred)
   // console.log(ypred);
 
   var database =[];
@@ -503,7 +503,7 @@ app.post("/getval", (req, res) => {
   // console.log("rssi: ",rssi.value);
   // console.log("rssi2: ", req.body.rxInfo[rssi]);
 
-  res.sendStatus(200);
+  // res.sendStatus(200);
   // console.log("ALSO Got Data: ",req.query.event.up);
   // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
   // res.render('index.ejs')

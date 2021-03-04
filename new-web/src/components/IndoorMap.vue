@@ -86,15 +86,32 @@ export default {
                 var canvas = this.$refs.myCanvas
                 var context = canvas.getContext("2d");
 
+                // console.log(canvas);
+                // console.log(typeof(canvas));
+                // var bw = 500;
+                // Box height
+                var bh = 650;
+                // Padding
+                // var p = 0;
+                // var isImageAlreadyDrawLocal = this.isImageAlreadyDrawData;
+                var base_image;
+                await make_base();
+                // console.log(this.floorplan[0].src);
+                 let vm = this;
+                async function make_base()
+                {
+                  
+                base_image = new Image();
+                base_image.src = myImage;
+                // base_image.setAttribute('crossOrigin', '');
+                // base_image.crossOrigin = "Anonymous";
                 var elemLeft = canvas.offsetLeft + canvas.clientLeft,
                 elemTop = canvas.offsetTop + canvas.clientTop,
                 elements = [];
-                // var isToggle =false;
-                
-              
+
                 // Add event listener for `click` events.
-              let vm = this;
-               canvas.addEventListener('click', function(event) {
+               
+                canvas.addEventListener('click', function(event) {
           
                     var x = event.pageX - elemLeft,
                         y = event.pageY - elemTop;
@@ -113,51 +130,43 @@ export default {
                     });
 
                 }, false);
-                
 
-                // console.log(canvas);
-                // console.log(typeof(canvas));
-                // var bw = 500;
-                // Box height
-                // var bh = 650;
-                // Padding
-                // var p = 0;
-                // var isImageAlreadyDrawLocal = this.isImageAlreadyDrawData;
-                // var base_image;
-                // await make_base();
-                // // console.log(this.floorplan[0].src);
-                
-                // function make_base()
-                // {
-                  
-                // base_image = new Image();
-                // base_image.src = myImage;
-                // // base_image.setAttribute('crossOrigin', '');
-                // // base_image.crossOrigin = "Anonymous";
-                
-                //   base_image.onload = function(){
-                //     // if (!isImageAlreadyDrawLocal){ 
-                //       context.drawImage(base_image, 0, 0);
-                //       // var imageData = context.getImageData(0,0,500,650);
-                //       // base_image.setAttribute('crossOrigin', '');
-                //     // }
-                //     // if(posX != this.posX || posY != this.posY){
-                //       // context.putImageData(imageData, 0, 0);
-                //       context.beginPath();
-                //       context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
-                //       context.fillStyle = 'red';
-                //       context.fill();
-                //       context.lineWidth = 1;
-                //       context.strokeStyle = '#003300';
-                //       context.stroke();
-                //       // context.clearRect(0, 0, 500, 650);
-                //       // this.isImageAlreadyDraw = true;
+                  base_image.onload = function(){
+                    // if (!isImageAlreadyDrawLocal){ 
+                      context.drawImage(base_image, 0, 0);
+                      // var imageData = context.getImageData(0,0,500,650);
+                      // base_image.setAttribute('crossOrigin', '');
+                    // }
+                    // if(posX != this.posX || posY != this.posY){
+                      // context.putImageData(imageData, 0, 0);
+                      // context.beginPath();
+                      // context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
+                      // context.arc(150, 100, 20, 0, 2 * Math.PI, false);
+                      // context.fillStyle = 'red';
+                      // context.fill();
+                      // context.lineWidth = 1;
+                      // context.strokeStyle = '#003300';
+                      // context.stroke();
+                      // context.clearRect(0, 0, 500, 650);
+                      // this.isImageAlreadyDraw = true;
                       
-                //   // }
-                //       }
-                // } 
-                this.isImageAlreadyDrawData = true;
-                // Add element.
+                  // }
+
+
+                
+                // var isToggle =false;
+                
+               // Add element.
+                elements.push({
+                    colour: '#05EFFF',
+                    x: posX*52+70,
+                    y: -posY*40+bh-110,
+                    r: 10,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: "Somchai Kositapa",
+                });
                 elements.push({
                     colour: '#05EFFF',
                     x: 150,
@@ -166,7 +175,7 @@ export default {
                     sAngle: 0,
                     eAngle: 2 * Math.PI,
                     counterclockwise: false,
-                    user: "Somchai Kositapa",
+                    user: "Arpa Kositapa",
                 });
 
                 elements.forEach(function(element){
@@ -179,6 +188,68 @@ export default {
                       context.strokeStyle = '#003300';
                       context.stroke();
                 });
+                
+                
+                
+                
+              
+                      }
+                } 
+                
+                // this.isImageAlreadyDrawData = true;
+
+              //   var elemLeft = canvas.offsetLeft + canvas.clientLeft,
+              //   elemTop = canvas.offsetTop + canvas.clientTop,
+              //   elements = [];
+              //   // var isToggle =false;
+                
+              
+              //   // Add event listener for `click` events.
+              // let vm = this;
+              //  canvas.addEventListener('click', function(event) {
+          
+              //       var x = event.pageX - elemLeft,
+              //           y = event.pageY - elemTop;
+                    
+              //       // Collision detection between clicked offset and element.
+              //       elements.forEach(function(element) {
+              //           if (y < element.y + element.r && y > element.y - element.r 
+              //               && x < element.x + element.r && x > element.x - element.r) {
+                            
+                            
+              //               // vm.toggle(event,element.user);
+              //               vm.display = true;
+              //               vm.take = element.user
+                           
+              //           }
+              //       });
+
+              //   }, false);
+
+                // // Add element.
+                // elements.push({
+                //     colour: '#05EFFF',
+                //     x: 150,
+                //     y: 100,
+                //     r: 20,
+                //     sAngle: 0,
+                //     eAngle: 2 * Math.PI,
+                //     counterclockwise: false,
+                //     user: "Somchai Kositapa",
+                // });
+
+                // elements.forEach(function(element){
+                //     context.fillStyle = element.colour;
+                //     // context.fillRect(element.left, element.top, element.width, element.height);
+                //     context.beginPath();
+                //     context.arc(element.x, element.y, element.r, element.sAngle, element.eAngle, element.counterclockwise);
+                //     context.fill();
+                //       context.lineWidth = 1;
+                //       context.strokeStyle = '#003300';
+                //       context.stroke();
+                // });
+
+              
             },
             
             
@@ -203,7 +274,7 @@ export default {
             },
             fetchDataFromBackend(){
               axios
-                .get('http://e97f47d932f8.ngrok.io')
+                .get('http://eb3973450244.ngrok.io')
                 // .then(response => (this.info = response))
                 .then(response => (this.responsePosition = response.data))
                 // .then(response => (console.log(response.data)))
