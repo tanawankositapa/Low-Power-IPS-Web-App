@@ -6,7 +6,7 @@
                     <p v-show="!isDepartmentNull">แผนก {{department}} </p>
                     <p v-show="!isCompanyNull">บริษัท {{company}} </p>
                     <!-- <p>{{value8.code}}</p> -->
-                    <!-- <p>ตำแหน่ง {{this.responsePosition.past}}</p> -->
+                    <p>ตำแหน่ง {{testTime}} นาทีที่ผ่านมา</p>
                     <p >{{drawHistoryRoute()}}</p>
                 </Dialog>
     <!-- <i class="pi pi-check" @click="toggle" ></i> -->
@@ -61,6 +61,7 @@ export default {
         name: "",
         department:"",
         company:"",
+        testTime: 0,
         isCompanyNull: false,
         isDepartmentNull: false,
         value8: null,
@@ -69,6 +70,7 @@ export default {
             {time: 'ตำแหน่งย้อนหลัง 30 นาที', code: '30'},
             {time: 'ตำแหน่งย้อนหลัง 1 ชั่วโมง', code: '60'},
             {time: 'ตำแหน่งย้อนหลัง 1 ชั่วโมง 30 นาที', code: '90'},
+            {time: 'ตำแหน่งอยู่ไม่นาน ตำนานตลอดไป', code: 'infinite'},
         ],
         positionUnderThirtyMin:[
 
@@ -116,7 +118,7 @@ export default {
                     user: vm.responsePosition.name,
                     department: vm.responsePosition.department,
                     company:vm.responsePosition.company,
-                    // past: vm.responsePosition.past,
+                    past: this.historyPosition[index0].past,
               })
           }
         }
@@ -133,7 +135,7 @@ export default {
                     user: vm.responsePosition.name,
                     department: vm.responsePosition.department,
                     company:vm.responsePosition.company,
-                    // past: vm.responsePosition.past,
+                    past: this.historyPosition[index0].past
               })
           }
         }
@@ -150,13 +152,30 @@ export default {
                     user: vm.responsePosition.name,
                     department: vm.responsePosition.department,
                     company:vm.responsePosition.company,
-                    // past: vm.responsePosition.past,
+                    past: this.historyPosition[index0].past
               })
           }
         }
-        if (this.value8.code == '90'){
+        if (this.value8.code == '0'){
           this.elements = [];
           context.clearRect(0, 0, 500, 650);
+        }
+        if (this.value8.code == 'infinite'){
+          // if (this.historyPosition[index0].past <= 90){
+              this.elements.push({
+                    colour: '#6b3d0d',
+                    x: this.historyPosition[index0].xy[0]*52+70,
+                    y: -this.historyPosition[index0].xy[1]*40+bh-110,
+                    r: 10,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: vm.responsePosition.name,
+                    department: vm.responsePosition.department,
+                    company:vm.responsePosition.company,
+                    past: this.historyPosition[index0].past
+              })
+          // }
         }
         
       }
@@ -277,6 +296,7 @@ export default {
                             vm.name = element.user;
                             vm.department = element.department;
                             vm.company = element.company;
+                            vm.testTime = element.past;
                            if (element.company == ""){
                              vm.isCompanyNull = true;
                            }

@@ -908,8 +908,9 @@ app.get("/historyroute", async (req,res) =>{
     // console.log("diff: ",diff);
     // console.log("seconddiff: ",diff);
     console.log(database4[index+1]);
-    if (diff2 >= 1){
-      if(diff <= 60){
+    // if (diff2 >= 1){
+    if (diff2 > 0){
+      // if(diff <= 60){
         console.log("diff: ",diff);
         informationArray.push({
             xy: database4[index+1].xy,
@@ -917,12 +918,12 @@ app.get("/historyroute", async (req,res) =>{
             past: diff,
             name: database4[index+1].name,
         })
-        
-      }
+          
+      // }
     }
     index = index+1
   }
-  console.log(informationArray);
+  console.log("Informarayartion: ",informationArray);
   res.json({data:informationArray});
 });
 
