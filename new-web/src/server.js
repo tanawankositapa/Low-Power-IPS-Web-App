@@ -106,9 +106,10 @@ var url = "/src";
   var mac = "E0:D9:DA:22:34:1B";
   var name = "Somchai Kositapa";
   var trackerId = "n00001";
-  // var company = "";
+  var company = "";
+  var department = "Agile & DevOps";
   // var department = "DevOps";
-  var department = "Infras";
+  // var department = "Infras";
   // var isInsideCompany = true;
   // var fence ="",name,floor,restrictFor;
 
@@ -147,7 +148,13 @@ app.get("/", async (req, res) => {
   // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
   const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
   const ypred = prediction.dataSync();
-  res.send(ypred)
+  // res.send(ypred)
+  res.json({data:{
+    ypred:ypred,
+    name:name,
+    department:department,
+    company:company,
+  }})
   // console.log(ypred);
 
   var database =[];

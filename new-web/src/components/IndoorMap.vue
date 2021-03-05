@@ -1,16 +1,23 @@
 <template lang="">
 
-  <div>
-   
-               
-                <Dialog header="ข้อมูลบุคคล" v-model:visible="display" :style="{width: '50vw'}">
-                    <p>{{take}} </p>
-                    
+                <div> 
+                <Dialog header="ข้อมูลบุคคล" v-model:visible="display" :style="{width: '30vw'}">
+                    <p>คุณ {{name}} </p>
+                    <p v-show="!isDepartmentNull">แผนก {{department}} </p>
+                    <p v-show="!isCompanyNull">บริษัท {{company}} </p>
+                    <!-- <p>{{value8.code}}</p> -->
+                    <!-- <p>ตำแหน่ง {{this.responsePosition.past}}</p> -->
+                    <p >{{drawHistoryRoute()}}</p>
                 </Dialog>
     <!-- <i class="pi pi-check" @click="toggle" ></i> -->
                
 
-                
+                <div class="p-field p-col-12 p-md-4">
+                    <span class="p-float-label">
+                        <Dropdown id="dropdown" v-model="value8" :options="optionsForDropdown" optionLabel="time" />
+                        <label for="dropdown">History</label>
+                    </span>
+                </div>
     <div class="canvasArea">
         <canvas ref="myCanvas" width="500" height="650"  >
             Your browser does not support the HTML5 canvas tag.
@@ -49,12 +56,32 @@ export default {
         // interval: 0,
         userDetail:[],
         historyPosition:[
-          {
-
-          }
         ],
         display: false,
-        take: ""
+        name: "",
+        department:"",
+        company:"",
+        isCompanyNull: false,
+        isDepartmentNull: false,
+        value8: null,
+        optionsForDropdown:[
+            {time: 'ล้างข้อมูล', code: '0'},
+            {time: 'ตำแหน่งย้อนหลัง 30 นาที', code: '30'},
+            {time: 'ตำแหน่งย้อนหลัง 1 ชั่วโมง', code: '60'},
+            {time: 'ตำแหน่งย้อนหลัง 1 ชั่วโมง 30 นาที', code: '90'},
+        ],
+        positionUnderThirtyMin:[
+
+        ],
+        positionUnderOneHour:[
+
+        ],
+        positionUnderOneHourAndHalf:[
+
+        ],
+        elements:[
+
+        ],
     }
   },
    components: {
@@ -71,6 +98,129 @@ export default {
       console.log(display);
             this.$refs.op.toggle(event);
         },
+    drawHistoryRoute(){
+      console.log(this.historyPosition);
+      let vm = this;
+      var bh = 650;
+      for(var index0 in this.historyPosition){
+        if (this.value8.code == '30'){
+          if (this.historyPosition[index0].past <= 30){
+              this.elements.push({
+                    colour: '#f48616',
+                    x: this.historyPosition[index0].xy[0]*52+70,
+                    y: -this.historyPosition[index0].xy[1]*40+bh-110,
+                    r: 10,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: vm.responsePosition.name,
+                    department: vm.responsePosition.department,
+                    company:vm.responsePosition.company,
+                    // past: vm.responsePosition.past,
+              })
+          }
+        }
+        if (this.value8.code == '60'){
+          if (this.historyPosition[index0].past <= 60){
+              this.elements.push({
+                    colour: '#b06315',
+                    x: this.historyPosition[index0].xy[0]*52+70,
+                    y: -this.historyPosition[index0].xy[1]*40+bh-110,
+                    r: 10,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: vm.responsePosition.name,
+                    department: vm.responsePosition.department,
+                    company:vm.responsePosition.company,
+                    // past: vm.responsePosition.past,
+              })
+          }
+        }
+        if (this.value8.code == '90'){
+          if (this.historyPosition[index0].past <= 90){
+              this.elements.push({
+                    colour: '#6b3d0d',
+                    x: this.historyPosition[index0].xy[0]*52+70,
+                    y: -this.historyPosition[index0].xy[1]*40+bh-110,
+                    r: 10,
+                    sAngle: 0,
+                    eAngle: 2 * Math.PI,
+                    counterclockwise: false,
+                    user: vm.responsePosition.name,
+                    department: vm.responsePosition.department,
+                    company:vm.responsePosition.company,
+                    // past: vm.responsePosition.past,
+              })
+          }
+        }
+        if (this.value8.code == '90'){
+          this.elements = [];
+          context.clearRect(0, 0, 500, 650);
+        }
+        
+      }
+      var canvas = this.$refs.myCanvas
+      var context = canvas.getContext("2d");
+      vm.elements.forEach(function(element){
+                    context.fillStyle = element.colour;
+                    // context.fillRect(element.left, element.top, element.width, element.height);
+                    context.beginPath();
+                    context.arc(element.x, element.y, element.r, element.sAngle, element.eAngle, element.counterclockwise);
+                    context.fill();
+                      context.lineWidth = 1;
+                      context.strokeStyle = '#003300';
+                      context.stroke();
+                });
+        // if (this.value8.code == '30'){
+        //   // alert("Selec 30 min");
+        //   for(var index0 in this.historyPosition){
+        //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
+        //     if (this.historyPosition[index0].past <= 30){
+        //       this.positionUnderThirtyMin.push({
+        //         xy: this.this.historyPosition[index0].xy,
+        //         past: this.historyPosition[index0].past,
+        //         floor: this.historyPosition[index0].floor,
+        //         name: this.historyPosition[index0].name,
+        //       })
+        //     }
+        //   }
+        //   console.log(this.positionUnderThirtyMin);
+        // }
+        // if (this.value8.code == '60'){
+        //   // alert("Selec 60 min");
+        //   for(var index1 in this.historyPosition){
+        //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
+        //     if (this.historyPosition[index1].past > 30 && this.historyPosition[index1].past <=60){
+        //       this.positionUnderOneHour.push({
+        //         xy: this.this.historyPosition[index1].xy,
+        //         past: this.historyPosition[index1].past,
+        //         floor: this.historyPosition[index1].floor,
+        //         name: this.historyPosition[index1].name,
+        //       })
+        //     }
+        //   }
+        //   console.log(this.positionUnderOneHour);
+        // }
+        // if (this.value8.code == '90'){
+        //   // alert("Selec 90 min");
+        //   for(var index2 in this.historyPosition){
+        //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
+        //     if (this.historyPosition[index2].past > 60 && this.historyPosition[index2].past <=90){
+        //       this.positionUnderOneHourAndHalf.push({
+        //         xy: this.this.historyPosition[index2].xy,
+        //         past: this.historyPosition[index2].past,
+        //         floor: this.historyPosition[index2].floor,
+        //         name: this.historyPosition[index2].name,
+        //       })
+        //     }
+        //   }
+        //   console.log(this.positionUnderOneHourAndHalf);
+        // }
+        // else{
+        //   alert(this.value8.code);
+        // }
+    },
   async drawMap(floor,posX,posY) {
       
                  /* radiomap กว้าง 60 สูง 60
@@ -106,8 +256,8 @@ export default {
                 // base_image.setAttribute('crossOrigin', '');
                 // base_image.crossOrigin = "Anonymous";
                 var elemLeft = canvas.offsetLeft + canvas.clientLeft,
-                elemTop = canvas.offsetTop + canvas.clientTop,
-                elements = [];
+                elemTop = canvas.offsetTop + canvas.clientTop;
+                // elements = [];
 
                 // Add event listener for `click` events.
                
@@ -117,15 +267,22 @@ export default {
                         y = event.pageY - elemTop;
                     
                     // Collision detection between clicked offset and element.
-                    elements.forEach(function(element) {
+                    vm.elements.forEach(function(element) {
                         if (y < element.y + element.r && y > element.y - element.r 
                             && x < element.x + element.r && x > element.x - element.r) {
                             
                             
                             // vm.toggle(event,element.user);
                             vm.display = true;
-                            vm.take = element.user
-                           
+                            vm.name = element.user;
+                            vm.department = element.department;
+                            vm.company = element.company;
+                           if (element.company == ""){
+                             vm.isCompanyNull = true;
+                           }
+                           if (element.department == ""){
+                             vm.isDepartmentNull = true;
+                           }
                         }
                     });
 
@@ -157,7 +314,7 @@ export default {
                 // var isToggle =false;
                 
                // Add element.
-                elements.push({
+                vm.elements.push({
                     colour: '#05EFFF',
                     x: posX*52+70,
                     y: -posY*40+bh-110,
@@ -165,20 +322,24 @@ export default {
                     sAngle: 0,
                     eAngle: 2 * Math.PI,
                     counterclockwise: false,
-                    user: "Somchai Kositapa",
+                    user: vm.responsePosition.name,
+                    department: vm.responsePosition.department,
+                    company:vm.responsePosition.company,
                 });
-                elements.push({
-                    colour: '#05EFFF',
-                    x: 150,
-                    y: 100,
-                    r: 20,
-                    sAngle: 0,
-                    eAngle: 2 * Math.PI,
-                    counterclockwise: false,
-                    user: "Arpa Kositapa",
-                });
+                // console.log("oMG: ",vm.responsePosition.name);
+                // console.log("Oeq: ",vm.responsePosition);
+                // elements.push({
+                //     colour: '#05EFFF',
+                //     x: 150,
+                //     y: 100,
+                //     r: 20,
+                //     sAngle: 0,
+                //     eAngle: 2 * Math.PI,
+                //     counterclockwise: false,
+                //     user: "Arpa Kositapa",
+                // });
 
-                elements.forEach(function(element){
+                vm.elements.forEach(function(element){
                     context.fillStyle = element.colour;
                     // context.fillRect(element.left, element.top, element.width, element.height);
                     context.beginPath();
@@ -254,8 +415,8 @@ export default {
             
             
             getPredictionData(){
-               this.posX = this.responsePosition[0];
-                  this.posY = this.responsePosition[1];
+               this.posX = this.responsePosition.ypred[0];
+                  this.posY = this.responsePosition.ypred[1];
                   console.log("PosX: ",this.posX);
                   console.log("PosY: ",this.posY);
                   this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว 
@@ -276,10 +437,19 @@ export default {
               axios
                 .get('http://eb3973450244.ngrok.io')
                 // .then(response => (this.info = response))
-                .then(response => (this.responsePosition = response.data))
-                // .then(response => (console.log(response.data)))
+                .then(response => (this.responsePosition = response.data.data))
+                // .then(response => (console.log("OMG",response.data.data)))
                 .catch(error => console.log(error))
                 .finally(() => this.getPredictionData())
+            },
+            fetchHistoryFromBackend(){
+              axios
+                .get('http://eb3973450244.ngrok.io/historyroute')
+                // .then(response => (this.info = response))
+                .then(response => (this.historyPosition = response.data.data))
+                // .then(response => (console.log("OMG",response.data.data)))
+                .catch(error => console.log(error))
+                // .finally(() => console.log(this.historyPosition))
             }
   },
   created() {
@@ -291,7 +461,8 @@ export default {
     /** Fetch ข้อมูลมาจากฝั่ง Backend ด้วย public url 
      * แบบนี้จริงอยู่ที่ไม่ Secure แต่ในอนาคตเราสามารถ deploy ลงบน cluster อย่าง kubernetes แล้วใช้ internal service ip แทนได้ 
     */
-    this.fetchDataFromBackend()
+    this.fetchDataFromBackend();
+    this.fetchHistoryFromBackend();
   },
   // updated() {
   //   axios
