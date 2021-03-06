@@ -7,15 +7,19 @@
                     <p v-show="!isCompanyNull">บริษัท {{company}} </p>
                     <!-- <p>{{value8.code}}</p> -->
                     <p>ตำแหน่ง {{testTime}} นาทีที่ผ่านมา</p>
-                    <p >{{drawHistoryRoute()}}</p>
+                    <!-- <p >{{drawHistoryRoute()}}</p> -->
                 </Dialog>
     <!-- <i class="pi pi-check" @click="toggle" ></i> -->
                
 
                 <div class="p-field p-col-12 p-md-4">
                     <span class="p-float-label">
-                        <Dropdown id="dropdown" v-model="value8" :options="optionsForDropdown" optionLabel="time" />
-                        <label for="dropdown">History</label>
+                        <Dropdown id="dropdown" v-model="value8" :options="optionsForDropdown" optionLabel="time" @click="drawHistoryRoute" />
+                        <label for="dropdown">ประวัติตำแหน่ง</label>
+                    </span>
+                    <span class="p-float-label">
+                        <Dropdown id="dropdown" v-model="value8" :options="optionsForDropdown" optionLabel="time" @click="drawHistoryRoute" />
+                        <label for="dropdown">เลือกบุคคล</label>
                     </span>
                 </div>
     <div class="canvasArea">
@@ -84,6 +88,20 @@ export default {
         elements:[
 
         ],
+        olements:[
+            {
+	x:2,
+    y:3
+},
+{
+	x:4,
+    y:4.9
+},
+{
+	x:5,
+    y:16
+},
+        ],
     }
   },
    components: {
@@ -101,7 +119,8 @@ export default {
             this.$refs.op.toggle(event);
         },
     drawHistoryRoute(){
-      console.log(this.historyPosition);
+      // alert('click', this.value8.code)
+      // console.log(this.historyPosition);
       let vm = this;
       var bh = 650;
       for(var index0 in this.historyPosition){
@@ -181,7 +200,10 @@ export default {
       }
       var canvas = this.$refs.myCanvas
       var context = canvas.getContext("2d");
+      context.moveTo(vm.posX*52+70, -vm.posY*40+bh-110);
+      // var tempX,tempY;
       vm.elements.forEach(function(element){
+                    // if(tempX != element.x){
                     context.fillStyle = element.colour;
                     // context.fillRect(element.left, element.top, element.width, element.height);
                     context.beginPath();
@@ -190,7 +212,33 @@ export default {
                       context.lineWidth = 1;
                       context.strokeStyle = '#003300';
                       context.stroke();
+
+                      // context.beginPath();
+                      // context.moveTo(vm.posX*52+70, -vm.posY*40+bh-110);
+                      // context.moveTo(element.x,element.y);
+                      // context.lineTo(element.x,element.y);
+                      // context.stroke();
+                      // console.log("tempX: ",tempX);
+                      // console.log("tempY: ",tempY);
+                      // console.log("elementalX: ",element.x);
+                      // console.log("elementalY: ",element.y);
+                      // tempX = element.x;
+                      // tempY = element.y;
+                      // console.log("tempX2: ",tempX);
+                      // console.log("tempY2: ",tempY);
+                    // }
+                    
                 });
+
+        context.beginPath();
+        vm.elements.forEach(element =>{
+          console.log("elementalX: ",element.x);
+            console.log("elementalY: ",element.y);
+            
+            context.lineTo(element.x,element.y);
+            
+          });
+          context.stroke();
         // if (this.value8.code == '30'){
         //   // alert("Selec 30 min");
         //   for(var index0 in this.historyPosition){
@@ -310,7 +358,7 @@ export default {
 
                   base_image.onload = function(){
                     // if (!isImageAlreadyDrawLocal){ 
-                      context.drawImage(base_image, 0, 0);
+                      // context.drawImage(base_image, 0, 0);
                       // var imageData = context.getImageData(0,0,500,650);
                       // base_image.setAttribute('crossOrigin', '');
                     // }
@@ -455,7 +503,7 @@ export default {
             },
             fetchDataFromBackend(){
               axios
-                .get('http://eb3973450244.ngrok.io')
+                .get('http://d4744b104fb8.ngrok.io')
                 // .then(response => (this.info = response))
                 .then(response => (this.responsePosition = response.data.data))
                 // .then(response => (console.log("OMG",response.data.data)))
@@ -464,7 +512,7 @@ export default {
             },
             fetchHistoryFromBackend(){
               axios
-                .get('http://eb3973450244.ngrok.io/historyroute')
+                .get('http://d4744b104fb8.ngrok.io/historyroute')
                 // .then(response => (this.info = response))
                 .then(response => (this.historyPosition = response.data.data))
                 // .then(response => (console.log("OMG",response.data.data)))
