@@ -115,7 +115,7 @@ var url = "/src";
 
   var rssi = [
     // [-48, -61, -65, -67, -68, -82], //Position (1,1)
-    [-54, -62, -62, -69, -70, -75],
+    [-54, -62, -62, -69, -70, -75], //Position (2,1)
     // [-48, -67, -53, -63, -72, -71],
     // [-51, -70, -65, -83, -69, -89],
   ];
@@ -877,7 +877,7 @@ app.get("/worktime", (req,res) =>{
 app.get("/historyroute", async (req,res) =>{
   var database4 = [];
   var firstTimeStamp ,secondTimeStamp;
-  await locationModel.find({name:name},'xy floor timestamp name',{sort: { "timestamp" : -1 }}, function(err, location) {
+  await locationModel.find({},'xy floor timestamp name',{sort: { "timestamp" : -1 }}, function(err, location) {
     // console.log();
     if (err) console.log(err);
     else {
@@ -907,9 +907,9 @@ app.get("/historyroute", async (req,res) =>{
     diff2 = +(Math.round((Math.abs(date2 - date3)/1000/60) + "e+2") + "e-2");
     // console.log("diff: ",diff);
     // console.log("seconddiff: ",diff);
-    console.log(database4[index+1]);
+    // console.log(database4[index+1]);
     // if (diff2 >= 1){
-    if (diff2 > 0){
+    // if (diff2 > 0){
       // if(diff <= 60){
         console.log("diff: ",diff);
         informationArray.push({
@@ -920,7 +920,7 @@ app.get("/historyroute", async (req,res) =>{
         })
           
       // }
-    }
+    // }
     index = index+1
   }
   console.log("Informarayartion: ",informationArray);

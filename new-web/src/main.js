@@ -24,6 +24,7 @@ import ToastService from "primevue/toastservice";
 import Chart from 'primevue/chart';
 import OverlayPanel from "primevue/overlaypanel";
 import Dropdown from 'primevue/dropdown';
+import Listbox from 'primevue/listbox';
 import router from './router'
 
 const app = createApp(App);
@@ -46,4 +47,5 @@ app.component("Toast", Toast);
 app.component("Chart", Chart);
 app.component("OverlayPanel", OverlayPanel);
 app.component("Dropdown",Dropdown);
+app.component("Listbox",Listbox);
 app.mount('#app');
