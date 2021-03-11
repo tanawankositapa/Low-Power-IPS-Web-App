@@ -15,7 +15,7 @@ const routes = [
     path: "/map",
     name: "Map",
     component: Map,
-    meta: {requiresAuth: true}
+    // meta: {requiresAuth: true}
     
   },
   {

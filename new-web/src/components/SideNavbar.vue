@@ -10,7 +10,7 @@
                     <div class="invisBox">
 
                     </div>
-                    <human-avatar></human-avatar>
+                    <!-- <human-avatar></human-avatar> -->
                     <!-- <h3 class="text">Left Sidebar</h3> -->
                     <div class="invisBox">
 
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import HumanAvatar from './HumanAvatar'
+// import HumanAvatar from './HumanAvatar'
 export default {
     data() {
         return {
@@ -42,7 +42,7 @@ export default {
         }
     },
     components: {
-        HumanAvatar,
+        // HumanAvatar,
     },
     methods: {
         logoutHandle(){

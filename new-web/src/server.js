@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-redeclare */
+/* eslint-disable no-unused-vars */
 const tfjs = require("@tensorflow/tfjs");
 const express = require("express");
 const app = express();

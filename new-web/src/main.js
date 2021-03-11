@@ -25,6 +25,7 @@ import Chart from 'primevue/chart';
 import OverlayPanel from "primevue/overlaypanel";
 import Dropdown from 'primevue/dropdown';
 import Listbox from 'primevue/listbox';
+import MultiSelect from 'primevue/multiselect';
 import router from './router'
 
 const app = createApp(App);
@@ -48,4 +49,5 @@ app.component("Chart", Chart);
 app.component("OverlayPanel", OverlayPanel);
 app.component("Dropdown",Dropdown);
 app.component("Listbox",Listbox);
+app.component("MultiSelect", MultiSelect);
 app.mount('#app');

@@ -10,10 +10,10 @@
       <p v-show="!isCompanyNull">บริษัท {{ company }}</p>
       <!-- <p>{{value8.code}}</p> -->
       <p>ตำแหน่ง {{ testTime }} นาทีที่ผ่านมา</p>
-      <!-- <p >{{drawHistoryRoute()}}</p> -->
+      <p>{{ checkElements() }}</p>
     </Dialog>
     <!-- <i class="pi pi-check" @click="toggle" ></i> -->
-
+    <!-- <p >{{drawHistoryRoute()}}</p> -->
     <div class="p-field p-col-12 p-md-4">
       <span class="p-float-label">
         <Dropdown
@@ -37,7 +37,6 @@
         <!-- <Listbox v-model="value9" :options="userOptionsForDropdown" :multiple="true" :filter="true" optionLabel="name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="เลือกบุคคล">
           
         </Listbox> -->
-        
       </span>
     </div>
     <div class="canvasArea">
@@ -142,29 +141,86 @@ export default {
         }
       });
 
-      console.log("Test: ", this.userOptionsForDropdown);
+      // console.log("Test: ", this.userOptionsForDropdown);
     },
-    canvas_arrow(context, fromx, fromy, tox, toy) {
-      var headlen = 10; // length of head in pixels
-      var dx = tox - fromx;
-      var dy = toy - fromy;
+    drawLineWithArrows(x0, y0, x1, y1, aWidth, aLength, arrowStart, arrowEnd) {
+      var canvas = this.$refs.myCanvas;
+      var ctx = canvas.getContext("2d");
+      var dx = x1 - x0;
+      var dy = y1 - y0;
       var angle = Math.atan2(dy, dx);
-      context.moveTo(fromx, fromy);
-      context.lineTo(tox, toy);
-      context.lineTo(
-        tox - headlen * Math.cos(angle - Math.PI / 6),
-        toy - headlen * Math.sin(angle - Math.PI / 6)
-      );
-      context.moveTo(tox, toy);
-      context.lineTo(
-        tox - headlen * Math.cos(angle + Math.PI / 6),
-        toy - headlen * Math.sin(angle + Math.PI / 6)
-      );
+      var length = Math.sqrt(dx * dx + dy * dy);
+      //
+      ctx.translate(x0, y0);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(length, 0);
+      if (arrowStart) {
+        ctx.moveTo(aLength, -aWidth);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(aLength, aWidth);
+      }
+      if (arrowEnd) {
+        ctx.moveTo(length - aLength, -aWidth);
+        ctx.lineTo(length, 0);
+        ctx.lineTo(length - aLength, aWidth);
+      }
+      //
+      ctx.stroke();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    checkElements() {
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
+      // alert("WTF");
+      // console.log("Test Element: ",this.elements);
+      var objectLength = Object.keys(this.elements).length - 1;
+      for (var index in this.elements) {
+        index = parseInt(index);
+        if (index < objectLength) {
+          // console.log("Testis: ",index);
+          console.log("Test Element: ", this.elements[index].past);
+          // console.log("Oblength: ",objectLength);
+          // console.log("Index: ",typeof(index));
+          var currentPast, nextPast, currentX, currentY, nextX, nextY;
+          currentPast = this.elements[index].past;
+          nextPast = this.elements[index + 1].past;
+          currentX = this.elements[index].x;
+          nextX = this.elements[index + 1].x;
+          currentY = this.elements[index].y;
+          nextY = this.elements[index + 1].y;
+          console.log("CurrentContext: ", context);
+          console.log("CurrentPast: ", currentPast);
+          console.log("NextPast: ", nextPast);
+          console.log("CurrentX: ", currentX);
+          console.log("NextX: ", nextX);
+          console.log("CurrentY: ", currentY);
+          console.log("NextY: ", nextY);
+          if (currentX != nextX || currentY != nextY) {
+            // this.canvas_arrow(context,currentX,currentY,nextX,nextY)
+            // this.drawLineWithArrows(currentX,currentY,nextX,nextY,5,8,false,true);
+
+            /**reverse logic */
+            this.drawLineWithArrows(
+              nextX,
+              nextY,
+              currentX,
+              currentY,
+              5,
+              8,
+              false,
+              true
+            );
+            // console.log("Prepare for chaos");
+          }
+        }
+      }
     },
     drawHistoryRoute() {
       // alert('click', this.value8.code)
       // alert('click', this.value9.code)
-      console.log('click', this.value9);
+      // console.log('click', this.value9);
       // console.log(this.historyPosition);
       let vm = this;
       var bh = 650;
@@ -178,7 +234,7 @@ export default {
               // this.name = vm.responsePosition.name;
               // console.log("Name:",vm.responsePosition.name);
               this.elements.push({
-                colour: "#f48616",
+                colour: "#55BDCA",
                 x: this.historyPosition[index0].xy[0] * 52 + 70,
                 y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                 r: 10,
@@ -196,7 +252,7 @@ export default {
             if (this.historyPosition[index0].past <= 60) {
               this.name = vm.responsePosition.name;
               this.elements.push({
-                colour: "#b06315",
+                colour: "#96FFFF",
                 x: this.historyPosition[index0].xy[0] * 52 + 70,
                 y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                 r: 10,
@@ -214,7 +270,7 @@ export default {
             if (this.historyPosition[index0].past <= 90) {
               this.name = vm.responsePosition.name;
               this.elements.push({
-                colour: "#6b3d0d",
+                colour: "#C8EFE9",
                 x: this.historyPosition[index0].xy[0] * 52 + 70,
                 y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                 r: 10,
@@ -234,6 +290,7 @@ export default {
             // console.log("After: ",this.elements);
             context.clearRect(0, 0, canvas.width, canvas.height);
             // vm.drawMap(6,this.posX,this.posY);
+            this.value9 = null
             vm.initMap();
           }
           if (this.value8.code == "infinite") {
@@ -335,92 +392,16 @@ export default {
         },
         false
       );
-      //   context.beginPath();
-      // vm.elements.forEach(element =>{
-      //   // console.log(element);
-      //   if(tempX != element.x && tempY != element.y){
-      //       var from = {
-      //       x:tempX,
-      //       y:tempY
-      //     }
-      //     tempX = element.x;
-      //     tempY = element.y;
-      //       var to = {
-      //       x:tempX,
-      //       y:tempY
-      //     }
-      //               // vm.drawArrowhead(context, from, to, 10)
-      //               console.log('fromX: ',from.x);
-      //               console.log('fromY: ',from.y);
-      //               console.log('toX: ',to.x);
-      //               console.log('toY: ',to.y);
-      //       vm.canvas_arrow(context,from.x,from.y,to.x,to.y);
-      //       // vm.canvas_arrow(context, 10, 30, 200, 150);
-      //       // vm.canvas_arrow(context, 100, 200, 400, 50);
-      //       // vm.canvas_arrow(context, 200, 30, 10, 150);
-      //       // vm.canvas_arrow(context, 400, 200, 50, 50);
-      //   }
-
-      //   });
-      //   context.stroke();
-
-      // if (this.value8.code == '30'){
-      //   // alert("Selec 30 min");
-      //   for(var index0 in this.historyPosition){
-      //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
-      //     if (this.historyPosition[index0].past <= 30){
-      //       this.positionUnderThirtyMin.push({
-      //         xy: this.this.historyPosition[index0].xy,
-      //         past: this.historyPosition[index0].past,
-      //         floor: this.historyPosition[index0].floor,
-      //         name: this.historyPosition[index0].name,
-      //       })
-      //     }
-      //   }
-      //   console.log(this.positionUnderThirtyMin);
-      // }
-      // if (this.value8.code == '60'){
-      //   // alert("Selec 60 min");
-      //   for(var index1 in this.historyPosition){
-      //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
-      //     if (this.historyPosition[index1].past > 30 && this.historyPosition[index1].past <=60){
-      //       this.positionUnderOneHour.push({
-      //         xy: this.this.historyPosition[index1].xy,
-      //         past: this.historyPosition[index1].past,
-      //         floor: this.historyPosition[index1].floor,
-      //         name: this.historyPosition[index1].name,
-      //       })
-      //     }
-      //   }
-      //   console.log(this.positionUnderOneHour);
-      // }
-      // if (this.value8.code == '90'){
-      //   // alert("Selec 90 min");
-      //   for(var index2 in this.historyPosition){
-      //     // console.log("Testtime: ",typeof(this.historyPosition[index].past));
-      //     if (this.historyPosition[index2].past > 60 && this.historyPosition[index2].past <=90){
-      //       this.positionUnderOneHourAndHalf.push({
-      //         xy: this.this.historyPosition[index2].xy,
-      //         past: this.historyPosition[index2].past,
-      //         floor: this.historyPosition[index2].floor,
-      //         name: this.historyPosition[index2].name,
-      //       })
-      //     }
-      //   }
-      //   console.log(this.positionUnderOneHourAndHalf);
-      // }
-      // else{
-      //   alert(this.value8.code);
-      // }
+      // this.value9 = null;
     },
     initMap() {
-      var canvas = this.$refs.myCanvas;
-      var context = canvas.getContext("2d");
+      // var canvas = this.$refs.myCanvas;
+      // var context = canvas.getContext("2d");
       var base_image;
       base_image = new Image();
       base_image.src = myImage;
       base_image.onload = function() {
-        context.drawImage(base_image, 0, 0);
+        // context.drawImage(base_image, 0, 0);
       };
     },
     drawMap(floor, posX, posY) {
@@ -436,7 +417,7 @@ export default {
       // Box width
 
       var canvas = this.$refs.myCanvas;
-      console.log("canvas: ", canvas);
+      // console.log("canvas: ", canvas);
       var context = canvas.getContext("2d");
 
       // console.log(canvas);
@@ -523,9 +504,9 @@ export default {
         //   (x) => x.name === vm.responsePosition.name
         // );
         // console.log(index);
-        console.log("VM ELEMENT: ", vm.currentElements);
+        // console.log("VM ELEMENT: ", vm.currentElements);
         // console.log("Current Name: ", vm.currentElements[0].user);
-        console.log("Value Name: ", vm.value9.name);
+        // console.log("Value Name: ", vm.value9.name);
         if (vm.value9.name != null) {
           // แยก user แต่ละคนออก
           if (vm.responsePosition.name == vm.value9.name) {
@@ -667,7 +648,7 @@ export default {
     },
     fetchDataFromBackend() {
       axios
-        .get("http://c6ff7e0b4168.ngrok.io")
+        .get("http://b9f077fdddc8.ngrok.io")
         // .then(response => (this.info = response))
         .then((response) => (this.responsePosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -676,7 +657,7 @@ export default {
     },
     fetchHistoryFromBackend() {
       axios
-        .get("http://c6ff7e0b4168.ngrok.io/historyroute")
+        .get("http://b9f077fdddc8.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
