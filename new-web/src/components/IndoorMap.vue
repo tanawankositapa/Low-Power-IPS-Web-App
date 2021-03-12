@@ -26,18 +26,29 @@
         <label for="dropdown">ประวัติตำแหน่ง</label>
       </span>
       <span class="p-float-label">
-        <Dropdown
+        <!-- <Dropdown
           id="dropdown"
           v-model="value9"
           :options="userOptionsForDropdown"
           optionLabel="name"
           @click="drawHistoryRoute"
         />
-        <label for="dropdown">เลือกบุคคล</label>
+        <label for="dropdown">เลือกบุคคล</label> -->
         <!-- <Listbox v-model="value9" :options="userOptionsForDropdown" :multiple="true" :filter="true" optionLabel="name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="เลือกบุคคล">
           
         </Listbox> -->
       </span>
+
+      <MultiSelect
+        v-model="value9"
+        :options="userOptionsForDropdown"
+        optionLabel="name"
+        placeholder="เลือกบุคคล"
+        :filter="true"
+        class="multiselect-custom"
+        
+      >
+      </MultiSelect>
     </div>
     <div class="canvasArea">
       <canvas ref="myCanvas" width="500" height="650">
@@ -113,6 +124,13 @@ export default {
   },
   components: {
     // NeuralModel,
+  },
+  watch: {
+    // whenever question changes, this function will run
+    value9: function () {
+      // this.answer = 'Waiting for you to stop typing...'
+      this.drawHistoryRoute();
+    }
   },
   // watch: {
   //     responsePosition(value){
@@ -220,7 +238,8 @@ export default {
     drawHistoryRoute() {
       // alert('click', this.value8.code)
       // alert('click', this.value9.code)
-      // console.log('click', this.value9);
+      console.log("What is this");
+      console.log('click', this.value9);
       // console.log(this.historyPosition);
       let vm = this;
       var bh = 650;
@@ -290,7 +309,7 @@ export default {
             // console.log("After: ",this.elements);
             context.clearRect(0, 0, canvas.width, canvas.height);
             // vm.drawMap(6,this.posX,this.posY);
-            this.value9 = null
+            this.value9 = null;
             vm.initMap();
           }
           if (this.value8.code == "infinite") {
@@ -411,9 +430,9 @@ export default {
                     ดังนั้น อัตราส่วนคือ 1 : 60
                     */
       // console.log("draw");
-      console.log(posX);
-      console.log(posY);
-      console.log(floor);
+      // console.log(posX);
+      // console.log(posY);
+      // console.log(floor);
       // Box width
 
       var canvas = this.$refs.myCanvas;
@@ -433,7 +452,7 @@ export default {
       // console.log(this.floorplan[0].src);
 
       function make_base() {
-        console.log("Test VM: ", vm);
+        // console.log("Test VM: ", vm);
         // base_image = new Image();
         // base_image.src = myImage;
         // base_image.setAttribute('crossOrigin', '');
@@ -704,4 +723,6 @@ export default {
   // },
 };
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+
+</style>
