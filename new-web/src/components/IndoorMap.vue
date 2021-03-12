@@ -92,8 +92,8 @@ export default {
       isCompanyNull: false,
       isDepartmentNull: false,
       value8: null,
-      value9: null,
-      value10: null,
+      value10: [],
+      
       timeOptionsForDropdown: [
         { time: "ล้างข้อมูล", code: "0" },
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
@@ -123,6 +123,18 @@ export default {
       currentElements: [],
     };
   },
+  computed: {
+    lengthOfValue10() {
+        if (this.value10 != null){
+          return this.value10.length;
+        }
+    },
+    valueOfValue8(){
+      if (this.value8 != null){
+          return this.value8.code;
+        }
+    },
+},
   components: {
     // NeuralModel,
   },
@@ -132,9 +144,25 @@ export default {
       // this.answer = 'Waiting for you to stop typing...'
       this.drawHistoryRoute();
     },
-    value8: function () {
-      // this.answer = 'Waiting for you to stop typing...'
-      this.drawHistoryRoute();
+    // value8: function (newval) {
+    //   // this.answer = 'Waiting for you to stop typing...'
+      
+    //   this.drawHistoryRoute();
+    // },
+    lengthOfValue10() {
+      // alert(`yes, computed property changed: ${newVal}`)
+      if(this.value10 != null) {
+        console.log("lenght ",this.value10.length);
+        // this.clearData();
+        this.drawHistoryRoute();
+      }
+    },
+    valueOfValue8(newVal){
+      // alert(`yes, computed property changed: ${newVal}`)
+      //  console.log("OLM ",typeof(newVal));
+      if (newVal == "0"){
+        this.clearData();
+      }
     }
   },
   // watch: {
@@ -147,6 +175,20 @@ export default {
     toggle(event, display) {
       console.log(display);
       this.$refs.op.toggle(event);
+    },
+    clearData(){
+
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
+            console.log("Before: ",this.elements);
+            this.elements = [];
+            console.log("After: ",this.elements);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            this.value8 = null;
+            this.value10 = null;
+            this.initMap();
+            this.currentElements = [];
+          
     },
     insertUserOption() {
       var code = 0;
@@ -243,19 +285,22 @@ export default {
     drawHistoryRoute() {
       // alert('click', this.value8.code)
       // alert('click', this.value9.code)
-      console.log("What is this");
+      // console.log("What is this: ",this.lengthOfValue10);
       // console.log('click', this.value9);
-      console.log('click', this.value10);
+      // console.log('click', this.value10);
       // console.log(this.historyPosition);
       let vm = this;
       var bh = 650;
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
+      if( this.value10 != {}){
+        console.log("this value10: ",this.value10);
       for (var index in this.value10){
         for (var index0 in this.historyPosition) {
+          
         if (this.historyPosition[index0].name == this.value10[index].name) {
-          console.log("testname history: ",this.historyPosition[index0].name);
-          console.log("testname value10: ",this.value10[index].name);
+          // console.log("testname history: ",this.historyPosition[index0].name);
+          // console.log("testname value10: ",this.value10[index].name);
           if(this.value8 != null){
             if (this.value8.code == "30") {
             if (this.historyPosition[index0].past <= 30) {
@@ -312,36 +357,38 @@ export default {
               });
             }
           }
-          if (this.value8.code == "0") {
-            // console.log("Before: ",this.elements);
-            this.elements = [];
-            // console.log("After: ",this.elements);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            // vm.drawMap(6,this.posX,this.posY);
-            this.value10 = null;
-            vm.initMap();
-          }
-          if (this.value8.code == "infinite") {
-            // if (this.historyPosition[index0].past <= 90){
-            this.elements.push({
-              colour: "#6b3d0d",
-              x: this.historyPosition[index0].xy[0] * 52 + 70,
-              y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-              r: 10,
-              sAngle: 0,
-              eAngle: 2 * Math.PI,
-              counterclockwise: false,
-              user: vm.responsePosition.name,
-              department: vm.responsePosition.department,
-              company: vm.responsePosition.company,
-              past: this.historyPosition[index0].past,
-            });
-            // }
-          }
+          // if (this.value8.code == "0") {
+          //   console.log("Before: ",this.elements);
+          //   this.elements = [];
+          //   console.log("After: ",this.elements);
+          //   context.clearRect(0, 0, canvas.width, canvas.height);
+          //   this.value8 = null;
+          //   this.value10 = [];
+          //   vm.initMap();
+          // }
+          // if (this.value8.code == "infinite") {
+          //   // if (this.historyPosition[index0].past <= 90){
+          //   this.elements.push({
+          //     colour: "#6b3d0d",
+          //     x: this.historyPosition[index0].xy[0] * 52 + 70,
+          //     y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+          //     r: 10,
+          //     sAngle: 0,
+          //     eAngle: 2 * Math.PI,
+          //     counterclockwise: false,
+          //     user: vm.responsePosition.name,
+          //     department: vm.responsePosition.department,
+          //     company: vm.responsePosition.company,
+          //     past: this.historyPosition[index0].past,
+          //   });
+          //   // }
+          // }
           }
         }
+        
       } //end of for
 
+      }
       }
       
 
@@ -452,11 +499,7 @@ export default {
       // console.log(this.floorplan[0].src);
 
       function make_base() {
-        // console.log("Test VM: ", vm);
-        // base_image = new Image();
-        // base_image.src = myImage;
-        // base_image.setAttribute('crossOrigin', '');
-        // base_image.crossOrigin = "Anonymous";
+        
         var elemLeft = canvas.offsetLeft + canvas.clientLeft,
           elemTop = canvas.offsetTop + canvas.clientTop;
         // elements = [];
@@ -501,7 +544,7 @@ export default {
         // console.log(index);
         // console.log("VM ELEMENT: ", vm.currentElements);
         // console.log("Current Name: ", vm.currentElements[0].user);
-        console.log("Value Name: ", vm.value10.length == 0);
+        // console.log("Value Name: ", vm.value10.length == 0);
         // 
         for (var index in vm.value10) {
           if (vm.value10[index].name != null) {
@@ -560,56 +603,7 @@ export default {
         // }
       }
 
-      // this.isImageAlreadyDrawData = true;
-
-      //   var elemLeft = canvas.offsetLeft + canvas.clientLeft,
-      //   elemTop = canvas.offsetTop + canvas.clientTop,
-      //   elements = [];
-      //   // var isToggle =false;
-
-      //   // Add event listener for `click` events.
-      // let vm = this;
-      //  canvas.addEventListener('click', function(event) {
-
-      //       var x = event.pageX - elemLeft,
-      //           y = event.pageY - elemTop;
-
-      //       // Collision detection between clicked offset and element.
-      //       elements.forEach(function(element) {
-      //           if (y < element.y + element.r && y > element.y - element.r
-      //               && x < element.x + element.r && x > element.x - element.r) {
-
-      //               // vm.toggle(event,element.user);
-      //               vm.display = true;
-      //               vm.take = element.user
-
-      //           }
-      //       });
-
-      //   }, false);
-
-      // // Add element.
-      // elements.push({
-      //     colour: '#05EFFF',
-      //     x: 150,
-      //     y: 100,
-      //     r: 20,
-      //     sAngle: 0,
-      //     eAngle: 2 * Math.PI,
-      //     counterclockwise: false,
-      //     user: "Somchai Kositapa",
-      // });
-
-      // elements.forEach(function(element){
-      //     context.fillStyle = element.colour;
-      //     // context.fillRect(element.left, element.top, element.width, element.height);
-      //     context.beginPath();
-      //     context.arc(element.x, element.y, element.r, element.sAngle, element.eAngle, element.counterclockwise);
-      //     context.fill();
-      //       context.lineWidth = 1;
-      //       context.strokeStyle = '#003300';
-      //       context.stroke();
-      // });
+      
     },
 
     getPredictionData() {
@@ -633,17 +627,7 @@ export default {
         });
       }
       this.drawMap(6, this.posX, this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
-      // console.log(this.posX);
-      // if(this.posX != this.responsePosition[0] || this.posY != this.responsePosition[1]){
-      //     this.posX = this.responsePosition[0];
-      //     this.posY = this.responsePosition[1];
-      //     console.log("PosX: ",this.posX);
-      //     console.log("PosY: ",this.posY);
-      //     this.drawMap(6,this.posX,this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
-      //     // console.log(this.posX);
-      // }else{
-      //   console.log('Position not changed');
-      // }
+     
     },
     fetchDataFromBackend() {
       axios
