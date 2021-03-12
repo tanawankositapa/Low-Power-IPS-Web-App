@@ -21,7 +21,7 @@
           v-model="value8"
           :options="timeOptionsForDropdown"
           optionLabel="time"
-          @click="drawHistoryRoute"
+          
         />
         <label for="dropdown">ประวัติตำแหน่ง</label>
       </span>
@@ -40,7 +40,7 @@
       </span>
 
       <MultiSelect
-        v-model="value9"
+        v-model="value10"
         :options="userOptionsForDropdown"
         optionLabel="name"
         placeholder="เลือกบุคคล"
@@ -93,6 +93,7 @@ export default {
       isDepartmentNull: false,
       value8: null,
       value9: null,
+      value10: null,
       timeOptionsForDropdown: [
         { time: "ล้างข้อมูล", code: "0" },
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
@@ -127,7 +128,11 @@ export default {
   },
   watch: {
     // whenever question changes, this function will run
-    value9: function () {
+    value10: function () {
+      // this.answer = 'Waiting for you to stop typing...'
+      this.drawHistoryRoute();
+    },
+    value8: function () {
       // this.answer = 'Waiting for you to stop typing...'
       this.drawHistoryRoute();
     }
@@ -239,16 +244,20 @@ export default {
       // alert('click', this.value8.code)
       // alert('click', this.value9.code)
       console.log("What is this");
-      console.log('click', this.value9);
+      // console.log('click', this.value9);
+      console.log('click', this.value10);
       // console.log(this.historyPosition);
       let vm = this;
       var bh = 650;
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
-      for (var index0 in this.historyPosition) {
-        if (this.historyPosition[index0].name == this.value9.name) {
-          // console.log("testname: ",this.historyPosition[index0].name);
-          if (this.value8.code == "30") {
+      for (var index in this.value10){
+        for (var index0 in this.historyPosition) {
+        if (this.historyPosition[index0].name == this.value10[index].name) {
+          console.log("testname history: ",this.historyPosition[index0].name);
+          console.log("testname value10: ",this.value10[index].name);
+          if(this.value8 != null){
+            if (this.value8.code == "30") {
             if (this.historyPosition[index0].past <= 30) {
               // this.name = vm.responsePosition.name;
               // console.log("Name:",vm.responsePosition.name);
@@ -309,7 +318,7 @@ export default {
             // console.log("After: ",this.elements);
             context.clearRect(0, 0, canvas.width, canvas.height);
             // vm.drawMap(6,this.posX,this.posY);
-            this.value9 = null;
+            this.value10 = null;
             vm.initMap();
           }
           if (this.value8.code == "infinite") {
@@ -329,8 +338,12 @@ export default {
             });
             // }
           }
+          }
         }
       } //end of for
+
+      }
+      
 
       context.moveTo(vm.posX * 52 + 70, -vm.posY * 40 + bh - 110);
 
@@ -353,20 +366,7 @@ export default {
         context.strokeStyle = "#003300";
         context.stroke();
 
-        // context.beginPath();
-        // context.moveTo(vm.posX*52+70, -vm.posY*40+bh-110);
-        // context.moveTo(element.x,element.y);
-        // context.lineTo(element.x,element.y);
-        // context.stroke();
-        // console.log("tempX: ",tempX);
-        // console.log("tempY: ",tempY);
-        // console.log("elementalX: ",element.x);
-        // console.log("elementalY: ",element.y);
-        // tempX = element.x;
-        // tempY = element.y;
-        // console.log("tempX2: ",tempX);
-        // console.log("tempY2: ",tempY);
-        // }
+        
       });
       // var tempX,tempY ;
       context.beginPath();
@@ -414,13 +414,13 @@ export default {
       // this.value9 = null;
     },
     initMap() {
-      // var canvas = this.$refs.myCanvas;
-      // var context = canvas.getContext("2d");
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
       var base_image;
       base_image = new Image();
       base_image.src = myImage;
       base_image.onload = function() {
-        // context.drawImage(base_image, 0, 0);
+        context.drawImage(base_image, 0, 0);
       };
     },
     drawMap(floor, posX, posY) {
@@ -495,40 +495,18 @@ export default {
           false
         );
 
-        // base_image.onload = function(){
-        // if (!isImageAlreadyDrawLocal){
-        // context.drawImage(base_image, 0, 0);
-        // var imageData = context.getImageData(0,0,500,650);
-        // base_image.setAttribute('crossOrigin', '');
-        // }
-        // if(posX != this.posX || posY != this.posY){
-        // context.putImageData(imageData, 0, 0);
-        // context.beginPath();
-        // context.arc(posX*52+70, -posY*40+bh-110, 10, 0, 2 * Math.PI, false);
-        // context.arc(150, 100, 20, 0, 2 * Math.PI, false);
-        // context.fillStyle = 'red';
-        // context.fill();
-        // context.lineWidth = 1;
-        // context.strokeStyle = '#003300';
-        // context.stroke();
-        // context.clearRect(0, 0, 500, 650);
-        // this.isImageAlreadyDraw = true;
+       
 
-        // }
-
-        // var isToggle =false;
-
-        // Add element.
-        // var index = vm.value9.findIndex(
-        //   (x) => x.name === vm.responsePosition.name
-        // );
+        
         // console.log(index);
         // console.log("VM ELEMENT: ", vm.currentElements);
         // console.log("Current Name: ", vm.currentElements[0].user);
-        // console.log("Value Name: ", vm.value9.name);
-        if (vm.value9.name != null) {
+        console.log("Value Name: ", vm.value10.length == 0);
+        // 
+        for (var index in vm.value10) {
+          if (vm.value10[index].name != null) {
           // แยก user แต่ละคนออก
-          if (vm.responsePosition.name == vm.value9.name) {
+          if (vm.responsePosition.name == vm.value10[index].name) {
             if (vm.currentElements.length == 0) {
               vm.currentElements.push({
                 colour: "#05EFFF",
@@ -545,6 +523,8 @@ export default {
             }
           }
         }
+        }
+        
 
         // console.log("oMG: ",vm.responsePosition.name);
         // console.log("Oeq: ",vm.responsePosition);
