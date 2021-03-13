@@ -21,7 +21,6 @@
           v-model="value8"
           :options="timeOptionsForDropdown"
           optionLabel="time"
-          
         />
         <label for="dropdown">ประวัติตำแหน่ง</label>
       </span>
@@ -46,7 +45,6 @@
         placeholder="เลือกบุคคล"
         :filter="true"
         class="multiselect-custom"
-        
       >
       </MultiSelect>
     </div>
@@ -93,7 +91,7 @@ export default {
       isDepartmentNull: false,
       value8: null,
       value10: [],
-      
+
       timeOptionsForDropdown: [
         { time: "ล้างข้อมูล", code: "0" },
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
@@ -106,6 +104,7 @@ export default {
       positionUnderOneHour: [],
       positionUnderOneHourAndHalf: [],
       elements: [],
+      arrayOfCircle: [],
       olements: [
         {
           x: 2,
@@ -125,45 +124,80 @@ export default {
   },
   computed: {
     lengthOfValue10() {
-        if (this.value10 != null){
-          return this.value10.length;
-        }
+      if (this.value10 != null) {
+        return this.value10.length;
+      }
     },
-    valueOfValue8(){
-      if (this.value8 != null){
-          return this.value8.code;
-        }
+    valueOfValue8() {
+      if (this.value8 != null) {
+        return this.value8.code;
+      }
     },
-},
+    lengthOfElement() {
+      if (this.elements != null) {
+        return this.elements.length;
+      }
+    },
+  },
   components: {
     // NeuralModel,
   },
   watch: {
     // whenever question changes, this function will run
-    value10: function () {
+    value10: function() {
       // this.answer = 'Waiting for you to stop typing...'
       this.drawHistoryRoute();
     },
-    // value8: function (newval) {
-    //   // this.answer = 'Waiting for you to stop typing...'
-      
-    //   this.drawHistoryRoute();
-    // },
-    lengthOfValue10() {
+    value8: function(newval) {
+      // this.answer = 'Waiting for you to stop typing...'
+      this.elements = [];
+      this.arrayOfCircle = [];
+      console.log("This element: ", this.elements);
+      this.drawHistoryRoute();
+    },
+    lengthOfValue10(newVal, oldVal) {
       // alert(`yes, computed property changed: ${newVal}`)
-      if(this.value10 != null) {
-        console.log("lenght ",this.value10.length);
-        // this.clearData();
-        this.drawHistoryRoute();
+      // console.log("newval: ",parseInt(newVal));
+      // console.log("oldval: ",parseInt(oldVal));
+      console.log("This element: ", this.elements);
+      if (parseInt(newVal) < parseInt(oldVal)) {
+        //  alert("Uncheck");
+        if (this.value10 != null) {
+          // console.log("lenght ", this.value10.length);
+          // this.clearData();
+          // this.historyPosition = [];
+
+          /**1.หาว่าคนไหนที่หายไป โดยเทียบกับ useroptionfordropdown
+           * แล้วไปลบจุดของ user ที่หายไป
+           * 2. ตรวจสอบว่าเหลือ user คนไหนบ้างใน value10 แล้ว clear map แล้ววาดใหม่เท่าที่เหลือ
+           * */
+
+          for (var index in this.userOptionsForDropdown) {
+            var index2 = this.value10.findIndex(
+              (x) => x.name === this.userOptionsForDropdown[index].name
+            );
+            if (index2 == -1) {
+              console.log(
+                "This name is not in value10: ",
+                this.userOptionsForDropdown[index].name
+              );
+            }
+          }
+
+          // this.drawHistoryRoute();
+        }
       }
     },
-    valueOfValue8(newVal){
+    valueOfValue8(newVal) {
       // alert(`yes, computed property changed: ${newVal}`)
       //  console.log("OLM ",typeof(newVal));
-      if (newVal == "0"){
+      if (newVal == "0") {
         this.clearData();
       }
-    }
+    },
+    lengthOfElement(newVal){
+      alert(newVal);
+    },
   },
   // watch: {
   //     responsePosition(value){
@@ -176,19 +210,22 @@ export default {
       console.log(display);
       this.$refs.op.toggle(event);
     },
-    clearData(){
-
+    Circle(x, y, radius) {
+      var c = new Path2D();
+      c.arc(x, y, radius, 0, Math.PI * 2);
+      return c;
+    },
+    clearData() {
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
-            console.log("Before: ",this.elements);
-            this.elements = [];
-            console.log("After: ",this.elements);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            this.value8 = null;
-            this.value10 = null;
-            this.initMap();
-            this.currentElements = [];
-          
+      // console.log("Before: ", this.elements);
+      this.elements = [];
+      // console.log("After: ", this.elements);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      this.value8 = null;
+      this.value10 = null;
+      this.initMap();
+      this.currentElements = [];
     },
     insertUserOption() {
       var code = 0;
@@ -245,7 +282,7 @@ export default {
         index = parseInt(index);
         if (index < objectLength) {
           // console.log("Testis: ",index);
-          console.log("Test Element: ", this.elements[index].past);
+          // console.log("Test Element: ", this.elements[index].past);
           // console.log("Oblength: ",objectLength);
           // console.log("Index: ",typeof(index));
           var currentPast, nextPast, currentX, currentY, nextX, nextY;
@@ -255,13 +292,13 @@ export default {
           nextX = this.elements[index + 1].x;
           currentY = this.elements[index].y;
           nextY = this.elements[index + 1].y;
-          console.log("CurrentContext: ", context);
-          console.log("CurrentPast: ", currentPast);
-          console.log("NextPast: ", nextPast);
-          console.log("CurrentX: ", currentX);
-          console.log("NextX: ", nextX);
-          console.log("CurrentY: ", currentY);
-          console.log("NextY: ", nextY);
+          // console.log("CurrentContext: ", context);
+          // console.log("CurrentPast: ", currentPast);
+          // console.log("NextPast: ", nextPast);
+          // console.log("CurrentX: ", currentX);
+          // console.log("NextX: ", nextX);
+          // console.log("CurrentY: ", currentY);
+          // console.log("NextY: ", nextY);
           if (currentX != nextX || currentY != nextY) {
             // this.canvas_arrow(context,currentX,currentY,nextX,nextY)
             // this.drawLineWithArrows(currentX,currentY,nextX,nextY,5,8,false,true);
@@ -293,137 +330,143 @@ export default {
       var bh = 650;
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
-      if( this.value10 != {}){
-        console.log("this value10: ",this.value10);
-      for (var index in this.value10){
-        for (var index0 in this.historyPosition) {
-          
-        if (this.historyPosition[index0].name == this.value10[index].name) {
-          // console.log("testname history: ",this.historyPosition[index0].name);
-          // console.log("testname value10: ",this.value10[index].name);
-          if(this.value8 != null){
-            if (this.value8.code == "30") {
-            if (this.historyPosition[index0].past <= 30) {
-              // this.name = vm.responsePosition.name;
-              // console.log("Name:",vm.responsePosition.name);
-              this.elements.push({
-                colour: "#55BDCA",
-                x: this.historyPosition[index0].xy[0] * 52 + 70,
-                y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                r: 10,
-                sAngle: 0,
-                eAngle: 2 * Math.PI,
-                counterclockwise: false,
-                user: vm.historyPosition[index0].name,
-                department: vm.responsePosition.department,
-                company: vm.responsePosition.company,
-                past: this.historyPosition[index0].past,
-              });
+      if (this.value10 != {}) {
+        // console.log("this value10: ", this.value10);
+        for (var index in this.value10) {
+          for (var index0 in this.historyPosition) {
+            if (this.historyPosition[index0].name == this.value10[index].name) {
+              // console.log("testname history: ",this.historyPosition[index0].name);
+              // console.log("testname value10: ",this.value10[index].name);
+              if (this.value8 != null) {
+                if (this.value8.code == "30") {
+                  if (this.historyPosition[index0].past <= 30) {
+                    // this.name = vm.responsePosition.name;
+                    // console.log("Name:",vm.responsePosition.name);
+                    this.elements.push({
+                      colour: "#55BDCA",
+                      x: this.historyPosition[index0].xy[0] * 52 + 70,
+                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                      r: 10,
+                      sAngle: 0,
+                      eAngle: 2 * Math.PI,
+                      counterclockwise: false,
+                      user: vm.historyPosition[index0].name,
+                      department: vm.responsePosition.department,
+                      company: vm.responsePosition.company,
+                      past: this.historyPosition[index0].past,
+                    });
+                  }
+                }
+                if (this.value8.code == "60") {
+                  if (this.historyPosition[index0].past <= 60) {
+                    this.name = vm.responsePosition.name;
+                    this.elements.push({
+                      colour: "#96FFFF",
+                      x: this.historyPosition[index0].xy[0] * 52 + 70,
+                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                      r: 10,
+                      sAngle: 0,
+                      eAngle: 2 * Math.PI,
+                      counterclockwise: false,
+                      user: vm.historyPosition[index0].name,
+                      department: vm.responsePosition.department,
+                      company: vm.responsePosition.company,
+                      past: this.historyPosition[index0].past,
+                    });
+                  }
+                }
+                if (this.value8.code == "90") {
+                  if (this.historyPosition[index0].past <= 90) {
+                    this.name = vm.responsePosition.name;
+                    this.elements.push({
+                      colour: "#C8EFE9",
+                      x: this.historyPosition[index0].xy[0] * 52 + 70,
+                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                      r: 10,
+                      sAngle: 0,
+                      eAngle: 2 * Math.PI,
+                      counterclockwise: false,
+                      user: vm.historyPosition[index0].name,
+                      department: vm.responsePosition.department,
+                      company: vm.responsePosition.company,
+                      past: this.historyPosition[index0].past,
+                    });
+                  }
+                }
+                // if (this.value8.code == "0") {
+                //   console.log("Before: ",this.elements);
+                //   this.elements = [];
+                //   console.log("After: ",this.elements);
+                //   context.clearRect(0, 0, canvas.width, canvas.height);
+                //   this.value8 = null;
+                //   this.value10 = [];
+                //   vm.initMap();
+                // }
+                // if (this.value8.code == "infinite") {
+                //   // if (this.historyPosition[index0].past <= 90){
+                //   this.elements.push({
+                //     colour: "#6b3d0d",
+                //     x: this.historyPosition[index0].xy[0] * 52 + 70,
+                //     y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                //     r: 10,
+                //     sAngle: 0,
+                //     eAngle: 2 * Math.PI,
+                //     counterclockwise: false,
+                //     user: vm.responsePosition.name,
+                //     department: vm.responsePosition.department,
+                //     company: vm.responsePosition.company,
+                //     past: this.historyPosition[index0].past,
+                //   });
+                //   // }
+                // }
+              }
             }
-          }
-          if (this.value8.code == "60") {
-            if (this.historyPosition[index0].past <= 60) {
-              this.name = vm.responsePosition.name;
-              this.elements.push({
-                colour: "#96FFFF",
-                x: this.historyPosition[index0].xy[0] * 52 + 70,
-                y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                r: 10,
-                sAngle: 0,
-                eAngle: 2 * Math.PI,
-                counterclockwise: false,
-                user: vm.historyPosition[index0].name,
-                department: vm.responsePosition.department,
-                company: vm.responsePosition.company,
-                past: this.historyPosition[index0].past,
-              });
-            }
-          }
-          if (this.value8.code == "90") {
-            if (this.historyPosition[index0].past <= 90) {
-              this.name = vm.responsePosition.name;
-              this.elements.push({
-                colour: "#C8EFE9",
-                x: this.historyPosition[index0].xy[0] * 52 + 70,
-                y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                r: 10,
-                sAngle: 0,
-                eAngle: 2 * Math.PI,
-                counterclockwise: false,
-                user: vm.historyPosition[index0].name,
-                department: vm.responsePosition.department,
-                company: vm.responsePosition.company,
-                past: this.historyPosition[index0].past,
-              });
-            }
-          }
-          // if (this.value8.code == "0") {
-          //   console.log("Before: ",this.elements);
-          //   this.elements = [];
-          //   console.log("After: ",this.elements);
-          //   context.clearRect(0, 0, canvas.width, canvas.height);
-          //   this.value8 = null;
-          //   this.value10 = [];
-          //   vm.initMap();
-          // }
-          // if (this.value8.code == "infinite") {
-          //   // if (this.historyPosition[index0].past <= 90){
-          //   this.elements.push({
-          //     colour: "#6b3d0d",
-          //     x: this.historyPosition[index0].xy[0] * 52 + 70,
-          //     y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-          //     r: 10,
-          //     sAngle: 0,
-          //     eAngle: 2 * Math.PI,
-          //     counterclockwise: false,
-          //     user: vm.responsePosition.name,
-          //     department: vm.responsePosition.department,
-          //     company: vm.responsePosition.company,
-          //     past: this.historyPosition[index0].past,
-          //   });
-          //   // }
-          // }
-          }
+          } //end of for
         }
-        
-      } //end of for
-
       }
-      }
-      
 
       context.moveTo(vm.posX * 52 + 70, -vm.posY * 40 + bh - 110);
-
+      var index10 = 0;
       vm.elements.forEach(function(element) {
-        // if(tempX != element.x){
+        // context.beginPath();
+        // console.log("Index: ", index10);
+        vm.arrayOfCircle.push(vm.Circle(element.x, element.y, element.r));
         context.fillStyle = element.colour;
-        // context.fillRect(element.left, element.top, element.width, element.height);
-        context.beginPath();
-        context.arc(
-          element.x,
-          element.y,
-          element.r,
-          element.sAngle,
-          element.eAngle,
-          element.counterclockwise
-        );
-        // context.clip();
-        context.fill();
+        context.fill(vm.arrayOfCircle[index10], "nonzero");
         context.lineWidth = 1;
         context.strokeStyle = "#003300";
-        context.stroke();
-
-        
+        context.stroke(vm.arrayOfCircle[index10], "nonzero");
+        // // if(tempX != element.x){
+        console.log("Circle: ", vm.arrayOfCircle[index10]);
+        console.log("length of Circle: ", vm.arrayOfCircle.length);
+        // context.fillRect(element.left, element.top, element.width, element.height);
+        // context.beginPath();
+        // context.arc(
+        //   element.x,
+        //   element.y,
+        //   element.r,
+        //   element.sAngle,
+        //   element.eAngle,
+        //   element.counterclockwise
+        // );
+        // // context.clip();
+        // context.fill();
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#003300";
+        // context.stroke();
+        index10 = index10 + 1;
       });
       // var tempX,tempY ;
-      context.beginPath();
-      vm.elements.forEach((element) => {
-        console.log(element);
-        // console.log("elementalX: ",element.x);
-        //   console.log("elementalY: ",element.y);
 
-        context.lineTo(element.x, element.y);
-      });
+      /**วาดเส้นอย่างเดียว *Outdated* */
+      // context.beginPath();
+      // vm.elements.forEach((element) => {
+      //   console.log(element);
+      //   // console.log("elementalX: ",element.x);
+      //   //   console.log("elementalY: ",element.y);
+
+      //   context.lineTo(element.x, element.y);
+      // });
       context.stroke();
       var elemLeft = canvas.offsetLeft + canvas.clientLeft,
         elemTop = canvas.offsetTop + canvas.clientTop;
@@ -431,8 +474,15 @@ export default {
         "click",
         function(event) {
           var x = event.pageX - elemLeft,
-            y = event.pageY - elemTop;
-
+            y = event.pageY - elemTop,
+            i;
+          for (i = vm.arrayOfCircle.length - 1; i >= 0; --i) {
+            console.log("Test circle: ", vm.arrayOfCircle[i]);
+            console.log("length of Circle: ", vm.arrayOfCircle.length);
+            // if (context.isPointInPath(vm.arrayOfCircle[i], x, y, "nonzero")) {
+            //   vm.arrayOfCircle.splice(i, 1);
+            // }
+          }
           // Collision detection between clicked offset and element.
           vm.elements.forEach(function(element) {
             if (
@@ -499,7 +549,6 @@ export default {
       // console.log(this.floorplan[0].src);
 
       function make_base() {
-        
         var elemLeft = canvas.offsetLeft + canvas.clientLeft,
           elemTop = canvas.offsetTop + canvas.clientTop;
         // elements = [];
@@ -538,36 +587,32 @@ export default {
           false
         );
 
-       
-
-        
         // console.log(index);
         // console.log("VM ELEMENT: ", vm.currentElements);
         // console.log("Current Name: ", vm.currentElements[0].user);
         // console.log("Value Name: ", vm.value10.length == 0);
-        // 
+        //
         for (var index in vm.value10) {
           if (vm.value10[index].name != null) {
-          // แยก user แต่ละคนออก
-          if (vm.responsePosition.name == vm.value10[index].name) {
-            if (vm.currentElements.length == 0) {
-              vm.currentElements.push({
-                colour: "#05EFFF",
-                x: posX * 52 + 70,
-                y: -posY * 40 + bh - 110,
-                r: 10,
-                sAngle: 0,
-                eAngle: 2 * Math.PI,
-                counterclockwise: false,
-                user: vm.responsePosition.name,
-                department: vm.responsePosition.department,
-                company: vm.responsePosition.company,
-              });
+            // แยก user แต่ละคนออก
+            if (vm.responsePosition.name == vm.value10[index].name) {
+              if (vm.currentElements.length == 0) {
+                vm.currentElements.push({
+                  colour: "#05EFFF",
+                  x: posX * 52 + 70,
+                  y: -posY * 40 + bh - 110,
+                  r: 10,
+                  sAngle: 0,
+                  eAngle: 2 * Math.PI,
+                  counterclockwise: false,
+                  user: vm.responsePosition.name,
+                  department: vm.responsePosition.department,
+                  company: vm.responsePosition.company,
+                });
+              }
             }
           }
         }
-        }
-        
 
         // console.log("oMG: ",vm.responsePosition.name);
         // console.log("Oeq: ",vm.responsePosition);
@@ -602,16 +647,14 @@ export default {
 
         // }
       }
-
-      
     },
 
     getPredictionData() {
       var bh = 650;
       this.posX = this.responsePosition.ypred[0];
       this.posY = this.responsePosition.ypred[1];
-      console.log("PosX: ", this.posX);
-      console.log("PosY: ", this.posY);
+      // console.log("PosX: ", this.posX);
+      // console.log("PosY: ", this.posY);
       if (this.currentElements == []) {
         this.currentElements.push({
           colour: "#05EFFF",
@@ -627,7 +670,6 @@ export default {
         });
       }
       this.drawMap(6, this.posX, this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
-     
     },
     fetchDataFromBackend() {
       axios
@@ -687,6 +729,4 @@ export default {
   // },
 };
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
