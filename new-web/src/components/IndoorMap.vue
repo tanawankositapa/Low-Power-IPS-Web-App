@@ -138,6 +138,11 @@ export default {
         return this.elements.length;
       }
     },
+    lengthOfCircle() {
+      if (this.arrayOfCircle != null) {
+        return this.arrayOfCircle.length;
+      }
+    },
   },
   components: {
     // NeuralModel,
@@ -146,6 +151,8 @@ export default {
     // whenever question changes, this function will run
     value10: function() {
       // this.answer = 'Waiting for you to stop typing...'
+      this.elements = [];
+      this.arrayOfCircle = [];
       this.drawHistoryRoute();
     },
     value8: function(newval) {
@@ -195,8 +202,41 @@ export default {
         this.clearData();
       }
     },
-    lengthOfElement(newVal){
-      alert(newVal);
+    lengthOfElement(newVal) {
+      // alert(newVal);
+      console.log("length of Element: ", newVal);
+    },
+    async lengthOfCircle(newVal, oldVal) {
+      console.log("length of circle: ", newVal);
+      var i;
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
+      let vm = this;
+      // for (i = vm.arrayOfCircle.length - 1; i >= 0; --i) {
+      //       // console.log("Test circle: ", vm.arrayOfCircle[i]);
+      //       // console.log("length of Circle: ", vm.arrayOfCircle.length);
+      //       // if (context.isPointInPath(vm.arrayOfCircle[i], x, y, "nonzero")) {
+      //         vm.arrayOfCircle.splice(i, 1);
+      //       // }
+      //     }
+      if (parseInt(newVal) < parseInt(oldVal)) {
+        await clearMap();
+        await reDrawmap();
+        setTimeout(() => {
+          for (i = 0; i < vm.arrayOfCircle.length; i++) {
+            context.fill(vm.arrayOfCircle[i], "nonzero");
+            context.stroke(vm.arrayOfCircle[i], "nonzero");
+          }
+        }, 100);
+      }
+      async function reDrawmap() {
+        // context.clearRect(0, 0, canvas.width, canvas.height);
+        vm.initMap();
+      }
+      async function clearMap() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        // vm.initMap();
+      }
     },
   },
   // watch: {
@@ -437,8 +477,8 @@ export default {
         context.strokeStyle = "#003300";
         context.stroke(vm.arrayOfCircle[index10], "nonzero");
         // // if(tempX != element.x){
-        console.log("Circle: ", vm.arrayOfCircle[index10]);
-        console.log("length of Circle: ", vm.arrayOfCircle.length);
+        // console.log("Circle: ", vm.arrayOfCircle[index10]);
+        // console.log("length of Circle: ", vm.arrayOfCircle.length);
         // context.fillRect(element.left, element.top, element.width, element.height);
         // context.beginPath();
         // context.arc(
@@ -474,15 +514,20 @@ export default {
         "click",
         function(event) {
           var x = event.pageX - elemLeft,
-            y = event.pageY - elemTop,
-            i;
-          for (i = vm.arrayOfCircle.length - 1; i >= 0; --i) {
-            console.log("Test circle: ", vm.arrayOfCircle[i]);
-            console.log("length of Circle: ", vm.arrayOfCircle.length);
-            // if (context.isPointInPath(vm.arrayOfCircle[i], x, y, "nonzero")) {
-            //   vm.arrayOfCircle.splice(i, 1);
-            // }
-          }
+            y = event.pageY - elemTop;
+
+          // for (i = vm.arrayOfCircle.length - 1; i >= 0; --i) {
+          //   console.log("Test circle: ", vm.arrayOfCircle[i]);
+          //   console.log("length of Circle: ", vm.arrayOfCircle.length);
+          //   if (context.isPointInPath(vm.arrayOfCircle[i], x, y, "nonzero")) {
+          //     vm.arrayOfCircle.splice(i, 1);
+          //   }
+          // }
+          // context.clearRect(0, 0, canvas.width, canvas.height);
+          // for (i = 0; i < vm.arrayOfCircle.length; i++) {
+          //   context.fill(vm.arrayOfCircle[i], "nonzero");
+          //   context.stroke(vm.arrayOfCircle[i], "nonzero");
+          // }
           // Collision detection between clicked offset and element.
           vm.elements.forEach(function(element) {
             if (
