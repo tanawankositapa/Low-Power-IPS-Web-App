@@ -160,6 +160,11 @@ export default {
         return this.arrayOfCircle.length;
       }
     },
+    nameOfResponsePosition() {
+      if (this.responsePosition != {}) {
+        return this.responsePosition.name;
+      }
+    },
   },
   components: {
     // NeuralModel,
@@ -168,8 +173,10 @@ export default {
     // whenever question changes, this function will run
     value10: function() {
       // this.answer = 'Waiting for you to stop typing...'
+      /**เมื่อมีการเพิ่ม ลด user ที่ต้องการแสดง มันจะ push circle วาด history ใหม่ */
       this.elements = [];
       this.arrayOfCircle = [];
+
       this.drawHistoryRoute();
     },
     value8: function() {
@@ -179,13 +186,21 @@ export default {
       console.log("This element: ", this.elements);
       this.drawHistoryRoute();
     },
+    nameOfResponsePosition(newVal) {
+      alert(newVal);
+    },
+    responsePosition(newVal) {
+      // console.log("newVal",newVal);
+      this.currentElements = [];
+      this.getPredictionData();
+    },
     async isShowRoute(newVal) {
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
       var i;
       let vm = this;
       // if (parseInt(newVal) < parseInt(oldVal)) {
-        
+
       // }
       async function reDrawmap() {
         // context.clearRect(0, 0, canvas.width, canvas.height);
@@ -196,11 +211,11 @@ export default {
         // vm.initMap();
       }
       // alert(newVal);
-      if(newVal == "On"){
+      if (newVal == "On") {
         // alert(newVal);
         this.checkElements();
       }
-      if(newVal == "Off"){
+      if (newVal == "Off") {
         // this.clearData();
         clearMap();
         await reDrawmap();
@@ -215,12 +230,15 @@ export default {
         // this.drawHistoryRoute();
       }
     },
-    lengthOfValue10(newVal, oldVal) {
+    async lengthOfValue10(newVal, oldVal) {
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
+      let vm = this;
       // alert(`yes, computed property changed: ${newVal}`)
       // console.log("newval: ",parseInt(newVal));
       // console.log("oldval: ",parseInt(oldVal));
       console.log("This element: ", this.elements);
-      if (parseInt(newVal) < parseInt(oldVal)) {
+      // if (parseInt(newVal) < parseInt(oldVal)) {
         //  alert("Uncheck");
         if (this.value10 != null) {
           // console.log("lenght ", this.value10.length);
@@ -231,22 +249,33 @@ export default {
            * แล้วไปลบจุดของ user ที่หายไป
            * 2. ตรวจสอบว่าเหลือ user คนไหนบ้างใน value10 แล้ว clear map แล้ววาดใหม่เท่าที่เหลือ
            * */
-
-          for (var index in this.userOptionsForDropdown) {
-            var index2 = this.value10.findIndex(
-              (x) => x.name === this.userOptionsForDropdown[index].name
-            );
-            if (index2 == -1) {
-              console.log(
-                "This name is not in value10: ",
-                this.userOptionsForDropdown[index].name
-              );
-            }
+          await clearMap();
+          await reDrawmap();
+          this.currentElements = [];
+          this.getPredictionData();
+          async function reDrawmap() {
+            // context.clearRect(0, 0, canvas.width, canvas.height);
+            vm.initMap();
           }
+          async function clearMap() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            // vm.initMap();
+          }
+          // for (var index in this.userOptionsForDropdown) {
+          //   var index2 = this.value10.findIndex(
+          //     (x) => x.name === this.userOptionsForDropdown[index].name
+          //   );
+          //   if (index2 == -1) {
+          //     console.log(
+          //       "This name is not in value10: ",
+          //       this.userOptionsForDropdown[index].name
+          //     );
+          //   }
+          // }
 
           // this.drawHistoryRoute();
         }
-      }
+      // }
     },
     valueOfValue8(newVal) {
       // alert(`yes, computed property changed: ${newVal}`)
@@ -377,15 +406,25 @@ export default {
         if (index < objectLength) {
           // console.log("Testis: ",index);
           // console.log("Test Element: ", this.elements[index].past);
+          // console.log("Test Element: ", this.elements[index]);
           // console.log("Oblength: ",objectLength);
           // console.log("Index: ",typeof(index));
-          var currentPast, nextPast, currentX, currentY, nextX, nextY;
+          var currentPast,
+            nextPast,
+            currentX,
+            currentY,
+            nextX,
+            nextY,
+            currentUser,
+            nextUser;
           currentPast = this.elements[index].past;
           nextPast = this.elements[index + 1].past;
           currentX = this.elements[index].x;
           nextX = this.elements[index + 1].x;
           currentY = this.elements[index].y;
           nextY = this.elements[index + 1].y;
+          currentUser = this.elements[index].user;
+          nextUser = this.elements[index + 1].user;
           // console.log("CurrentContext: ", context);
           // console.log("CurrentPast: ", currentPast);
           // console.log("NextPast: ", nextPast);
@@ -396,19 +435,20 @@ export default {
           if (currentX != nextX || currentY != nextY) {
             // this.canvas_arrow(context,currentX,currentY,nextX,nextY)
             // this.drawLineWithArrows(currentX,currentY,nextX,nextY,5,8,false,true);
-
-            /**reverse logic */
-            this.drawLineWithArrows(
-              nextX,
-              nextY,
-              currentX,
-              currentY,
-              5,
-              8,
-              false,
-              true
-            );
-            // console.log("Prepare for chaos");
+            if (currentUser == nextUser) {
+              /**reverse logic */
+              this.drawLineWithArrows(
+                nextX,
+                nextY,
+                currentX,
+                currentY,
+                5,
+                8,
+                false,
+                true
+              );
+              // console.log("Prepare for chaos");
+            }
           }
         }
       }
@@ -750,10 +790,12 @@ export default {
 
     getPredictionData() {
       var bh = 650;
+      // console.log("Response: ",this.responsePosition);
       this.posX = this.responsePosition.ypred[0];
       this.posY = this.responsePosition.ypred[1];
-      // console.log("PosX: ", this.posX);
-      // console.log("PosY: ", this.posY);
+      console.log("PosX: ", this.posX);
+      console.log("PosY: ", this.posY);
+      // console.log("Current Ele: ", this.currentElements == []);
       if (this.currentElements == []) {
         this.currentElements.push({
           colour: "#05EFFF",

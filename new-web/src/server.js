@@ -107,8 +107,8 @@ var url = "/src";
     floor = 5;
   }
   var mac = "E0:D9:DA:22:34:1B";
-  var name = "Somchai Kositapa";
-  // var name = "Arpa Kositapa";
+  // var name = "Somchai Kositapa";
+  var name = "Arpa Kositapa";
   var trackerId = "n00001";
   var company = "";
   var department = "Agile & DevOps";
@@ -118,8 +118,8 @@ var url = "/src";
   // var fence ="",name,floor,restrictFor;
 
   var rssi = [
-    // [-48, -61, -65, -67, -68, -82], //Position (1,1)
-    [-54, -62, -62, -69, -70, -75], //Position (2,1)
+    [-48, -61, -65, -67, -68, -82], //Position (1,1)
+    // [-54, -62, -62, -69, -70, -75], //Position (2,1)
     // [-48, -67, -53, -63, -72, -71],
     // [-51, -70, -65, -83, -69, -89],
   ];
