@@ -10,21 +10,46 @@
       <p v-show="!isCompanyNull">บริษัท {{ company }}</p>
       <!-- <p>{{value8.code}}</p> -->
       <p>ตำแหน่ง {{ testTime }} นาทีที่ผ่านมา</p>
-      <p>{{ checkElements() }}</p>
+      <!-- <p>{{ checkElements() }}</p> -->
     </Dialog>
     <!-- <i class="pi pi-check" @click="toggle" ></i> -->
     <!-- <p >{{drawHistoryRoute()}}</p> -->
     <div class="p-field p-col-12 p-md-4">
-      <span class="p-float-label">
-        <Dropdown
-          id="dropdown"
-          v-model="value8"
-          :options="timeOptionsForDropdown"
-          optionLabel="time"
-        />
-        <label for="dropdown">ประวัติตำแหน่ง</label>
+      <span class="p-float-label ">
+        <div class="p-d-inline p-mr-2">
+          <Dropdown
+            id="dropdown"
+            v-model="value8"
+            :options="timeOptionsForDropdown"
+            optionLabel="time"
+            placeholder="ประวัติตำแหน่ง"
+          />
+        </div>
+        <!-- <label for="dropdown">ประวัติตำแหน่ง</label> -->
+        <div class="p-d-inline">
+          <MultiSelect
+            v-model="value10"
+            :options="userOptionsForDropdown"
+            optionLabel="name"
+            placeholder="เลือกบุคคล"
+            :filter="true"
+            class="multiselect-custom"
+          >
+          </MultiSelect>
+        </div>
+        <div class="p-d-inline">
+          <h5>แสดงเส้นทาง</h5>
+          <SelectButton
+            id="selectButton"
+            v-model="isShowRoute"
+            :options="optionsForSelectButton"
+          />
+          <!-- <label for="selectButton">g</label> -->
+        </div>
       </span>
+
       <span class="p-float-label">
+        <!-- <RadioButton name="city" value="showRoute" v-model="isShowRoute" /> -->
         <!-- <Dropdown
           id="dropdown"
           v-model="value9"
@@ -37,17 +62,8 @@
           
         </Listbox> -->
       </span>
-
-      <MultiSelect
-        v-model="value10"
-        :options="userOptionsForDropdown"
-        optionLabel="name"
-        placeholder="เลือกบุคคล"
-        :filter="true"
-        class="multiselect-custom"
-      >
-      </MultiSelect>
     </div>
+
     <div class="canvasArea">
       <canvas ref="myCanvas" width="500" height="650">
         Your browser does not support the HTML5 canvas tag.
@@ -91,7 +107,8 @@ export default {
       isDepartmentNull: false,
       value8: null,
       value10: [],
-
+      isShowRoute: "Off",
+      optionsForSelectButton: ["Off", "On"],
       timeOptionsForDropdown: [
         { time: "ล้างข้อมูล", code: "0" },
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
@@ -155,12 +172,48 @@ export default {
       this.arrayOfCircle = [];
       this.drawHistoryRoute();
     },
-    value8: function(newval) {
+    value8: function() {
       // this.answer = 'Waiting for you to stop typing...'
       this.elements = [];
       this.arrayOfCircle = [];
       console.log("This element: ", this.elements);
       this.drawHistoryRoute();
+    },
+    async isShowRoute(newVal) {
+      var canvas = this.$refs.myCanvas;
+      var context = canvas.getContext("2d");
+      var i;
+      let vm = this;
+      // if (parseInt(newVal) < parseInt(oldVal)) {
+        
+      // }
+      async function reDrawmap() {
+        // context.clearRect(0, 0, canvas.width, canvas.height);
+        vm.initMap();
+      }
+      async function clearMap() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        // vm.initMap();
+      }
+      // alert(newVal);
+      if(newVal == "On"){
+        // alert(newVal);
+        this.checkElements();
+      }
+      if(newVal == "Off"){
+        // this.clearData();
+        clearMap();
+        await reDrawmap();
+        setTimeout(() => {
+          console.log(vm.arrayOfCircle);
+          for (i = 0; i < vm.arrayOfCircle.length; i++) {
+            context.fill(vm.arrayOfCircle[i], "nonzero");
+            context.stroke(vm.arrayOfCircle[i], "nonzero");
+          }
+        }, 300);
+        this.checkElements();
+        // this.drawHistoryRoute();
+      }
     },
     lengthOfValue10(newVal, oldVal) {
       // alert(`yes, computed property changed: ${newVal}`)
@@ -228,6 +281,7 @@ export default {
             context.stroke(vm.arrayOfCircle[i], "nonzero");
           }
         }, 100);
+        this.checkElements();
       }
       async function reDrawmap() {
         // context.clearRect(0, 0, canvas.width, canvas.height);
@@ -718,7 +772,7 @@ export default {
     },
     fetchDataFromBackend() {
       axios
-        .get("http://b9f077fdddc8.ngrok.io")
+        .get("http://edf898226126.ngrok.io")
         // .then(response => (this.info = response))
         .then((response) => (this.responsePosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -727,7 +781,7 @@ export default {
     },
     fetchHistoryFromBackend() {
       axios
-        .get("http://b9f077fdddc8.ngrok.io/historyroute")
+        .get("http://edf898226126.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))

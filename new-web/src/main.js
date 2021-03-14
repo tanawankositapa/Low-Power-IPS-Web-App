@@ -26,6 +26,7 @@ import OverlayPanel from "primevue/overlaypanel";
 import Dropdown from 'primevue/dropdown';
 import Listbox from 'primevue/listbox';
 import MultiSelect from 'primevue/multiselect';
+import SelectButton from 'primevue/selectbutton';
 import router from './router'
 
 const app = createApp(App);
@@ -50,4 +51,5 @@ app.component("OverlayPanel", OverlayPanel);
 app.component("Dropdown",Dropdown);
 app.component("Listbox",Listbox);
 app.component("MultiSelect", MultiSelect);
+app.component("SelectButton",SelectButton);
 app.mount('#app');
