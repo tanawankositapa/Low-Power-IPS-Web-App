@@ -13,7 +13,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 // อันนี้ อาจะไม่ต้องใช้ ถ้าไม่ได้ encode url มา
 app.use(bodyParser.urlencoded({ extended: true }));
-
+/** จะได้ไม่ต้องใช้ extension */
+const allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  next();
+}
+app.use(allowCrossDomain)
 // ประกาศ object mongoose เพื่อที่จะใช้กับ mongodb
 var mongoose = require("mongoose");
 // ถ้าจะ save อย่างอื่นนอกจาก string จะต้องประกาศ type แบบนี้
@@ -47,6 +54,7 @@ var userSchema = new mongoose.Schema({
   company: String,
   trackerid: String,
   macaddress: String,
+  alertstatuslevel: Number,
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var userModel = mongoose.model("user_table", userSchema);
@@ -112,6 +120,7 @@ var url = "/src";
   var trackerId = "n00001";
   var company = "";
   var department = "Agile & DevOps";
+  var alertStatusLevel = 0;
   // var department = "DevOps";
   // var department = "Infras";
   // var isInsideCompany = true;
@@ -253,8 +262,9 @@ app.get("/", async (req, res) => {
           var dt = new Date();
           if (department != restrictForDepartment){
             isAlert = true
-            
-            // var saveData = new alertModel({
+            console.log("Alert status level: ",alertStatusLevel);
+            if (alertStatusLevel == 4){ // อยู่ในพื้นที่ต้องห้าม 2 นาที
+                // var saveData = new alertModel({
             //   name: name,
             //   trackerid: trackerId,
             //   areaname: tempAreaName,
@@ -274,6 +284,10 @@ app.get("/", async (req, res) => {
             //       console.log("Alert Save Complete");
             //     }
             //   });
+            }
+            else{
+              alertStatusLevel = alertStatusLevel+1
+            }
           }else{
             isAlert = false
           }
@@ -455,6 +469,7 @@ app.get("/", async (req, res) => {
   //       company = user.company;
   //       trackerId = user.trackerid;
   //       macAddress = user.macaddress;
+  //      alertStatusLevel = user.alertstatuslevel;
   //     });
   //     console.log("Name: ",name);
   //     console.log("Is Employee: ",isEmployee);
@@ -594,7 +609,9 @@ app.post("/register", (req,res) =>{
   var company = req.body.data.company;
   var trackerId = req.body.data.trackerid;
   var macaddress = req.body.data.macaddress;
+  var alertStatusLevel = req.body.data.alertstatuslevel;
   /** ในอนาคตเราต้องมีการตรวจสอบด้วยว่า มีการลงทะเบียนคนนี้ไปแล้วหรือยัง ถ้ามี แล้วมีการลงทะเบียนซ้ำ ให้ทำการอัพเดท */
+  /** เดี๋ยวมาดูด้วยว่าเป็น staffModel หรือ userModel แต่น่าจะเป็น staffModel */
   // userModel.findOne({ username: staffUsername, password: staffPassword }, function(err, user) {
   //   // console.log();
   //   if (err) console.log(err);
@@ -614,60 +631,36 @@ app.post("/register", (req,res) =>{
   //   }
   // });
   
-    // userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress}, function(err, user) {
+    userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress, alertstatuslevel: alertStatusLevel}, function(err, user) {
 
-    // // console.log();
-    // if (err) console.log(err);
-    // if (user == null){
-    //     var saveData = new userModel({
-    //       name: name,
-    //       isemployee: isEmployee,
-    //       department: department,
-    //       company: company,
-    //       trackerid: trackerId,
-    //       macaddress: macaddress,
-    //   }).save(function(err, result) {
-    //     if (err) throw err;
-    //     if (result) {
+    // console.log();
+    if (err) console.log(err);
+    if (user == null){
+        var saveData = new userModel({
+          name: name,
+          isemployee: isEmployee,
+          department: department,
+          company: company,
+          trackerid: trackerId,
+          macaddress: macaddress,
+          alertstatuslevel: alertStatusLevel,
+      }).save(function(err, result) {
+        if (err) throw err;
+        if (result) {
           
-    //       console.log("Save Complete");
-    //       console.log(result);
-    //     }
-    //   });
-    // }
-    // else {
-    //   console.log("Update data complete!");
-    //   console.log("User: ",user);
-    //   // if (user == null){
-    //   //   console.log("Credential failed");
-    //   //   res.send(false);
-    //   // }else{
-    //   //   console.log("Login Success");
-    //   //   res.send(true);
-    //   // }
-    //   // console.log("Area Name: ",tempLocationName);
-    //   // console.log("Hoho: ",username);
-    //   // var objectLength = Object.keys(username).length;
-    //   // console.log("Number of People: ",objectLength);
-    //   // console.log(username);
-    // }
-    // });
+          console.log("Save Complete");
+          console.log(result);
+        }
+      });
+    }
+    else {
+      console.log("Update data complete!");
+      console.log("User: ",user);
+      
+    }
+    });
 
-    // // var saveData = new userModel({
-    // //     name: name,
-    // //     isemployee: isEmployee,
-    // //     department: department,
-    // //     company: company,
-    // //     trackerid: trackerId,
-    // //     macaddress: macaddress,
-    // // }).save(function(err, result) {
-    // //   if (err) throw err;
-    // //   if (result) {
-        
-    // //     console.log("Save Complete");
-    // //     console.log(result);
-    // //   }
-    // // });
+    
   
 });
 

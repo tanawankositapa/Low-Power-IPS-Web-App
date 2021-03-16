@@ -19,17 +19,18 @@ const routes = [
     
   },
   {
-    path: "/register",
-    name: "Register",
-    component: Register,
-    
-  },
-  {
     path: "/information",
     name: "Information",
     component: Information,
-    
+    alias: "/information",
   },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
+    alias: "/register",
+  }
+  
   
 ]
 

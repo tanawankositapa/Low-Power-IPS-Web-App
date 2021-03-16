@@ -22,7 +22,7 @@
                                 <router-link :to="{ name: 'Register' }" ><Button class="navBtn p-mt-2" label="Register" icon="pi pi-user-plus" iconPos="left" /></router-link>
                                 <Button class="navBtn p-mt-2" label="Log out" icon="pi pi-sign-out" iconPos="left" @click="logoutHandle"/> 
                             <!-- ในอนาคตเราจะต้องทำบางอย่างตอน logout เราจึงให้มัน route ผ่าน onclick function ดีกว่า จะได้เขียน logic เพิ่มไปได้ภายหลัง เช่น การตั้งสภานะเป็น logout -->
-                        
+                            
                     
                 </Sidebar>
 
@@ -47,6 +47,17 @@ export default {
     methods: {
         logoutHandle(){
             this.$router.push("/")
+        },
+    },
+    watch: {
+        '$route' (to, from){
+            console.log("to ",to);
+            console.log("from ",from);
+            /**เพราะมันบัคอะไรไม่รู้ เลยต้องทำแบบนี้ไป */
+            if (from.path == "/information"){
+                // alert("from info");
+                this.$router.go();
+            }
         }
     },
 }
