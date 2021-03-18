@@ -51,7 +51,7 @@
                 }}
               </h3>
               <!-- {{test(index)}} -->
-              <Chart type="bar" :data="basicData[index]" />
+              <Chart type="bar" :data="basicData[index]" width="700" height="300"/>
               <!-- เราจะต้องอ้างอิงด้วย slotProps.data.name ก็อาจจะให้มัน insert object เข้าไปใน basicData โดยinsert slotProps.data.name เป็น key เข้าไป -->
             </div>
           </template>

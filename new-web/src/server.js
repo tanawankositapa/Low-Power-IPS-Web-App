@@ -15,12 +15,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 /** จะได้ไม่ต้องใช้ extension */
 const allowCrossDomain = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
   next();
-}
-app.use(allowCrossDomain)
+};
+app.use(allowCrossDomain);
 // ประกาศ object mongoose เพื่อที่จะใช้กับ mongodb
 var mongoose = require("mongoose");
 // ถ้าจะ save อย่างอื่นนอกจาก string จะต้องประกาศ type แบบนี้
@@ -59,7 +59,6 @@ var userSchema = new mongoose.Schema({
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var userModel = mongoose.model("user_table", userSchema);
 
-
 // กำหนด metadata ของ table area_table
 var alertSchema = new mongoose.Schema({
   name: String,
@@ -71,7 +70,6 @@ var alertSchema = new mongoose.Schema({
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var alertModel = mongoose.model("alert_table", alertSchema);
 
-
 // กำหนด metadata ของ table area_table
 var locationSchema = new mongoose.Schema({
   xy: [],
@@ -82,7 +80,6 @@ var locationSchema = new mongoose.Schema({
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var locationModel = mongoose.model("location_table", locationSchema);
-
 
 var staffSchema = new mongoose.Schema({
   username: String,
@@ -99,39 +96,38 @@ var workTimeSchema = new mongoose.Schema({
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
 var workTimeModel = mongoose.model("worktime_table", workTimeSchema);
 
-
 const { PythonShell } = require("python-shell");
 const path = require("path");
 const { Log } = require("@tensorflow/tfjs");
 var url = "/src";
 
 /**
-   * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload (MAC, RSSI, Major, Minor)
-   */
-  var major = 1;
-  var minor = 5;
-  var floor;
-  if (major === 1 && minor === 5) {
-    floor = 5;
-  }
-  var mac = "E0:D9:DA:22:34:1B";
-  // var name = "Somchai Kositapa";
-  var name = "Arpa Kositapa";
-  var trackerId = "n00001";
-  var company = "";
-  var department = "Agile & DevOps";
-  var alertStatusLevel = 0;
-  // var department = "DevOps";
-  // var department = "Infras";
-  // var isInsideCompany = true;
-  // var fence ="",name,floor,restrictFor;
+ * ในอนาคต ตัวแปรพวกนี่้จะถูก extract มาจาก payload (MAC, RSSI, Major, Minor)
+ */
+var major = 1;
+var minor = 5;
+var floor;
+if (major === 1 && minor === 5) {
+  floor = 5;
+}
+var mac = "E0:D9:DA:22:34:1B";
+// var name = "Somchai Kositapa";
+var name = "Arpa Kositapa";
+var trackerId = "n00001";
+var company = "";
+var department = "Agile & DevOps";
+var alertStatusLevel = 0;
+// var department = "DevOps";
+// var department = "Infras";
+// var isInsideCompany = true;
+// var fence ="",name,floor,restrictFor;
 
-  var rssi = [
-    [-48, -61, -65, -67, -68, -82], //Position (1,1)
-    // [-54, -62, -62, -69, -70, -75], //Position (2,1)
-    // [-48, -67, -53, -63, -72, -71],
-    // [-51, -70, -65, -83, -69, -89],
-  ];
+var rssi = [
+  [-48, -61, -65, -67, -68, -82], //Position (1,1)
+  // [-54, -62, -62, -69, -70, -75], //Position (2,1)
+  // [-48, -67, -53, -63, -72, -71],
+  // [-51, -70, -65, -83, -69, -89],
+];
 
 app.get("/", async (req, res) => {
   /**
@@ -144,7 +140,7 @@ app.get("/", async (req, res) => {
    * 6. นำตำแหน่งที่ได้ไปทำ Geofencing ผ่าน PythonShell
    * 7. ถ้ารู้แล้วว่า user อยู่ในตำแหน่งไหน ให้เช็คต่อว่า ตำแหน่งนั้นมัน restrict รึเปล่า โดยการดูจาก restrictfor ของ document นั้น
    * 8. ถ้าละเมิดให้บันทึกค่าลงใน alert_tables
-   * 
+   *
    * ในอนาคต
    * 8. ถ้าละเมิดให้ปรับสภานะของ user เป็น warning ถ้ามีการละเมิดอีกครั้งภายหลัง จึงบันทึกลงใน alert_tables
    * 9. อย่าลืมบันทึกตำแหน่งแต่ละครั้งของ user เอาไว้ด้วย ยังไม่แน่ใจว่าจะบันทึกทุก ๆ กี่นาที
@@ -152,9 +148,6 @@ app.get("/", async (req, res) => {
    * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
    */
 
-
-  
-  
   const model = await tfjs.loadLayersModel(
     "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
   );
@@ -162,15 +155,17 @@ app.get("/", async (req, res) => {
   const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
   const ypred = prediction.dataSync();
   // res.send(ypred)
-  res.json({data:{
-    ypred:ypred,
-    name:name,
-    department:department,
-    company:company,
-  }})
+  res.json({
+    data: {
+      ypred: ypred,
+      name: name,
+      department: department,
+      company: company,
+    },
+  });
   // console.log(ypred);
 
-  var database =[];
+  var database = [];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
    * (เหตุเกิดจากการที่ใส่ argument เป็น [[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]] แล้วมันเพี้ยนไปเป็น tuple ใน python)
@@ -178,10 +173,10 @@ app.get("/", async (req, res) => {
    * แล้วเราต้องการจะเอาค่าจาก DB ไปใส่เป็น argument ถ้าไม่ใส่ await แล้วค่า var fence จะเป็นตามค่า default มัน เช่น undefined หรือ ""
    * ทั้งนี้เกิดจากการที่ javascript เป็น asynchronous programming คือระหว่างรอ areaModel.find() มันก็ไปทำส่วนถัดไปซะแล้ว ~ ~
    */
-  await areaModel.find({"floor" : floor}, function(err, area) { 
+  await areaModel.find({ floor: floor }, function(err, area) {
     if (err) console.log(err);
     else {
-      database = area
+      database = area;
     }
   });
   // var fenceString
@@ -197,11 +192,16 @@ app.get("/", async (req, res) => {
    */
   var trulyPath = path.join(process.cwd(), url);
   // console.log(trulyPath);
-  var areaName, restrictForDepartment, isAlert, resultFromPython, readyToBreak, locationAreaName;
-  
-  var database2
+  var areaName,
+    restrictForDepartment,
+    isAlert,
+    resultFromPython,
+    readyToBreak,
+    locationAreaName;
+
+  var database2;
   // setInterval(async function() {
-  //   locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+  //   locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) {
   //        if (err) console.log(err);
   //        else {
   //         //  console.log("locationAreaName: ",locationAreaName);
@@ -214,21 +214,21 @@ app.get("/", async (req, res) => {
   //      }, 5000); //run this thang every ... seconds
   // setTimeout(() => {
   //   // setInterval(res.send(ypred), 5*1000);
-      
+
   //   }, 6000);
-  async function geoFence(){
+  async function geoFence() {
     console.log("Database:", database);
-    for (var property in database){
+    for (var property in database) {
       // console.log(`${database[property].fence}`);
       // ค่าที่ดึงออกมาจาก DB เป็น Object เราจึงต้องแปลงเป็น String ก่อน
-      readyToBreak = false
-      
+      readyToBreak = false;
+
       // console.log("Fence: ",database[property].fence);
       // console.log("Restrictfor: ",database[property].restrictfor);
-      
-      let tempRestrict = database[property].restrictfor
-      let tempFence = database[property].fence
-      let fenceString = JSON.stringify(tempFence)
+
+      let tempRestrict = database[property].restrictfor;
+      let tempFence = database[property].fence;
+      let fenceString = JSON.stringify(tempFence);
       // console.log("Fencestring ",fenceString);
       let options = {
         mode: "text",
@@ -237,66 +237,65 @@ app.get("/", async (req, res) => {
         args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
         // args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
       };
-      let tempAreaName = await database[property].name
-      
+      let tempAreaName = await database[property].name;
+
       PythonShell.run("geofencing.py", options, function(err, result) {
         // isAlert = false
         // console.log("Inside Fencestring ",fenceString);
         if (err) throw err;
         // result is an array consisting of messages collected during execution of script.
-        var tempAns = result.toString()
+        var tempAns = result.toString();
         console.log("result: ", tempAns);
         // console.log("Inside Fence: ",database[property].fence);
         // console.log("Inside Restrictfor: ",tempRestrict);
-        console.log("Area: ",tempAreaName);
-        if (tempAns === "True"){
+        console.log("Area: ", tempAreaName);
+        if (tempAns === "True") {
           // console.log("Holy");
           // timer
-          locationAreaName = tempAreaName
-          areaName = database[property].name
-          restrictForDepartment = tempRestrict
+          locationAreaName = tempAreaName;
+          areaName = database[property].name;
+          restrictForDepartment = tempRestrict;
           // console.log("Area name: ",areaName);
-          console.log("User Department: ",department);
-          console.log("Area Restrict for: ",restrictForDepartment);
+          console.log("User Department: ", department);
+          console.log("Area Restrict for: ", restrictForDepartment);
           // console.log("Check Restrictfor: ",restrictForDepartment);
           var dt = new Date();
-          if (department != restrictForDepartment){
-            isAlert = true
-            console.log("Alert status level: ",alertStatusLevel);
-            if (alertStatusLevel == 4){ // อยู่ในพื้นที่ต้องห้าม 2 นาที
-                // var saveData = new alertModel({
-            //   name: name,
-            //   trackerid: trackerId,
-            //   areaname: tempAreaName,
-            //   floor: floor,
-            //   timestamp: `${
-            //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
-            //     dt.getDate().toString().padStart(2, '0')}/${
-            //     dt.getFullYear().toString().padStart(4, '0')} ${
-            //     dt.getHours().toString().padStart(2, '0')}:${
-            //     dt.getMinutes().toString().padStart(2, '0')}:${
-            //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
-  
-            //   }).save(function(err, result) {
-            //     if (err) throw err;
-            //     if (result) {
-            //       console.log(result);
-            //       console.log("Alert Save Complete");
-            //     }
-            //   });
+          if (department != restrictForDepartment) {
+            isAlert = true;
+            console.log("Alert status level: ", alertStatusLevel);
+            if (alertStatusLevel == 4) {
+              // อยู่ในพื้นที่ต้องห้าม 2 นาที
+              // var saveData = new alertModel({
+              //   name: name,
+              //   trackerid: trackerId,
+              //   areaname: tempAreaName,
+              //   floor: floor,
+              //   timestamp: `${
+              //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
+              //     dt.getDate().toString().padStart(2, '0')}/${
+              //     dt.getFullYear().toString().padStart(4, '0')} ${
+              //     dt.getHours().toString().padStart(2, '0')}:${
+              //     dt.getMinutes().toString().padStart(2, '0')}:${
+              //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
+              //   }).save(function(err, result) {
+              //     if (err) throw err;
+              //     if (result) {
+              //       console.log(result);
+              //       console.log("Alert Save Complete");
+              //     }
+              //   });
+            } else {
+              alertStatusLevel = alertStatusLevel + 1;
             }
-            else{
-              alertStatusLevel = alertStatusLevel+1
-            }
-          }else{
-            isAlert = false
+          } else {
+            isAlert = false;
           }
-          console.log("Alert: ",isAlert);
+          console.log("Alert: ", isAlert);
           // async function f3() {
           //   readyToBreak = await true;
           //   // console.log(y); // 20
           // }
-  
+
           // f3()
           // readyToBreak = true;
           //   if(readyToBreak){
@@ -305,7 +304,7 @@ app.get("/", async (req, res) => {
           //   }else{
           //     console.log("not break");
           //   }
-  
+
           // var saveData = new locationModel({
           //   xy: [2, 3],
           //   areaname: tempAreaName,
@@ -325,7 +324,7 @@ app.get("/", async (req, res) => {
           //       console.log("Location Save Complete");
           //     }
           //   });
-        }else{
+        } else {
           // console.log("Moly");
         }
         // console.log("depart: ",department);
@@ -341,11 +340,9 @@ app.get("/", async (req, res) => {
       //     console.log("Yolo");
       //   }
       // }, 3000);
-      
     }
   }
-  
-  
+
   // for (var property in lastTimeStampArray){
   //   var objectLength = Object.keys(lastTimeStampArray).length
   //   if(property < objectLength){
@@ -354,93 +351,105 @@ app.get("/", async (req, res) => {
   //     if ()
   //   }
   // }
-  var userNameArray = ["Somchai","Arpa"];
-  async function countPeopleInArea(){
-    var areaNameArray = []
-    for (var property in database){
+  var userNameArray = ["Somchai", "Arpa"];
+  async function countPeopleInArea() {
+    var areaNameArray = [];
+    for (var property in database) {
       let tempLocationName = database[property].name;
-      areaNameArray.push(tempLocationName)
+      areaNameArray.push(tempLocationName);
       // console.log(tempLocationName);
       // console.log(database[property].name);
-      await locationModel.distinct("name", { areaname: database[property].name }, function(err, username) {
+      await locationModel.distinct(
+        "name",
+        { areaname: database[property].name },
+        function(err, username) {
+          if (err) console.log(err);
+          else {
+            // console.log("Area Name: ",tempLocationName);
+            // console.log("People: ",username);
+            // var objectLength = Object.keys(username).length;
+            // console.log("Number of People: ",objectLength);
+            // console.log(username);
+            // await locationModel.distinct("areaname", { areaname: database[property].name }, function(err, username) {
+            //   if (err) console.log(err);
+            //   else {
+            //     // console.log("Area Name: ",tempLocationName);
+            //     // console.log("People: ",username);
+            //     // var objectLength = Object.keys(username).length;
+            //     // console.log("Number of People: ",objectLength);
+            //     // console.log(username);
+            //   }
+            // });
+          }
+        }
+      );
+      locationModel.find({ areaname: tempLocationName }, function(
+        err,
+        username
+      ) {
         if (err) console.log(err);
         else {
           // console.log("Area Name: ",tempLocationName);
-          // console.log("People: ",username);
+          // console.log("Hoho: ",username);
           // var objectLength = Object.keys(username).length;
           // console.log("Number of People: ",objectLength);
           // console.log(username);
-          // await locationModel.distinct("areaname", { areaname: database[property].name }, function(err, username) {
-          //   if (err) console.log(err);
-          //   else {
-          //     // console.log("Area Name: ",tempLocationName);
-          //     // console.log("People: ",username);
-          //     // var objectLength = Object.keys(username).length;
-          //     // console.log("Number of People: ",objectLength);
-          //     // console.log(username);
-          //   }
-          // });
         }
       });
-       locationModel.find({ areaname: tempLocationName }, function(err, username) {
-        if (err) console.log(err);
-        else {
-          // console.log("Area Name: ",tempLocationName);
-          // console.log("Hoho: ",username);
-          // var objectLength = Object.keys(username).length;
-          // console.log("Number of People: ",objectLength);
-          // console.log(username);
-        }
-      }); 
-      
     }
-    console.log("usernamearray ",userNameArray);
-    var summary = [], database3 =[]
-    for(var property in userNameArray){
+    console.log("usernamearray ", userNameArray);
+    var summary = [],
+      database3 = [];
+    for (var property in userNameArray) {
       // locationModel.find({ name: userNameArray[property] }.limit(1).sort( { _id : -1 } ), function(err, username) {
-        console.log("property ",property);
-        console.log("Name: ",userNameArray[property]);
-        let tempUserName = userNameArray[property]
-        await locationModel.findOne({ name: tempUserName },'name areaname timestamp',{sort: { "_id" : -1 }}, function(err, username) {
-        if (err) console.log(err);
-        else {
-          // console.log("Area Name: ",tempLocationName);
-          // console.log("Name: ",tempUserName);
-          // console.log("Hoho: ",username);
-          database3.push(username)
-          // summary.push({"name": tempUserName})
-          // var objectLength = Object.keys(username).length;
-          // console.log("Number of People: ",objectLength);
-          // console.log(username);
+      console.log("property ", property);
+      console.log("Name: ", userNameArray[property]);
+      let tempUserName = userNameArray[property];
+      await locationModel.findOne(
+        { name: tempUserName },
+        "name areaname timestamp",
+        { sort: { _id: -1 } },
+        function(err, username) {
+          if (err) console.log(err);
+          else {
+            // console.log("Area Name: ",tempLocationName);
+            // console.log("Name: ",tempUserName);
+            // console.log("Hoho: ",username);
+            database3.push(username);
+            // summary.push({"name": tempUserName})
+            // var objectLength = Object.keys(username).length;
+            // console.log("Number of People: ",objectLength);
+            // console.log(username);
+          }
         }
-      }); 
-      console.log("DB3 ",database3);
+      );
+      console.log("DB3 ", database3);
     }
     // console.log("DB32 ",database3);
     var objectLength = Object.keys(database3).length;
     // console.log(areaNameArray);
     console.log(objectLength);
-    for(var property in database3){
+    for (var property in database3) {
       console.log(database3[property].name);
-      summary.push({name: database3[property].name, areaname: database3[property].areaname, timestamp: database3[property].timestamp})
-      console.log("Summ ",summary);
+      summary.push({
+        name: database3[property].name,
+        areaname: database3[property].areaname,
+        timestamp: database3[property].timestamp,
+      });
+      console.log("Summ ", summary);
       /**ในอนาคตเราจะส่ง object นี้ไป extract ที่ frontend */
     }
   }
 
-   
-    await geoFence()
-    
+  await geoFence();
 
-    // setTimeout(async () => {
-    //  await workForceManage();
-    //  countPeopleInArea();
-    // //  await test3()
-    //   }, 5500);
-    
-      
-    // console.log("Database2 Time ", database2.timestamp);
-  
+  // setTimeout(async () => {
+  //  await workForceManage();
+  //  countPeopleInArea();
+  // //  await test3()
+  //   }, 5500);
+
+  // console.log("Database2 Time ", database2.timestamp);
 
   // function sendData() {
   // //   res.send(ypred);
@@ -454,7 +463,6 @@ app.get("/", async (req, res) => {
   //   console.log("Sent!");
   // }, 1000); //run this thang every 2 seconds
 
-  
   // // เอา mac ไปตรวจสอบว่าเป็นของ tracking ตัวไหน
   // userModel.find({"macaddress" : mac}, function(err, user) {
   //   if (err) console.log(err);
@@ -487,10 +495,10 @@ app.get("/", async (req, res) => {
   // console.log(" ");
   // var fofo =[]
   // areaModel.f
-  
-    // res.status(200).send(fence)
-    
-    res.sendStatus(200)
+
+  // res.status(200).send(fence)
+
+  res.sendStatus(200);
 });
 
 // // app.use('/',proxy('localhost:8080'))
@@ -537,7 +545,11 @@ app.post("/getval", (req, res) => {
 var myPoly = [
   // [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1] // true DevOps
   // [1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1] // false Test Automation
-  [5, 1], [3, 2], [2, 5], [4, 5], [5, 3] //false Infras
+  [5, 1],
+  [3, 2],
+  [2, 5],
+  [4, 5],
+  [5, 3], //false Infras
 ];
 
 // var saveData = new areaModel({
@@ -558,20 +570,19 @@ var myPoly = [
 //   }
 // });
 
- 
-app.post("/login", (req,res) =>{
+app.post("/login", (req, res) => {
   // console.log("full Body: ", req.body);
   var staffUsername = req.body.username;
   var staffPassword = req.body.password;
-  console.log("Username: ",staffUsername);
-  console.log("Password: ",staffPassword);
+  console.log("Username: ", staffUsername);
+  console.log("Password: ", staffPassword);
   // staffSchema.statics.findByCredentials = async (staffUsername, staffPassword) => {
   //   const staff = await staffModel.findOne({staffUsername});
   //   if (!staff) {
   //     throw new Error({ error: "Invalid login username" });
   //     console.log("Invalid login username");
   //   }
-    
+
   //   if (staffPassword != staff.password) {
   //     throw new Error({ error: "Invalid password " });
   //     console.log("Invalid login password");
@@ -579,30 +590,32 @@ app.post("/login", (req,res) =>{
   //   // return staff;
   // };
 
-  staffModel.findOne({ username: staffUsername, password: staffPassword }, function(err, user) {
-    // console.log();
-    if (err) console.log(err);
-    else {
-      if (user == null){
-        console.log("Credential failed");
-        res.send(false);
-      }else{
-        console.log("Login Success");
-        res.send(true);
+  staffModel.findOne(
+    { username: staffUsername, password: staffPassword },
+    function(err, user) {
+      // console.log();
+      if (err) console.log(err);
+      else {
+        if (user == null) {
+          console.log("Credential failed");
+          res.send(false);
+        } else {
+          console.log("Login Success");
+          res.send(true);
+        }
+        // console.log("Area Name: ",tempLocationName);
+        // console.log("Hoho: ",username);
+        // var objectLength = Object.keys(username).length;
+        // console.log("Number of People: ",objectLength);
+        // console.log(username);
       }
-      // console.log("Area Name: ",tempLocationName);
-      // console.log("Hoho: ",username);
-      // var objectLength = Object.keys(username).length;
-      // console.log("Number of People: ",objectLength);
-      // console.log(username);
     }
-  }); 
-  
+  );
 });
 
-app.post("/register", (req,res) =>{
+app.post("/register", (req, res) => {
   console.log("full Body: ", req.body);
-  console.log("Hoho: ",req.body.data.name);
+  console.log("Hoho: ", req.body.data.name);
   var name = req.body.data.name;
   var isEmployee = Boolean(req.body.data.isemployee);
   var department = req.body.data.department;
@@ -630,12 +643,22 @@ app.post("/register", (req,res) =>{
   //     // console.log(username);
   //   }
   // });
-  
-    userModel.findOneAndUpdate({name: name},{name: name, isemployee: isEmployee, department: department, company:company, trackerid:trackerId, macaddress: macaddress, alertstatuslevel: alertStatusLevel}, function(err, user) {
 
-    // console.log();
-    if (err) console.log(err);
-    if (user == null){
+  userModel.findOneAndUpdate(
+    { name: name },
+    {
+      name: name,
+      isemployee: isEmployee,
+      department: department,
+      company: company,
+      trackerid: trackerId,
+      macaddress: macaddress,
+      alertstatuslevel: alertStatusLevel,
+    },
+    function(err, user) {
+      // console.log();
+      if (err) console.log(err);
+      if (user == null) {
         var saveData = new userModel({
           name: name,
           isemployee: isEmployee,
@@ -644,55 +667,56 @@ app.post("/register", (req,res) =>{
           trackerid: trackerId,
           macaddress: macaddress,
           alertstatuslevel: alertStatusLevel,
-      }).save(function(err, result) {
-        if (err) throw err;
-        if (result) {
-          
-          console.log("Save Complete");
-          console.log(result);
-        }
-      });
+        }).save(function(err, result) {
+          if (err) throw err;
+          if (result) {
+            // res.json({status:"save"})
+            res.json({ data: { status: "save" } });
+            console.log("Save Complete");
+            console.log(result);
+          }
+        });
+      } else {
+        res.json({ data: { status: "update" } });
+        console.log("Update data complete!");
+        console.log("User: ", user);
+      }
     }
-    else {
-      console.log("Update data complete!");
-      console.log("User: ",user);
-      
-    }
-    });
-
-    
-  
+  );
 });
 
-app.get("/getemployee", (req,res) =>{
+app.get("/getemployee", (req, res) => {
   userModel.find({}, function(err, user) {
     if (err) console.log(err);
     else {
-      // console.log(user); 
-      res.json({data:user});
+      // console.log(user);
+      res.json({ data: user });
     }
-  });  
+  });
 });
 
-app.get("/alert", (req,res) =>{
+app.get("/alert", (req, res) => {
   alertModel.find({}, function(err, alert) {
     // console.log();
     if (err) console.log(err);
     else {
-      res.json({data:alert});
+      res.json({ data: alert });
     }
-  }); 
+  });
 });
 
-app.get("/worktime", (req,res) =>{
-  async function workForceManage(){
-    var timeArray = [] , areaNameArray = [], lastTimeStampArray =[], lastAreaNameArray = [];
-  //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
-    await locationModel.find({"name" : name}, function(err, location) { 
+app.get("/worktime", (req, res) => {
+  async function workForceManage() {
+    var timeArray = [],
+      areaNameArray = [],
+      lastTimeStampArray = [],
+      lastAreaNameArray = [];
+    //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) {
+    await locationModel.find({ name: name }, function(err, location) {
       if (err) console.log(err);
       else {
         // console.log("locationAreaName: ",locationAreaName);
-        console.log("Name: ",name);
+        console.log("Name: ", name);
         // console.log("location: ",location);
         database2 = location;
         // console.log("Database2 ",database2);
@@ -700,107 +724,135 @@ app.get("/worktime", (req,res) =>{
         var objectLength = Object.keys(database2).length;
         var areaNameCounter = 0;
         var minusDate;
-      /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
-      for (var property in database2){
-        let tempTimestamp = database2[property].timestamp;
-        let tempLocationName = database2[property].areaname;
-        // let tempFence = database2[property].fence
-        // let fenceString = JSON.stringify(tempFence)  
-        // console.log("Iterator: ",property); 
-        // console.log("time: ", tempTimestamp);
-        console.log("Area Name: ",tempLocationName);
-        timeArray.push(database2[property].timestamp);
-        areaNameArray.push(database2[property].areaname);
-        // if (database2[property].areaname){
+        /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
+        for (var property in database2) {
+          let tempTimestamp = database2[property].timestamp;
+          let tempLocationName = database2[property].areaname;
+          // let tempFence = database2[property].fence
+          // let fenceString = JSON.stringify(tempFence)
+          // console.log("Iterator: ",property);
+          // console.log("time: ", tempTimestamp);
+          console.log("Area Name: ", tempLocationName);
+          timeArray.push(database2[property].timestamp);
+          areaNameArray.push(database2[property].areaname);
+          // if (database2[property].areaname){
 
-        // }
-        // console.log("Outside: ",database2[property].areaname);
+          // }
+          // console.log("Outside: ",database2[property].areaname);
 
-        /** ไม่ให้ overflow */
-        if (property < objectLength){
-          // console.log("inside: ",database2[property].areaname);
-          // console.log("Database[property]: ",database2[property]);
-          // console.log("Counter: ",areaNameCounter); 
-          /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
-           * ถ้าเป็น 0 มันจะติด - และ error undefined
-          */
-          if(property != 0 && property != objectLength -1 ){
-            /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
-            if(database2[property].areaname == database2[property-1].areaname  ) {
-              areaNameCounter += 1
+          /** ไม่ให้ overflow */
+          if (property < objectLength) {
+            // console.log("inside: ",database2[property].areaname);
+            // console.log("Database[property]: ",database2[property]);
+            // console.log("Counter: ",areaNameCounter);
+            /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า)
+             * ถ้าเป็น 0 มันจะติด - และ error undefined
+             */
+            if (property != 0 && property != objectLength - 1) {
+              /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
+              if (
+                database2[property].areaname == database2[property - 1].areaname
+              ) {
+                areaNameCounter += 1;
+              }
+              /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
+              if (
+                database2[property].areaname !=
+                  database2[property - 1].areaname &&
+                property != 0
+              ) {
+                var numericProperty = parseInt(property);
+                // console.log("Exc Pro: ", numericProperty);
+                // console.log("Exc AreaNameCounter: ",areaNameCounter);
+                // console.log("TYPE: ",typeof(property));
+                // console.log("WTF: ",numericProperty - areaNameCounter);
+                // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
+                var firstTimeStamp =
+                  database2[numericProperty - areaNameCounter].timestamp;
+                var lastTimeStamp = database2[numericProperty - 1].timestamp;
+                var pastLocationName = database2[property - 1].areaname;
+                console.log("First timestamp:", firstTimeStamp);
+                console.log("Last timestamp:", lastTimeStamp);
+                const date1 = new Date(firstTimeStamp);
+                const date2 = new Date(lastTimeStamp);
+                var diff = +(
+                  Math.round(Math.abs(date1 - date2) / 1000 + "e+2") + "e-2"
+                );
+                var diffInMin, diffInHour;
+                // var diff = Math.abs(date1 - date2)/1000;
+                // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
+                // lastTimeStampArray.push(lastTimeStamp);
+                // lastAreaNameArray.push(pastLocationName);
+
+                if (diff < 60) {
+                  console.log(
+                    "User " +
+                      name +
+                      " live in the " +
+                      pastLocationName +
+                      " for " +
+                      diff +
+                      " Second"
+                  );
+                  // res.json({name: name, areaname: pastLocationName, time:diff});
+                }
+                if (diff >= 60 && diff < 3600) {
+                  diffInMin = +(Math.round(diff / 60 + "e+2") + "e-2");
+                  console.log(
+                    "User " +
+                      name +
+                      " live in the " +
+                      pastLocationName +
+                      " for " +
+                      diffInMin +
+                      " Minute"
+                  );
+                  // res.json({name: name, areaname: pastLocationName, time:diffInMin});
+                }
+                if (diff >= 3600) {
+                  diffInHour = +(Math.round(diff / 60 / 60 + "e+2") + "e-2");
+                  console.log(
+                    "User " +
+                      name +
+                      " live in the " +
+                      pastLocationName +
+                      " for " +
+                      diffInHour +
+                      " Hour(s)"
+                  );
+                  // res.json({name: name, areaname: pastLocationName, time:diffInHour});
+                }
+                // console.log(diff)
+                // var saveData = new workTimeModel({
+                //   name: name,
+                //   areaname: pastLocationName,
+                //   duration: diff,
+                // }).save(function(err, result) {
+                //   if (err) throw err;
+                //   if (result) {
+                //     console.log("Save Worktime Complete");
+                //     console.log(result);
+                //   }
+                // });
+                areaNameCounter = 1;
+              }
+            } else if (property == 0) {
+            /** กรณีเฉพาะตัวแรก */
+              areaNameCounter += 1;
+            } else if (property == objectLength - 1) {
+              // console.log("pro ",property);
+              // console.log("wf ",lastTimeStamp);
+              // console.log("wiq ",pastLocationName);
+              lastTimeStampArray.push(database2[property].timestamp);
+              lastAreaNameArray.push(database2[property].areaname);
             }
-            /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
-            if((database2[property].areaname != database2[property-1].areaname) && property != 0){
-              var numericProperty = parseInt(property)
-              // console.log("Exc Pro: ", numericProperty);
-              // console.log("Exc AreaNameCounter: ",areaNameCounter);
-              // console.log("TYPE: ",typeof(property));
-              // console.log("WTF: ",numericProperty - areaNameCounter);
-              // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
-              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
-              var lastTimeStamp = database2[numericProperty-1].timestamp
-              var pastLocationName = database2[property-1].areaname
-              console.log("First timestamp:",firstTimeStamp);
-              console.log("Last timestamp:",lastTimeStamp);
-              const date1 = new Date(firstTimeStamp);
-              const date2 = new Date(lastTimeStamp);
-              var diff = +(Math.round((Math.abs(date1 - date2)/1000) + "e+2") + "e-2");
-              var diffInMin, diffInHour
-              // var diff = Math.abs(date1 - date2)/1000;
-              // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
-              // lastTimeStampArray.push(lastTimeStamp);
-              // lastAreaNameArray.push(pastLocationName);
+          }
 
-              
-
-              if (diff < 60){
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diff+ " Second");
-                // res.json({name: name, areaname: pastLocationName, time:diff});
-              }
-              if (diff >=60 && diff <3600){
-                diffInMin = +(Math.round((diff/60) + "e+2") + "e-2")
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
-                // res.json({name: name, areaname: pastLocationName, time:diffInMin});
-              }
-              if (diff >=3600){
-                diffInHour = +(Math.round((diff/60/60) + "e+2") + "e-2")
-                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
-                // res.json({name: name, areaname: pastLocationName, time:diffInHour});
-              }
-              // console.log(diff)
-              // var saveData = new workTimeModel({
-              //   name: name,
-              //   areaname: pastLocationName,
-              //   duration: diff,
-              // }).save(function(err, result) {
-              //   if (err) throw err;
-              //   if (result) {
-              //     console.log("Save Worktime Complete");
-              //     console.log(result);
-              //   }
-              // });
-              areaNameCounter = 1
-            }
-          }
-          /** กรณีเฉพาะตัวแรก */
-         else if(property == 0){
-            areaNameCounter += 1
-          }
-          else if (property == objectLength -1){
-            // console.log("pro ",property);
-            // console.log("wf ",lastTimeStamp);
-            // console.log("wiq ",pastLocationName);
-            lastTimeStampArray.push(database2[property].timestamp);
-            lastAreaNameArray.push(database2[property].areaname);
-          }
-         
+          // console.log("Time Array: ", timeArray);
+          // console.log("WTF: ", database2[property].timestamp);
         }
-        
-        // console.log("Time Array: ", timeArray);
-        // console.log("WTF: ", database2[property].timestamp);
-      }
-      
-      // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
+
+        // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
       }
     });
     //end of find()
@@ -816,112 +868,120 @@ app.get("/worktime", (req,res) =>{
     //   return new Date(e.MeasureDate);
     // })));
     // console.log("Max DAET: ",maxDate);
-    var database3 = [] , areaWorkTimeName = [], uniqueAreaWorkTimeName = [];
-    await workTimeModel.find({"name" : name}, function(err, user) {
-      console.log("User name: ",name);
-      console.log("All location of this user: ",user);
+    var database3 = [],
+      areaWorkTimeName = [],
+      uniqueAreaWorkTimeName = [];
+    await workTimeModel.find({ name: name }, function(err, user) {
+      console.log("User name: ", name);
+      console.log("All location of this user: ", user);
       database3 = user;
-      console.log("Database3: ",database3);
+      console.log("Database3: ", database3);
       // console.log("haha ",user[0].areaname);
-    //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
-    //     if (err) res.send(err);
-    //     res.json(apartments);
-    // });
+      //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
+      //     if (err) res.send(err);
+      //     res.json(apartments);
+      // });
     });
-    for(var i in database3){
+    for (var i in database3) {
       // console.log("OO:", database3[i].areaname);
       areaWorkTimeName.push(database3[i].areaname);
     }
     // end of workForceManage()
-    function removeDuplicate(data){
-      return data.filter((value,index) => data.indexOf(value) == index);
+    function removeDuplicate(data) {
+      return data.filter((value, index) => data.indexOf(value) == index);
     }
     uniqueAreaWorkTimeName = removeDuplicate(areaWorkTimeName);
-    console.log("Unique: ",uniqueAreaWorkTimeName);
+    console.log("Unique: ", uniqueAreaWorkTimeName);
 
     // for(var i in uniqueAreaWorkTimeName){
-      // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
-      workTimeModel.aggregate(
-        [
-          {
-            $group: {
-              // _id: "$areaname",
-              "_id": {
-                "name": "$name",
-                "areaname": "$areaname"
+    // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
+    workTimeModel.aggregate(
+      [
+        {
+          $group: {
+            // _id: "$areaname",
+            _id: {
+              name: "$name",
+              areaname: "$areaname",
             },
-              total: {
-                $sum: "$duration"
-              }
-            }
-          }
-        ],
-        function(err, result) {
-          if (err) {
-            // res.send(err);
-            console.log(err);
-          } else {
-            res.json({data: result});
-            console.log("Result: ",result);
-          }
+            total: {
+              $sum: "$duration",
+            },
+          },
+        },
+      ],
+      function(err, result) {
+        if (err) {
+          // res.send(err);
+          console.log(err);
+        } else {
+          res.json({ data: result });
+          console.log("Result: ", result);
         }
-      );
+      }
+    );
     // }
   }
   workForceManage();
 });
 
-app.get("/historyroute", async (req,res) =>{
+app.get("/historyroute", async (req, res) => {
   var database4 = [];
-  var firstTimeStamp ,secondTimeStamp;
-  await locationModel.find({},'xy floor timestamp name',{sort: { "timestamp" : -1 }}, function(err, location) {
-    // console.log();
-    if (err) console.log(err);
-    else {
-      // res.json({data:alert});
-      console.log("location: ",location);
-      
-      database4 = location
+  var firstTimeStamp, secondTimeStamp;
+  await locationModel.find(
+    {},
+    "xy floor timestamp name",
+    { sort: { timestamp: -1 } },
+    function(err, location) {
+      // console.log();
+      if (err) console.log(err);
+      else {
+        // res.json({data:alert});
+        console.log("location: ", location);
+
+        database4 = location;
+      }
     }
-  }); 
-  var lengthOfDatabase4 = Object.keys(database4).length
-  var index = 0, diff;
+  );
+  var lengthOfDatabase4 = Object.keys(database4).length;
+  var index = 0,
+    diff;
   var informationArray = [];
-  while( index < lengthOfDatabase4 -1){
+  while (index < lengthOfDatabase4 - 1) {
     diff = 0;
     // console.log("firstdiff: ",diff);
     // console.log(database4[index].timestamp);
     firstTimeStamp = database4[0].timestamp;
-    secondTimeStamp = database4[index+1].timestamp;
+    secondTimeStamp = database4[index + 1].timestamp;
     immediateTimestamp = database4[index].timestamp;
     // console.log(firstTimeStamp);
     // console.log(secondTimeStamp);
     var date1 = new Date(firstTimeStamp);
     var date2 = new Date(secondTimeStamp);
     var date3 = new Date(immediateTimestamp);
-    diff = +(Math.round((Math.abs(date1 - date2)/1000/60) + "e+2") + "e-2");
+    diff = +(Math.round(Math.abs(date1 - date2) / 1000 / 60 + "e+2") + "e-2");
     diff = Math.floor(diff);
-    diff2 = +(Math.round((Math.abs(date2 - date3)/1000/60) + "e+2") + "e-2");
+    diff2 = +(Math.round(Math.abs(date2 - date3) / 1000 / 60 + "e+2") + "e-2");
     // console.log("diff: ",diff);
     // console.log("seconddiff: ",diff);
     // console.log(database4[index+1]);
     // if (diff2 >= 1){
     // if (diff2 > 0){
-      // if(diff <= 60){
-        console.log("diff: ",diff);
-        informationArray.push({
-            xy: database4[index+1].xy,
-            floor:  database4[index+1].floor,
-            past: diff,
-            name: database4[index+1].name,
-        })
-          
-      // }
+    // if(diff <= 60){
+    console.log("diff: ", diff);
+    informationArray.push({
+      xy: database4[index + 1].xy,
+      floor: database4[index + 1].floor,
+      past: diff,
+      name: database4[index + 1].name,
+    });
+
     // }
-    index = index+1
+    // }
+    index = index + 1;
   }
-  console.log("Informarayartion: ",informationArray);
-  res.json({data:informationArray});
+  console.log("Informarayartion: ", informationArray);
+  res.json({ data: informationArray });
 });
 
 // app.use('/test', require('./server.js'))
