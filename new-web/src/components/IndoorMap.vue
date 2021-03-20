@@ -137,6 +137,7 @@ export default {
         },
       ],
       currentElements: [],
+      globalArrayOfColor:[],
     };
   },
   computed: {
@@ -223,8 +224,14 @@ export default {
         setTimeout(() => {
           console.log(vm.arrayOfCircle);
           for (i = 0; i < vm.arrayOfCircle.length; i++) {
-            context.fill(vm.arrayOfCircle[i], "nonzero");
-            context.stroke(vm.arrayOfCircle[i], "nonzero");
+            console.log("Test Color: ",vm.arrayOfCircle[i].color);
+            context.beginPath();
+            context.arc(vm.arrayOfCircle[i].x,vm.arrayOfCircle[i].y,vm.arrayOfCircle[i].r,0, Math.PI * 2)
+            // context.fill(vm.arrayOfCircle[i], "nonzero");
+            context.fillStyle =vm.arrayOfCircle[i].color;
+            context.fill();
+            // context.stroke(vm.arrayOfCircle[i], "nonzero");
+            // context.closePath();
           }
         }, 300);
         this.checkElements();
@@ -307,8 +314,14 @@ export default {
       await reDrawmap();
       setTimeout(() => {
         for (i = 0; i < vm.arrayOfCircle.length; i++) {
-          context.fill(vm.arrayOfCircle[i], "nonzero");
-          context.stroke(vm.arrayOfCircle[i], "nonzero");
+         console.log("Test Color: ",vm.arrayOfCircle[i].color);
+            context.beginPath();
+            context.arc(vm.arrayOfCircle[i].x,vm.arrayOfCircle[i].y,vm.arrayOfCircle[i].r,0, Math.PI * 2)
+            // context.fill(vm.arrayOfCircle[i], "nonzero");
+            context.fillStyle =vm.arrayOfCircle[i].color;
+            context.fill();
+            // context.stroke(vm.arrayOfCircle[i], "nonzero");
+            // context.closePath();
         }
       }, 100);
       this.checkElements();
@@ -334,11 +347,16 @@ export default {
       console.log(display);
       this.$refs.op.toggle(event);
     },
-    Circle(x, y, radius) {
-      var c = new Path2D();
-      c.arc(x, y, radius, 0, Math.PI * 2);
-      return c;
-    },
+    // Circle(x, y, radius) {
+    //   // var c = new Path2D();
+    //   var canvas = this.$refs.myCanvas;
+    //   var c = canvas.getContext("2d");
+      
+    //   c.arc(x, y, radius, 0, Math.PI * 2);
+    //   // c.addPath(c);
+    //   // c.closePath();
+    //   return c;
+    // },
     clearData() {
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
@@ -466,7 +484,7 @@ export default {
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
       
-      var colorArray = [];
+      // var colorArray = [];
 
       if (this.value10 != {}) {
         // console.log("this value10: ", this.value10);
@@ -474,10 +492,15 @@ export default {
           var objectLength = Object.keys(this.value10).length;
           // console.log("ob length ", objectLength);
           for (var index1 in this.value10) {
-            var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-            colorArray.push(randomColor);
+            console.log("value10 len ",objectLength);
+            console.log("global len ",this.globalArrayOfColor.length);
+           if(this.globalArrayOfColor.length < objectLength){
+              var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+            // colorArray.push(randomColor);
+            this.globalArrayOfColor.push(randomColor);
             // console.log("index1: ",index1);
-            console.log("color array: ", colorArray);
+            console.log("color array: ", this.globalArrayOfColor);
+           }
           }
         }
         if (this.historyPosition != null) {
@@ -509,7 +532,7 @@ export default {
                       this.elements.push({
                         // colour: "#55BDCA",
                         // colour: "#" + randomColor,
-                        colour: colorArray[index],
+                        colour: this.globalArrayOfColor[index],
                         x: this.historyPosition[index0].xy[0] * 52 + 70,
                         y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                         r: 10,
@@ -529,7 +552,7 @@ export default {
                       this.elements.push({
                         // colour: "#96FFFF",
                         // colour: "#" + randomColor,
-                        colour: colorArray[index],
+                        colour: this.globalArrayOfColor[index],
                         x: this.historyPosition[index0].xy[0] * 52 + 70,
                         y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                         r: 10,
@@ -549,7 +572,7 @@ export default {
                       this.elements.push({
                         // colour: "#C8EFE9",
                         // colour: "#" + randomColor,
-                        colour: colorArray[index],
+                        colour: this.globalArrayOfColor[index],
                         x: this.historyPosition[index0].xy[0] * 52 + 70,
                         y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
                         r: 10,
@@ -597,16 +620,20 @@ export default {
 
       context.moveTo(vm.posX * 52 + 70, -vm.posY * 40 + bh - 110);
       var index10 = 0;
+      context.beginPath();
       vm.elements.forEach(function (element) {
-        // context.beginPath();
+        context.beginPath();
         // console.log("Index: ", index10);
-        vm.arrayOfCircle.push(vm.Circle(element.x, element.y, element.r));
-        context.fillStyle = element.colour;
+        // vm.arrayOfCircle.push(vm.Circle(element.x, element.y, element.r));
+        vm.arrayOfCircle.push({x:element.x, y:element.y, r:element.r,color:element.colour});
+        // context.fillStyle = element.colour;
         console.log("Circle color: ", element.colour);
-        context.fill(vm.arrayOfCircle[index10], "nonzero");
-        context.lineWidth = 1;
-        context.strokeStyle = "#003300";
-        context.stroke(vm.arrayOfCircle[index10], "nonzero");
+        // context.fill(vm.arrayOfCircle[index10], "nonzero");
+        
+        // console.log("array of circle: ",vm.arrayOfCircle[index10]);
+        // context.lineWidth = 1;
+        // context.strokeStyle = "#003300";
+        // context.stroke(vm.arrayOfCircle[index10], "nonzero");
         // // if(tempX != element.x){
         // console.log("Circle: ", vm.arrayOfCircle[index10]);
         // console.log("length of Circle: ", vm.arrayOfCircle.length);
@@ -638,7 +665,7 @@ export default {
 
       //   context.lineTo(element.x, element.y);
       // });
-      context.stroke();
+      // context.stroke();
       var elemLeft = canvas.offsetLeft + canvas.clientLeft,
         elemTop = canvas.offsetTop + canvas.clientTop;
       canvas.addEventListener(
@@ -804,24 +831,25 @@ export default {
         //     counterclockwise: false,
         //     user: "Arpa Kositapa",
         // });
-
-        vm.currentElements.forEach(function (element) {
-          context.fillStyle = element.colour;
-          // context.fillRect(element.left, element.top, element.width, element.height);
-          context.beginPath();
-          context.arc(
-            element.x,
-            element.y,
-            element.r,
-            element.sAngle,
-            element.eAngle,
-            element.counterclockwise
-          );
-          context.fill();
-          context.lineWidth = 1;
-          context.strokeStyle = "#003300";
-          context.stroke();
-        });
+        
+        /******************************************************** */
+        // vm.currentElements.forEach(function (element) {
+        //   context.fillStyle = element.colour;
+        //   // context.fillRect(element.left, element.top, element.width, element.height);
+        //   context.beginPath();
+        //   context.arc(
+        //     element.x,
+        //     element.y,
+        //     element.r,
+        //     element.sAngle,
+        //     element.eAngle,
+        //     element.counterclockwise
+        //   );
+        //   context.fill();
+        //   context.lineWidth = 1;
+        //   context.strokeStyle = "#003300";
+        //   context.stroke();
+        // });
 
         // }
       }
@@ -853,7 +881,7 @@ export default {
     },
     fetchDataFromBackend() {
       axios
-        .get("http://c3ab373999e6.ngrok.io")
+        .get("http://6a185c926e69.ngrok.io")
         // .then(response => (this.info = response))
         .then((response) => (this.responsePosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -862,7 +890,7 @@ export default {
     },
     fetchHistoryFromBackend() {
       axios
-        .get("http://c3ab373999e6.ngrok.io/historyroute")
+        .get("http://6a185c926e69.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
