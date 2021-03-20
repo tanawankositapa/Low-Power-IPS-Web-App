@@ -1,7 +1,7 @@
 <template lang="">
-
+<div class="fullheight">
 <div class="layout-content wrapper ">
-    <div class="content-section implementation wrapper">
+    <div class=" implementation wrapper">
     <div class="card content">
         <div class="container">
             <div class="p-fluid">
@@ -30,66 +30,71 @@
     </div>
     </div>
 </div>
+</div>
 <Dialog header="Alert!" v-model:visible="display" :modal="true" >
 	Please check your username or password
 </Dialog>
 </template>
 <script>
-import axios from 'axios';
-
+import axios from "axios";
 
 export default {
-    data() {
-        return {
-            username: "",
-            password: "",
-            isLoginSucess: false,
-            display: false,
-        }
+  data() {
+    return {
+      username: "",
+      password: "",
+      isLoginSucess: false,
+      display: false,
+    };
+  },
+  methods: {
+    sendLoginDataToBackend() {
+      //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
+      axios
+        .post("http://8c70eb32594e.ngrok.io/login", {
+          username: this.username,
+          password: this.password,
+        })
+        .then((response) => (this.isLoginSucess = response.data))
+        .catch((error) => console.log(error))
+        .finally(() => this.checkLoginStatus());
+      //         .then(function () {
+      //    //do something
+      // });
     },
-    methods: {
-        sendLoginDataToBackend(){
-            //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
-            axios.post('http://b9f077fdddc8.ngrok.io/login', {username: this.username, password: this.password})
-            .then(response => (this.isLoginSucess = response.data))
-            .catch(error => console.log(error))
-            .finally(() => this.checkLoginStatus())
-    //         .then(function () {
-    //    //do something
-    // });
-            
-            },
-            checkLoginStatus(){
-                console.log("Login Status: ",this.isLoginSucess);
-                if(this.isLoginSucess){
-                    this.$router.push('/map');
-                }else{
-                    this.display = true;
-                }
-            }
+    checkLoginStatus() {
+      console.log("Login Status: ", this.isLoginSucess);
+      if (this.isLoginSucess) {
+        this.$router.push("/map");
+      } else {
+        this.display = true;
+      }
     },
-    created() {
-        // this.interval = setInterval(() => this.sendLoginDataToBackend(), 10000);
-    },
-}
+  },
+  created() {
+    // this.interval = setInterval(() => this.sendLoginDataToBackend(), 10000);
+  },
+};
 </script>
 <style scoped>
-.wrapper{
-    height: 100%;
+
+
+.wrapper {
+  height: 100%;
 }
-.content{
-    margin-top: 150px;
-    margin-left: 37%;
-    margin-right: 37%;
-    
+.content {
+  margin-top: 150px;
+  margin-left: 37%;
+  margin-right: 37%;
 }
-.navBtn{
-    margin-left: 74%;
+.navBtn {
+  margin-left: 74%;
+  margin-right: 2%;
 }
- a {
-    text-decoration: none;
-} 
-.p-field{
-    margin-top: 25px;
+a {
+  text-decoration: none;
+}
+.p-field {
+  margin-top: 25px;
 }
 </style>

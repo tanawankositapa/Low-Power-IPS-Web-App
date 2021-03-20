@@ -114,7 +114,7 @@ export default {
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
         { time: "ตำแหน่งย้อนหลัง 1 ชั่วโมง", code: "60" },
         { time: "ตำแหน่งย้อนหลัง 1 ชั่วโมง 30 นาที", code: "90" },
-        { time: "ตำแหน่งอยู่ไม่นาน ตำนานตลอดไป", code: "infinite" },
+        // { time: "ตำแหน่งอยู่ไม่นาน ตำนานตลอดไป", code: "infinite" },
       ],
       userOptionsForDropdown: [],
       positionUnderThirtyMin: [],
@@ -171,7 +171,7 @@ export default {
   },
   watch: {
     // whenever question changes, this function will run
-    value10: function() {
+    value10: function () {
       // this.answer = 'Waiting for you to stop typing...'
       /**เมื่อมีการเพิ่ม ลด user ที่ต้องการแสดง มันจะ push circle วาด history ใหม่ */
       this.elements = [];
@@ -179,7 +179,7 @@ export default {
 
       this.drawHistoryRoute();
     },
-    value8: function() {
+    value8: function () {
       // this.answer = 'Waiting for you to stop typing...'
       this.elements = [];
       this.arrayOfCircle = [];
@@ -465,116 +465,144 @@ export default {
       var bh = 650;
       var canvas = this.$refs.myCanvas;
       var context = canvas.getContext("2d");
+      
+      var colorArray = [];
+
       if (this.value10 != {}) {
         // console.log("this value10: ", this.value10);
         if (this.value10 != null) {
-          var objectLength = Object.keys(this.value10).length - 1;
-          console.log("ob length ", objectLength);
+          var objectLength = Object.keys(this.value10).length;
+          // console.log("ob length ", objectLength);
+          for (var index1 in this.value10) {
+            var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+            colorArray.push(randomColor);
+            // console.log("index1: ",index1);
+            console.log("color array: ", colorArray);
+          }
+        }
+        if (this.historyPosition != null) {
+          var objectLength1 = Object.keys(this.historyPosition).length;
+          // console.log("ob length ", objectLength);
         }
         for (var index in this.value10) {
           for (var index0 in this.historyPosition) {
-            if (this.historyPosition[index0].name == this.value10[index].name) {
-              // console.log("testname history: ",this.historyPosition[index0].name);
-              // console.log("testname value10: ",this.value10[index].name);
-              var randomColor = Math.floor(Math.random() * 16777215).toString(
-                16
-              );
-              if (this.value8 != null) {
-                if (this.value8.code == "30") {
-                  if (this.historyPosition[index0].past <= 30) {
-                    // this.name = vm.responsePosition.name;
-                    // console.log("Name:",vm.responsePosition.name);
+            if (this.historyPosition[index0].name)
+              if (
+                this.historyPosition[index0].name == this.value10[index].name
+              ) {
+                // console.log("testname outside history: ",this.historyPosition[index0].name);
+                //   console.log("testname outside value10: ",this.value10[index].name);
+                // console.log("testname history: ",this.historyPosition[index0].name);
+                // console.log("testname value10: ",this.value10[index].name);
 
-                    this.elements.push({
-                      colour: "#55BDCA",
-                      x: this.historyPosition[index0].xy[0] * 52 + 70,
-                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                      r: 10,
-                      sAngle: 0,
-                      eAngle: 2 * Math.PI,
-                      counterclockwise: false,
-                      user: vm.historyPosition[index0].name,
-                      department: vm.responsePosition.department,
-                      company: vm.responsePosition.company,
-                      past: this.historyPosition[index0].past,
-                    });
+                if (this.value8 != null) {
+                  if (this.value8.code == "30") {
+                    if (this.historyPosition[index0].past <= 30) {
+                      // this.name = vm.responsePosition.name;
+                      // console.log("Name:",vm.responsePosition.name);
+                      console.log("index0: ", parseInt(index0));
+                      console.log("objectlength: ", objectLength1 - 1);
+                      // if (parseInt(index0) == objectLength1 - 1) {
+                      //   // if(this.historyPosition[index0].name = this.historyPosition[index0+1].name)
+                      //   console.log("HHHHHHHHHHHHHHH");
+                      // }
+                      this.elements.push({
+                        // colour: "#55BDCA",
+                        // colour: "#" + randomColor,
+                        colour: colorArray[index],
+                        x: this.historyPosition[index0].xy[0] * 52 + 70,
+                        y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                        r: 10,
+                        sAngle: 0,
+                        eAngle: 2 * Math.PI,
+                        counterclockwise: false,
+                        user: vm.historyPosition[index0].name,
+                        department: vm.responsePosition.department,
+                        company: vm.responsePosition.company,
+                        past: this.historyPosition[index0].past,
+                      });
+                    }
                   }
-                }
-                if (this.value8.code == "60") {
-                  if (this.historyPosition[index0].past <= 60) {
-                    this.name = vm.responsePosition.name;
-                    this.elements.push({
-                      colour: "#96FFFF",
-                      x: this.historyPosition[index0].xy[0] * 52 + 70,
-                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                      r: 10,
-                      sAngle: 0,
-                      eAngle: 2 * Math.PI,
-                      counterclockwise: false,
-                      user: vm.historyPosition[index0].name,
-                      department: vm.responsePosition.department,
-                      company: vm.responsePosition.company,
-                      past: this.historyPosition[index0].past,
-                    });
+                  if (this.value8.code == "60") {
+                    if (this.historyPosition[index0].past <= 60) {
+                      this.name = vm.responsePosition.name;
+                      this.elements.push({
+                        // colour: "#96FFFF",
+                        // colour: "#" + randomColor,
+                        colour: colorArray[index],
+                        x: this.historyPosition[index0].xy[0] * 52 + 70,
+                        y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                        r: 10,
+                        sAngle: 0,
+                        eAngle: 2 * Math.PI,
+                        counterclockwise: false,
+                        user: vm.historyPosition[index0].name,
+                        department: vm.responsePosition.department,
+                        company: vm.responsePosition.company,
+                        past: this.historyPosition[index0].past,
+                      });
+                    }
                   }
-                }
-                if (this.value8.code == "90") {
-                  if (this.historyPosition[index0].past <= 90) {
-                    this.name = vm.responsePosition.name;
-                    this.elements.push({
-                      colour: "#C8EFE9",
-                      x: this.historyPosition[index0].xy[0] * 52 + 70,
-                      y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                      r: 10,
-                      sAngle: 0,
-                      eAngle: 2 * Math.PI,
-                      counterclockwise: false,
-                      user: vm.historyPosition[index0].name,
-                      department: vm.responsePosition.department,
-                      company: vm.responsePosition.company,
-                      past: this.historyPosition[index0].past,
-                    });
+                  if (this.value8.code == "90") {
+                    if (this.historyPosition[index0].past <= 90) {
+                      this.name = vm.responsePosition.name;
+                      this.elements.push({
+                        // colour: "#C8EFE9",
+                        // colour: "#" + randomColor,
+                        colour: colorArray[index],
+                        x: this.historyPosition[index0].xy[0] * 52 + 70,
+                        y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                        r: 10,
+                        sAngle: 0,
+                        eAngle: 2 * Math.PI,
+                        counterclockwise: false,
+                        user: vm.historyPosition[index0].name,
+                        department: vm.responsePosition.department,
+                        company: vm.responsePosition.company,
+                        past: this.historyPosition[index0].past,
+                      });
+                    }
                   }
+                  // if (this.value8.code == "0") {
+                  //   console.log("Before: ",this.elements);
+                  //   this.elements = [];
+                  //   console.log("After: ",this.elements);
+                  //   context.clearRect(0, 0, canvas.width, canvas.height);
+                  //   this.value8 = null;
+                  //   this.value10 = [];
+                  //   vm.initMap();
+                  // }
+                  // if (this.value8.code == "infinite") {
+                  //   // if (this.historyPosition[index0].past <= 90){
+                  //   this.elements.push({
+                  //     colour: "#6b3d0d",
+                  //     x: this.historyPosition[index0].xy[0] * 52 + 70,
+                  //     y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                  //     r: 10,
+                  //     sAngle: 0,
+                  //     eAngle: 2 * Math.PI,
+                  //     counterclockwise: false,
+                  //     user: vm.responsePosition.name,
+                  //     department: vm.responsePosition.department,
+                  //     company: vm.responsePosition.company,
+                  //     past: this.historyPosition[index0].past,
+                  //   });
+                  //   // }
+                  // }
                 }
-                // if (this.value8.code == "0") {
-                //   console.log("Before: ",this.elements);
-                //   this.elements = [];
-                //   console.log("After: ",this.elements);
-                //   context.clearRect(0, 0, canvas.width, canvas.height);
-                //   this.value8 = null;
-                //   this.value10 = [];
-                //   vm.initMap();
-                // }
-                // if (this.value8.code == "infinite") {
-                //   // if (this.historyPosition[index0].past <= 90){
-                //   this.elements.push({
-                //     colour: "#6b3d0d",
-                //     x: this.historyPosition[index0].xy[0] * 52 + 70,
-                //     y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
-                //     r: 10,
-                //     sAngle: 0,
-                //     eAngle: 2 * Math.PI,
-                //     counterclockwise: false,
-                //     user: vm.responsePosition.name,
-                //     department: vm.responsePosition.department,
-                //     company: vm.responsePosition.company,
-                //     past: this.historyPosition[index0].past,
-                //   });
-                //   // }
-                // }
               }
-            }
           } //end of for
         }
       }
 
       context.moveTo(vm.posX * 52 + 70, -vm.posY * 40 + bh - 110);
       var index10 = 0;
-      vm.elements.forEach(function(element) {
+      vm.elements.forEach(function (element) {
         // context.beginPath();
         // console.log("Index: ", index10);
         vm.arrayOfCircle.push(vm.Circle(element.x, element.y, element.r));
         context.fillStyle = element.colour;
+        console.log("Circle color: ", element.colour);
         context.fill(vm.arrayOfCircle[index10], "nonzero");
         context.lineWidth = 1;
         context.strokeStyle = "#003300";
@@ -615,7 +643,7 @@ export default {
         elemTop = canvas.offsetTop + canvas.clientTop;
       canvas.addEventListener(
         "click",
-        function(event) {
+        function (event) {
           var x = event.pageX - elemLeft,
             y = event.pageY - elemTop;
 
@@ -632,7 +660,7 @@ export default {
           //   context.stroke(vm.arrayOfCircle[i], "nonzero");
           // }
           // Collision detection between clicked offset and element.
-          vm.elements.forEach(function(element) {
+          vm.elements.forEach(function (element) {
             if (
               y < element.y + element.r &&
               y > element.y - element.r &&
@@ -664,7 +692,7 @@ export default {
       var base_image;
       base_image = new Image();
       base_image.src = myImage;
-      base_image.onload = function() {
+      base_image.onload = function () {
         context.drawImage(base_image, 0, 0);
       };
     },
@@ -705,12 +733,12 @@ export default {
 
         canvas.addEventListener(
           "click",
-          function(event) {
+          function (event) {
             var x = event.pageX - elemLeft,
               y = event.pageY - elemTop;
 
             // Collision detection between clicked offset and element.
-            vm.currentElements.forEach(function(element) {
+            vm.currentElements.forEach(function (element) {
               if (
                 y < element.y + element.r &&
                 y > element.y - element.r &&
@@ -740,27 +768,29 @@ export default {
         // console.log("Current Name: ", vm.currentElements[0].user);
         // console.log("Value Name: ", vm.value10.length == 0);
         //
-        for (var index in vm.value10) {
-          if (vm.value10[index].name != null) {
-            // แยก user แต่ละคนออก
-            if (vm.responsePosition.name == vm.value10[index].name) {
-              if (vm.currentElements.length == 0) {
-                vm.currentElements.push({
-                  colour: "#05EFFF",
-                  x: posX * 52 + 70,
-                  y: -posY * 40 + bh - 110,
-                  r: 10,
-                  sAngle: 0,
-                  eAngle: 2 * Math.PI,
-                  counterclockwise: false,
-                  user: vm.responsePosition.name,
-                  department: vm.responsePosition.department,
-                  company: vm.responsePosition.company,
-                });
-              }
-            }
-          }
-        }
+
+        /***************************************************** */
+        // for (var index in vm.value10) {
+        //   if (vm.value10[index].name != null) {
+        //     // แยก user แต่ละคนออก
+        //     if (vm.responsePosition.name == vm.value10[index].name) {
+        //       if (vm.currentElements.length == 0) {
+        //         vm.currentElements.push({
+        //           colour: "#05EFFF",
+        //           x: posX * 52 + 70,
+        //           y: -posY * 40 + bh - 110,
+        //           r: 10,
+        //           sAngle: 0,
+        //           eAngle: 2 * Math.PI,
+        //           counterclockwise: false,
+        //           user: vm.responsePosition.name,
+        //           department: vm.responsePosition.department,
+        //           company: vm.responsePosition.company,
+        //         });
+        //       }
+        //     }
+        //   }
+        // }
 
         // console.log("oMG: ",vm.responsePosition.name);
         // console.log("Oeq: ",vm.responsePosition);
@@ -775,7 +805,7 @@ export default {
         //     user: "Arpa Kositapa",
         // });
 
-        vm.currentElements.forEach(function(element) {
+        vm.currentElements.forEach(function (element) {
           context.fillStyle = element.colour;
           // context.fillRect(element.left, element.top, element.width, element.height);
           context.beginPath();
@@ -823,7 +853,7 @@ export default {
     },
     fetchDataFromBackend() {
       axios
-        .get("http://edf898226126.ngrok.io")
+        .get("http://c3ab373999e6.ngrok.io")
         // .then(response => (this.info = response))
         .then((response) => (this.responsePosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -832,7 +862,7 @@ export default {
     },
     fetchHistoryFromBackend() {
       axios
-        .get("http://edf898226126.ngrok.io/historyroute")
+        .get("http://c3ab373999e6.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))

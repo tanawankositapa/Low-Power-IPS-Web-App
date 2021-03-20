@@ -22,7 +22,7 @@
                 <InputText id="lastname3" type="text" v-model="surname" />
             </div>
         </div>
-        <div class="p-formgroup-inline">
+        <!-- <div class="p-formgroup-inline">
             <div class="p-field-radiobutton">
                 <RadioButton id="employee" name="city2" value="true" v-model="isemployee" />
                 <label for="employee">พนักงานในบริษัท</label>
@@ -31,19 +31,19 @@
                 <RadioButton id="outsource" name="city3" value="false" v-model="isemployee" />
                 <label for="outsource">บุคคลภายนอก</label>
             </div>
-        </div>
+        </div> -->
         <div class="p-field p-grid">
             <label for="firstname3" class="p-col-fixed" style="width:100px">แผนก</label>
             <div class="p-col">
                 <InputText id="firstname3" type="text" v-model="department" />
             </div>
         </div>
-        <div class="p-field p-grid">
+        <!-- <div class="p-field p-grid">
             <label for="lastname3" class="p-col-fixed" style="width:100px">บริษัท</label>
             <div class="p-col">
                 <InputText id="lastname3" type="text" v-model="company"/>
             </div>
-        </div>
+        </div> -->
         <div class="p-field p-grid">
             <label for="lastname3" class="p-col-fixed" style="width:100px">หมายเลขอุปกรณ์</label>
             <div class="p-col">
@@ -88,7 +88,7 @@ export default {
     },
     methods: {
         sendRegisterDataToBackend(){
-            axios.post('http://8afdd921af37.ngrok.io/register', {data: this.$data})
+            axios.post('http://8c70eb32594e.ngrok.io/register', {data: this.$data})
             // axios.post('http://81ffb0a9aeec.ngrok.io/register', {username: this.username, password: this.password})
             .then(response => (this.isLoginSucess = response.data))
             .catch(error => console.log(error))
