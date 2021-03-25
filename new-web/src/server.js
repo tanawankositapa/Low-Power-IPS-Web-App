@@ -122,11 +122,18 @@ var alertStatusLevel = 0;
 // var isInsideCompany = true;
 // var fence ="",name,floor,restrictFor;
 
+// var rssi = [
+//   // [-48, -61, -65, -67, -68, -82], //Position (1,1)
+//   [-54, -62, -62, -69, -70, -75], //Position (2,1)
+//   // [-48, -67, -53, -63, -72, -71],
+//   // [-51, -70, -65, -83, -69, -89],
+// ];
+
+
 var rssi = [
-  // [-48, -61, -65, -67, -68, -82], //Position (1,1)
-  [-54, -62, -62, -69, -70, -75], //Position (2,1)
-  // [-48, -67, -53, -63, -72, -71],
-  // [-51, -70, -65, -83, -69, -89],
+          [-58, -73, -70, -76], //Position (1,1)
+        //  [-57, -56, -67, -58],
+        //  [-59, -58, -64, -61],
 ];
 
 app.get("/", async (req, res) => {
@@ -148,8 +155,11 @@ app.get("/", async (req, res) => {
    * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
    */
 
+  // const model = await tfjs.loadLayersModel(
+  //   "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
+  // );
   const model = await tfjs.loadLayersModel(
-    "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
+    "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/new-web/model/model.json"
   );
   // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
   const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
