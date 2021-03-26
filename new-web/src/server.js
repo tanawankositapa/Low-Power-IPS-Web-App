@@ -276,29 +276,46 @@ app.get("/", async (req, res) => {
           if (department != restrictForDepartment) {
             isAlert = true;
             console.log("Alert status level: ", alertStatusLevel);
-            if (alertStatusLevel == 4) {
+            if (alertStatusLevel == 6) {
               // อยู่ในพื้นที่ต้องห้าม 2 นาที
-              // var saveData = new alertModel({
-              //   name: name,
-              //   trackerid: trackerId,
-              //   areaname: tempAreaName,
-              //   floor: floor,
-              //   timestamp: `${
-              //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
-              //     dt.getDate().toString().padStart(2, '0')}/${
-              //     dt.getFullYear().toString().padStart(4, '0')} ${
-              //     dt.getHours().toString().padStart(2, '0')}:${
-              //     dt.getMinutes().toString().padStart(2, '0')}:${
-              //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
-              //   }).save(function(err, result) {
-              //     if (err) throw err;
-              //     if (result) {
-              //       console.log(result);
-              //       console.log("Alert Save Complete");
-              //     }
-              //   });
+              var saveData = new alertModel({
+                name: name,
+                trackerid: trackerId,
+                areaname: tempAreaName,
+                floor: floor,
+                timestamp: `${
+                  (dt.getMonth()+1).toString().padStart(2, '0')}/${
+                  dt.getDate().toString().padStart(2, '0')}/${
+                  dt.getFullYear().toString().padStart(4, '0')} ${
+                  dt.getHours().toString().padStart(2, '0')}:${
+                  dt.getMinutes().toString().padStart(2, '0')}:${
+                  dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
+                }).save(function(err, result) {
+                  if (err) throw err;
+                  if (result) {
+                    console.log(result);
+                    console.log("Alert Save Complete");
+                  }
+                });
             } else {
               alertStatusLevel = alertStatusLevel + 1;
+              userModel.findOneAndUpdate(
+                { name: name },
+                {
+                  alertstatuslevel: alertStatusLevel,
+                },
+                function(err, user) {
+                  // console.log();
+                  if (err) console.log(err);
+                  if (user == null) {
+                    console.log("Can't find data");
+                  } else {
+                    // res.json({ data: { status: "update" } });
+                    console.log("Update status complete!");
+                    // console.log("User: ", user);
+                  }
+                }
+              );
             }
           } else {
             isAlert = false;
