@@ -5,6 +5,7 @@ const tfjs = require("@tensorflow/tfjs");
 const express = require("express");
 const app = express();
 const port = 3000;
+'use strict';
 // const spawn  = require("child_process").spawn;
 var proxy = require("express-http-proxy");
 // ********************************ต้องใช้ body parser ในการ extract ค่า req ออกมาจาก method-
@@ -35,7 +36,7 @@ mongoose
 var areaSchema = new mongoose.Schema({
   fence: [],
   name: String,
-  floor: String,
+  // floor: String,
   restrictfor: String,
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
@@ -64,7 +65,7 @@ var alertSchema = new mongoose.Schema({
   name: String,
   trackerid: String,
   areaname: String,
-  floor: String,
+  // floor: String,
   timestamp: String, // เก็บเป็น String ไปก่อน เพราะพอเป็น Date แล้ว mongo มันจะไป convert ให้เป็น ISO Date อัติโนมัติ และเรายังเลือก timezone ไม่เป็น
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
@@ -74,7 +75,7 @@ var alertModel = mongoose.model("alert_table", alertSchema);
 var locationSchema = new mongoose.Schema({
   xy: [],
   areaname: String,
-  floor: String,
+  // floor: String,
   name: String,
   timestamp: String, // เก็บเป็น String ไปก่อน เพราะพอเป็น Date แล้ว mongo มันจะไป convert ให้เป็น ISO Date อัติโนมัติ และเรายังเลือก timezone ไม่เป็น
 });
@@ -99,6 +100,8 @@ var workTimeModel = mongoose.model("worktime_table", workTimeSchema);
 const { PythonShell } = require("python-shell");
 const path = require("path");
 const { Log } = require("@tensorflow/tfjs");
+const { NULL } = require("node-sass");
+const { json } = require("body-parser");
 var url = "/src";
 
 /**
@@ -106,10 +109,10 @@ var url = "/src";
  */
 var major = 1;
 var minor = 5;
-var floor;
-if (major === 1 && minor === 5) {
-  floor = 5;
-}
+// var floor;
+// if (major === 1 && minor === 5) {
+//   floor = 5;
+// }
 var mac = "E0:D9:DA:22:34:1B";
 var name = "Somchai Kositapa";
 // var name = "Arpa Kositapa";
@@ -138,8 +141,30 @@ var rssi = [
         // [-56, -64, -67, -61], //Position (2,1)
         // [-62, -72, -71, -53],  //Position (3,1)
 ];
-
-app.get("/", async (req, res) => {
+var ypred = []
+app.post("/position",async (req,res) => {
+  if(req.body.check == "OK"){
+    console.log("Predict1 ",ypred);
+    if (ypred.length != 0){
+      // console.log("Inside Ok");
+    console.log("Predict2 ",ypred);
+    // console.log("Outside ypred",ypred.length);
+    
+      // console.log("Inside ypred",ypred.length);
+      res.json({
+        data: {
+          ypred: ypred,
+          // ypred: [1, 2],
+          name: name,
+          department: department,
+          company: company,
+        },
+      });
+    
+    }
+  }
+});
+app.post("/", async (req, res) => {
   /**
    * ชั้นตอนการทำงาน (ณ ตอนนี้)
    * 1. Extract ค่าจาก payload ที่ส่งมาจาก Chirpstack
@@ -157,7 +182,48 @@ app.get("/", async (req, res) => {
    * 10. ส่งข้อมูล ตำแหน่งไปแสดงบนหน้า map frontend และรายละเอียดอื่น ๆ เช่น ชื่อห้อง ชั้น ไปแสดงที่หน้า Info
    * 11. ส่งข้อมูลการละเมิดไปยังหน้า Info (คิดว่าจะต้องมีการส่ง email ไป แต่ว่าเขียน code ยังไงก็ยังคิดไม่ออก T_T)
    */
-
+  // // res.json({test: "OK"})
+  // // res.json({
+  // //   data: {
+  // //     test: "OK"
+  // //   },
+  // // });
+  // var ypred = [1,2]
+  // res.json({
+  //   data: {
+  //     ypred: ypred,
+  //     name: name,
+  //     department: department,
+  //     company: company,
+  //   },
+  // });
+  // console.log("req",req);
+  console.log("req body data",req.body.data); 
+  // var ypred =[];
+  console.log("Check: ",req.body.check);
+  if(req.body.data != NULL && req.body.data != undefined ){ // น่าจะไม่ error ว่่า cannot set header แล้ว พน.ลองเทส อาจจะไม่ต้องใช้ if
+   
+  let buff = Buffer.from(req.body.data, 'base64');
+  let base64data = buff.toString('utf-8');
+  console.log(base64data);
+  console.log(typeof(base64data));
+  var strSplit1 = base64data.split(" ");
+  console.log("Split1", strSplit1);
+  
+  var rssi = [];
+  var rssiBig = [];
+  for (var i in strSplit1){
+    console.log(strSplit1[i]);
+    // console.log();
+    // let strSplit2 = strSplit1[i].split(":");
+    // console.log(strSplit2[1]);
+    var intStrSplit1 = parseInt(strSplit1[i]);
+    rssi.push(intStrSplit1);
+    // rssi.push(strSplit1[i]);
+    
+  }
+  rssiBig.push(rssi);
+  console.log("Big: ",rssiBig);
   // const model = await tfjs.loadLayersModel(
   //   "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
   // );
@@ -165,19 +231,29 @@ app.get("/", async (req, res) => {
     "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/new-web/model/model.json"
   );
   // ถ้าไม่ใส่ Batch size มันจะ print ออกมาเป็น Object ของ tensor ไม่ใช่ (x,y)
-  const prediction = model.predict(tfjs.tensor(rssi), { batchSize: 32 });
-  const ypred = prediction.dataSync();
+  const prediction = model.predict(tfjs.tensor(rssiBig), { batchSize: 32 });
+  ypred = prediction.dataSync();
   // res.send(ypred)
-  res.json({
-    data: {
-      ypred: ypred,
-      name: name,
-      department: department,
-      company: company,
-    },
-  });
+  console.log("Predict ",ypred);
+  }
   // console.log(ypred);
-
+  // if(req.body.check == "OK"){
+  //   // console.log("Inside Ok");
+  //   console.log("Predict2 ",ypred);
+  //   console.log("Outside ypred",ypred.length);
+  //   if(ypred.length != 0){
+  //     console.log("Inside ypred",ypred.length);
+  //     res.json({
+  //       data: {
+  //         ypred: ypred,
+  //         // ypred: [1, 2],
+  //         name: name,
+  //         department: department,
+  //         company: company,
+  //       },
+  //     });
+  //   }
+  // }
   var database = [];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
@@ -186,7 +262,15 @@ app.get("/", async (req, res) => {
    * แล้วเราต้องการจะเอาค่าจาก DB ไปใส่เป็น argument ถ้าไม่ใส่ await แล้วค่า var fence จะเป็นตามค่า default มัน เช่น undefined หรือ ""
    * ทั้งนี้เกิดจากการที่ javascript เป็น asynchronous programming คือระหว่างรอ areaModel.find() มันก็ไปทำส่วนถัดไปซะแล้ว ~ ~
    */
-  await areaModel.find({ floor: floor }, function(err, area) {
+  // await areaModel.find({ floor: floor }, function(err, area) {
+  //   if (err) console.log(err);
+  //   else {
+  //     database = area;
+  //   }
+  // });
+  /**ตอนนี้ไม่ใช้ floor แล้ว */
+  // await areaModel.find({floor:floor}, function(err, area) {
+  await areaModel.find({}, function(err, area) {
     if (err) console.log(err);
     else {
       database = area;
@@ -238,17 +322,19 @@ app.get("/", async (req, res) => {
 
       // console.log("Fence: ",database[property].fence);
       // console.log("Restrictfor: ",database[property].restrictfor);
-
+      
       let tempRestrict = database[property].restrictfor;
       let tempFence = database[property].fence;
       let fenceString = JSON.stringify(tempFence);
       // console.log("Fencestring ",fenceString);
+      console.log("Check Ypred[0]: ",ypred[0]);
+      console.log("Check Ypred[1]: ",ypred[1]);
       let options = {
         mode: "text",
         pythonOptions: ["-u"], // get print results in real-time
         scriptPath: trulyPath, //If you are having python_test.py script in same folder, then it's optional.
-        args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
-        // args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
+        // args: [2, 3, fenceString], //An argument which can be accessed in the script using sys.argv[1]
+        args: [ypred[0], ypred[1], fenceString], //An argument which can be accessed in the script using sys.argv[1]
       };
       let tempAreaName = await database[property].name;
 
@@ -256,7 +342,7 @@ app.get("/", async (req, res) => {
         // isAlert = false
         // console.log("Inside Fencestring ",fenceString);
         if (err) throw err;
-        // result is an array consisting of messages collected during execution of script.
+        /**result is an array consisting of messages collected during execution of script. */
         var tempAns = result.toString();
         console.log("result: ", tempAns);
         // console.log("Inside Fence: ",database[property].fence);
@@ -274,7 +360,7 @@ app.get("/", async (req, res) => {
           // console.log("Check Restrictfor: ",restrictForDepartment);
           var dt = new Date();
           if (department != restrictForDepartment) {
-            isAlert = true;
+            // isAlert = true;
             console.log("Alert status level: ", alertStatusLevel);
             if (alertStatusLevel == 6) {
               // อยู่ในพื้นที่ต้องห้าม 2 นาที
@@ -282,7 +368,7 @@ app.get("/", async (req, res) => {
                 name: name,
                 trackerid: trackerId,
                 areaname: tempAreaName,
-                floor: floor,
+                // floor: floor, /**ไม่ได้ใช้ floor แล้ว */
                 timestamp: `${
                   (dt.getMonth()+1).toString().padStart(2, '0')}/${
                   dt.getDate().toString().padStart(2, '0')}/${
@@ -317,43 +403,31 @@ app.get("/", async (req, res) => {
                 }
               );
             }
-          } else {
-            isAlert = false;
+          } else { /** ไม่ตรงเงื่อนไขละเมิด */
+            alertStatusLevel = 0;
+            // isAlert = false;
           }
-          console.log("Alert: ", isAlert);
-          // async function f3() {
-          //   readyToBreak = await true;
-          //   // console.log(y); // 20
-          // }
-
-          // f3()
-          // readyToBreak = true;
-          //   if(readyToBreak){
-          //     console.log("break");
-          //     return
-          //   }else{
-          //     console.log("not break");
-          //   }
-
-          // var saveData = new locationModel({
-          //   xy: [2, 3],
-          //   areaname: tempAreaName,
-          //   floor: floor,
-          //   name: name,
-          //   timestamp: `${
-          //     (dt.getMonth()+1).toString().padStart(2, '0')}/${
-          //     dt.getDate().toString().padStart(2, '0')}/${
-          //     dt.getFullYear().toString().padStart(4, '0')} ${
-          //     dt.getHours().toString().padStart(2, '0')}:${
-          //     dt.getMinutes().toString().padStart(2, '0')}:${
-          //     dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
-          //   }).save(function(err, result) {
-          //     if (err) throw err;
-          //     if (result) {
-          //       console.log(result);
-          //       console.log("Location Save Complete");
-          //     }
-          //   });
+          
+          var saveData = new locationModel({
+            // xy: [2, 3],
+            xy: [ypred[0], ypred[1]],
+            areaname: tempAreaName,
+            // floor: floor, //ไม่ได้ใช้ floor แล้ว
+            name: name,
+            timestamp: `${
+              (dt.getMonth()+1).toString().padStart(2, '0')}/${
+              dt.getDate().toString().padStart(2, '0')}/${
+              dt.getFullYear().toString().padStart(4, '0')} ${
+              dt.getHours().toString().padStart(2, '0')}:${
+              dt.getMinutes().toString().padStart(2, '0')}:${
+              dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
+            }).save(function(err, result) {
+              if (err) throw err;
+              if (result) {
+                console.log(result);
+                console.log("Location Save Complete");
+              }
+            });
         } else {
           // console.log("Moly");
         }
@@ -372,104 +446,96 @@ app.get("/", async (req, res) => {
       // }, 3000);
     }
   }
-
-  // for (var property in lastTimeStampArray){
-  //   var objectLength = Object.keys(lastTimeStampArray).length
-  //   if(property < objectLength){
-  //     let d1 = Date.parse(lastTimeStampArray[property])
-  //     let d2 = Date.parse(lastTimeStampArray[property+1])
-  //     if ()
+  /**ส่วน logic การนับคนในพื้นที่ ไม่ได้ใช้แล้ว */
+  // var userNameArray = ["Somchai", "Arpa"];
+  // async function countPeopleInArea() {
+  //   var areaNameArray = [];
+  //   for (var property in database) {
+  //     let tempLocationName = database[property].name;
+  //     areaNameArray.push(tempLocationName);
+  //     // console.log(tempLocationName);
+  //     // console.log(database[property].name);
+  //     await locationModel.distinct(
+  //       "name",
+  //       { areaname: database[property].name },
+  //       function(err, username) {
+  //         if (err) console.log(err);
+  //         else {
+  //           // console.log("Area Name: ",tempLocationName);
+  //           // console.log("People: ",username);
+  //           // var objectLength = Object.keys(username).length;
+  //           // console.log("Number of People: ",objectLength);
+  //           // console.log(username);
+  //           // await locationModel.distinct("areaname", { areaname: database[property].name }, function(err, username) {
+  //           //   if (err) console.log(err);
+  //           //   else {
+  //           //     // console.log("Area Name: ",tempLocationName);
+  //           //     // console.log("People: ",username);
+  //           //     // var objectLength = Object.keys(username).length;
+  //           //     // console.log("Number of People: ",objectLength);
+  //           //     // console.log(username);
+  //           //   }
+  //           // });
+  //         }
+  //       }
+  //     );
+  //     locationModel.find({ areaname: tempLocationName }, function(
+  //       err,
+  //       username
+  //     ) {
+  //       if (err) console.log(err);
+  //       else {
+  //         // console.log("Area Name: ",tempLocationName);
+  //         // console.log("Hoho: ",username);
+  //         // var objectLength = Object.keys(username).length;
+  //         // console.log("Number of People: ",objectLength);
+  //         // console.log(username);
+  //       }
+  //     });
+  //   }
+  //   console.log("usernamearray ", userNameArray);
+  //   var summary = [],
+  //     database3 = [];
+  //   for (var property in userNameArray) {
+  //     // locationModel.find({ name: userNameArray[property] }.limit(1).sort( { _id : -1 } ), function(err, username) {
+  //     console.log("property ", property);
+  //     console.log("Name: ", userNameArray[property]);
+  //     let tempUserName = userNameArray[property];
+  //     await locationModel.findOne(
+  //       { name: tempUserName },
+  //       "name areaname timestamp",
+  //       { sort: { _id: -1 } },
+  //       function(err, username) {
+  //         if (err) console.log(err);
+  //         else {
+  //           // console.log("Area Name: ",tempLocationName);
+  //           // console.log("Name: ",tempUserName);
+  //           // console.log("Hoho: ",username);
+  //           database3.push(username);
+  //           // summary.push({"name": tempUserName})
+  //           // var objectLength = Object.keys(username).length;
+  //           // console.log("Number of People: ",objectLength);
+  //           // console.log(username);
+  //         }
+  //       }
+  //     );
+  //     console.log("DB3 ", database3);
+  //   }
+  //   // console.log("DB32 ",database3);
+  //   var objectLength = Object.keys(database3).length;
+  //   // console.log(areaNameArray);
+  //   console.log(objectLength);
+  //   for (var property in database3) {
+  //     console.log(database3[property].name);
+  //     summary.push({
+  //       name: database3[property].name,
+  //       areaname: database3[property].areaname,
+  //       timestamp: database3[property].timestamp,
+  //     });
+  //     console.log("Summ ", summary);
+  //     /**ในอนาคตเราจะส่ง object นี้ไป extract ที่ frontend */
   //   }
   // }
-  var userNameArray = ["Somchai", "Arpa"];
-  async function countPeopleInArea() {
-    var areaNameArray = [];
-    for (var property in database) {
-      let tempLocationName = database[property].name;
-      areaNameArray.push(tempLocationName);
-      // console.log(tempLocationName);
-      // console.log(database[property].name);
-      await locationModel.distinct(
-        "name",
-        { areaname: database[property].name },
-        function(err, username) {
-          if (err) console.log(err);
-          else {
-            // console.log("Area Name: ",tempLocationName);
-            // console.log("People: ",username);
-            // var objectLength = Object.keys(username).length;
-            // console.log("Number of People: ",objectLength);
-            // console.log(username);
-            // await locationModel.distinct("areaname", { areaname: database[property].name }, function(err, username) {
-            //   if (err) console.log(err);
-            //   else {
-            //     // console.log("Area Name: ",tempLocationName);
-            //     // console.log("People: ",username);
-            //     // var objectLength = Object.keys(username).length;
-            //     // console.log("Number of People: ",objectLength);
-            //     // console.log(username);
-            //   }
-            // });
-          }
-        }
-      );
-      locationModel.find({ areaname: tempLocationName }, function(
-        err,
-        username
-      ) {
-        if (err) console.log(err);
-        else {
-          // console.log("Area Name: ",tempLocationName);
-          // console.log("Hoho: ",username);
-          // var objectLength = Object.keys(username).length;
-          // console.log("Number of People: ",objectLength);
-          // console.log(username);
-        }
-      });
-    }
-    console.log("usernamearray ", userNameArray);
-    var summary = [],
-      database3 = [];
-    for (var property in userNameArray) {
-      // locationModel.find({ name: userNameArray[property] }.limit(1).sort( { _id : -1 } ), function(err, username) {
-      console.log("property ", property);
-      console.log("Name: ", userNameArray[property]);
-      let tempUserName = userNameArray[property];
-      await locationModel.findOne(
-        { name: tempUserName },
-        "name areaname timestamp",
-        { sort: { _id: -1 } },
-        function(err, username) {
-          if (err) console.log(err);
-          else {
-            // console.log("Area Name: ",tempLocationName);
-            // console.log("Name: ",tempUserName);
-            // console.log("Hoho: ",username);
-            database3.push(username);
-            // summary.push({"name": tempUserName})
-            // var objectLength = Object.keys(username).length;
-            // console.log("Number of People: ",objectLength);
-            // console.log(username);
-          }
-        }
-      );
-      console.log("DB3 ", database3);
-    }
-    // console.log("DB32 ",database3);
-    var objectLength = Object.keys(database3).length;
-    // console.log(areaNameArray);
-    console.log(objectLength);
-    for (var property in database3) {
-      console.log(database3[property].name);
-      summary.push({
-        name: database3[property].name,
-        areaname: database3[property].areaname,
-        timestamp: database3[property].timestamp,
-      });
-      console.log("Summ ", summary);
-      /**ในอนาคตเราจะส่ง object นี้ไป extract ที่ frontend */
-    }
-  }
 
   await geoFence();
 
@@ -528,7 +594,7 @@ app.get("/", async (req, res) => {
 
   // res.status(200).send(fence)
 
-  res.sendStatus(200);
+  // res.sendStatus(200);
 });
 
 // // app.use('/',proxy('localhost:8080'))
@@ -543,25 +609,47 @@ app.get("/", async (req, res) => {
 //   },
 // }));
 
-app.post("/getval", (req, res) => {
+app.get("/getval", (req, res) => {
   // var data = await req.body
-  // console.log("Got Data: ",req);
+  console.log("Got Data: ",req);
   // console.log("ALSO Got Data Use Query: ",req.query);
   console.log("full Body: ", req.body);
+  console.log("Data label: ", req.body.data);
+  // var decodedString = window.atob(req.body.data);
+  let buff = Buffer.from(req.body.data, 'base64');
+  let base64data = buff.toString('utf-8');
+  console.log(base64data);
+  console.log(typeof(base64data));
+  var strSplit1 = base64data.split(" ");
+  console.log("Split1", strSplit1);
+  
+  var rssi = [];
+  for (var i in strSplit1){
+    console.log(strSplit1[i]);
+    // console.log();
+    // let strSplit2 = strSplit1[i].split(":");
+    // console.log(strSplit2[1]);
+    var intStrSplit1 = parseInt(strSplit1[i]);
+    rssi.push(intStrSplit1);
+    // rssi.push(strSplit1[i]);
+    
+  }
+  console.log(rssi);
+  // console.log(decodedString);
   // console.log("devEui: ", req.body.devEUI);
   // console.log(typeof req.body.rxInfo);
   // console.log("rxInfo: ", req.body.rxInfo);
 
   // this is how to extract rssi from rxInfo
   // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
-  var rssi = req.body.rxInfo.map(function(rxInfo) {
-    return rxInfo.rssi;
-  });
-  console.log(typeof rssi);
-  var rssiValue = rssi.map(function(rssi) {
-    return rssi.values;
-  });
-  console.log("rssi: ", rssi);
+  // var rssi = req.body.rxInfo.map(function(rxInfo) {
+  //   return rxInfo.rssi;
+  // });
+  // console.log(typeof rssi);
+  // var rssiValue = rssi.map(function(rssi) {
+  //   return rssi.values;
+  // });
+  // console.log("rssi: ", rssi);
   // console.log("rssiValue: ",rssiValue);
   // console.log(typeof rssi.values);
   // console.log("rssi: ",rssi.value);
@@ -762,7 +850,7 @@ app.get("/worktime", (req, res) => {
           // let fenceString = JSON.stringify(tempFence)
           // console.log("Iterator: ",property);
           // console.log("time: ", tempTimestamp);
-          console.log("Area Name: ", tempLocationName);
+          // console.log("Area Name: ", tempLocationName);
           timeArray.push(database2[property].timestamp);
           areaNameArray.push(database2[property].areaname);
           // if (database2[property].areaname){
@@ -801,8 +889,8 @@ app.get("/worktime", (req, res) => {
                   database2[numericProperty - areaNameCounter].timestamp;
                 var lastTimeStamp = database2[numericProperty - 1].timestamp;
                 var pastLocationName = database2[property - 1].areaname;
-                console.log("First timestamp:", firstTimeStamp);
-                console.log("Last timestamp:", lastTimeStamp);
+                // console.log("First timestamp:", firstTimeStamp);
+                // console.log("Last timestamp:", lastTimeStamp);
                 const date1 = new Date(firstTimeStamp);
                 const date2 = new Date(lastTimeStamp);
                 var diff = +(
@@ -852,18 +940,36 @@ app.get("/worktime", (req, res) => {
                   );
                   // res.json({name: name, areaname: pastLocationName, time:diffInHour});
                 }
-                // console.log(diff)
-                // var saveData = new workTimeModel({
-                //   name: name,
-                //   areaname: pastLocationName,
-                //   duration: diff,
-                // }).save(function(err, result) {
-                //   if (err) throw err;
-                //   if (result) {
-                //     console.log("Save Worktime Complete");
-                //     console.log(result);
-                //   }
-                // });
+                console.log("Duration",diff)
+                // console.log("PastLocation: ",pastLocationName);
+                workTimeModel.findOneAndUpdate(
+                  { areaname: pastLocationName },
+                  {
+                    duration: diff,
+                  },
+                  function(err, area) {
+                    console.log("area ",area);
+                    if (err) console.log(err);
+                    if (area == null) {
+                      console.log("Can't find data");
+                      var saveData = new workTimeModel({
+                        name: name,
+                        areaname: pastLocationName,
+                        duration: diff,
+                      }).save(function(err, result) {
+                        if (err) throw err;
+                        if (result) {
+                          console.log("Save Worktime Complete");
+                          console.log("result", result);
+                        }
+                      });
+                    } else {
+                      // res.json({ data: { status: "update" } });
+                      console.log("Update duration complete!");
+                      // console.log("User: ", user);
+                    }
+                  }
+                )
                 areaNameCounter = 1;
               }
             } else if (property == 0) {
@@ -905,7 +1011,7 @@ app.get("/worktime", (req, res) => {
       console.log("User name: ", name);
       console.log("All location of this user: ", user);
       database3 = user;
-      console.log("Database3: ", database3);
+      // console.log("Database3: ", database3);
       // console.log("haha ",user[0].areaname);
       //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
       //     if (err) res.send(err);
@@ -960,7 +1066,8 @@ app.get("/historyroute", async (req, res) => {
   var firstTimeStamp, secondTimeStamp;
   await locationModel.find(
     {},
-    "xy floor timestamp name",
+    // "xy floor timestamp name",
+    "xy timestamp name",
     { sort: { timestamp: -1 } },
     function(err, location) {
       // console.log();
@@ -1001,7 +1108,7 @@ app.get("/historyroute", async (req, res) => {
     console.log("diff: ", diff);
     informationArray.push({
       xy: database4[index + 1].xy,
-      floor: database4[index + 1].floor,
+      // floor: database4[index + 1].floor,
       past: diff,
       name: database4[index + 1].name,
     });

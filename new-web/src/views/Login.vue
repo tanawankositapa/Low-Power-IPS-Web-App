@@ -51,7 +51,7 @@ export default {
     sendLoginDataToBackend() {
       //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
       axios
-        .post("http://8c70eb32594e.ngrok.io/login", {
+        .post("http://cefb3aec9503.ngrok.io/login", {
           username: this.username,
           password: this.password,
         })

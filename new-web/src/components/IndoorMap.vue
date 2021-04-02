@@ -84,7 +84,7 @@
   </div>
 </template>
 <script>
-import myImage from "../../public/606layout.svg";
+import myImage from "../../public/606layout2.svg";
 // import NeuralModel from './NeuralModel.vue'
 import axios from "axios";
 export default {
@@ -320,6 +320,9 @@ export default {
             // context.fill(vm.arrayOfCircle[i], "nonzero");
             context.fillStyle =vm.arrayOfCircle[i].color;
             context.fill();
+            context.lineWidth = 1;
+            context.strokeStyle = "#003300";
+            context.stroke();
             // context.stroke(vm.arrayOfCircle[i], "nonzero");
             // context.closePath();
         }
@@ -723,7 +726,7 @@ export default {
         context.drawImage(base_image, 0, 0);
       };
     },
-    drawMap(floor, posX, posY) {
+    drawMap(posX, posY) {
       let vm = this;
       /* radiomap กว้าง 60 สูง 60
                     โลกจริง radomap กว้าง 1 เมตร สูง 1 เมตร
@@ -791,33 +794,33 @@ export default {
         );
 
         // console.log(index);
-        // console.log("VM ELEMENT: ", vm.currentElements);
+        console.log("VM ELEMENT: ", vm.currentElements);
         // console.log("Current Name: ", vm.currentElements[0].user);
         // console.log("Value Name: ", vm.value10.length == 0);
         //
 
         /***************************************************** */
-        // for (var index in vm.value10) {
-        //   if (vm.value10[index].name != null) {
-        //     // แยก user แต่ละคนออก
-        //     if (vm.responsePosition.name == vm.value10[index].name) {
-        //       if (vm.currentElements.length == 0) {
-        //         vm.currentElements.push({
-        //           colour: "#05EFFF",
-        //           x: posX * 52 + 70,
-        //           y: -posY * 40 + bh - 110,
-        //           r: 10,
-        //           sAngle: 0,
-        //           eAngle: 2 * Math.PI,
-        //           counterclockwise: false,
-        //           user: vm.responsePosition.name,
-        //           department: vm.responsePosition.department,
-        //           company: vm.responsePosition.company,
-        //         });
-        //       }
-        //     }
-        //   }
-        // }
+        for (var index in vm.value10) {
+          if (vm.value10[index].name != null) {
+            // แยก user แต่ละคนออก
+            if (vm.responsePosition.name == vm.value10[index].name) {
+              if (vm.currentElements.length == 0) {
+                vm.currentElements.push({
+                  colour: "#05EFFF",
+                  x: posX * 52 + 70,
+                  y: -posY * 40 + bh - 110,
+                  r: 10,
+                  sAngle: 0,
+                  eAngle: 2 * Math.PI,
+                  counterclockwise: false,
+                  user: vm.responsePosition.name,
+                  department: vm.responsePosition.department,
+                  company: vm.responsePosition.company,
+                });
+              }
+            }
+          }
+        }
 
         // console.log("oMG: ",vm.responsePosition.name);
         // console.log("Oeq: ",vm.responsePosition);
@@ -833,23 +836,23 @@ export default {
         // });
         
         /******************************************************** */
-        // vm.currentElements.forEach(function (element) {
-        //   context.fillStyle = element.colour;
-        //   // context.fillRect(element.left, element.top, element.width, element.height);
-        //   context.beginPath();
-        //   context.arc(
-        //     element.x,
-        //     element.y,
-        //     element.r,
-        //     element.sAngle,
-        //     element.eAngle,
-        //     element.counterclockwise
-        //   );
-        //   context.fill();
-        //   context.lineWidth = 1;
-        //   context.strokeStyle = "#003300";
-        //   context.stroke();
-        // });
+        vm.currentElements.forEach(function (element) {
+          context.fillStyle = element.colour;
+          // context.fillRect(element.left, element.top, element.width, element.height);
+          context.beginPath();
+          context.arc(
+            element.x,
+            element.y,
+            element.r,
+            element.sAngle,
+            element.eAngle,
+            element.counterclockwise
+          );
+          context.fill();
+          context.lineWidth = 1;
+          context.strokeStyle = "#003300";
+          context.stroke();
+        });
 
         // }
       }
@@ -857,8 +860,9 @@ export default {
 
     getPredictionData() {
       var bh = 650;
-      // console.log("Response: ",this.responsePosition);
-      this.posX = this.responsePosition.ypred[0];
+      console.log("Response: ",this.responsePosition);
+      if(this.responsePosition.ypred != undefined){
+        this.posX = this.responsePosition.ypred[0];
       this.posY = this.responsePosition.ypred[1];
       console.log("PosX: ", this.posX);
       console.log("PosY: ", this.posY);
@@ -877,26 +881,40 @@ export default {
           company: this.responsePosition.company,
         });
       }
-      this.drawMap(6, this.posX, this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
+      this.drawMap(this.posX, this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
+      }
     },
-    fetchDataFromBackend() {
-      axios
-        .get("http://6a185c926e69.ngrok.io")
-        // .then(response => (this.info = response))
-        .then((response) => (this.responsePosition = response.data.data))
-        // .then(response => (console.log("OMG",response.data.data)))
-        .catch((error) => console.log(error))
-        .finally(() => this.getPredictionData());
-    },
+    // fetchDataFromBackend() {
+    //   axios
+    //     .post("http://cefb3aec9503.ngrok.io",{
+    //     check: "OK"
+    //   })
+    //     // .then(response => (this.info = response))
+    //     // .then((response) => (this.responsePosition = response.data.data))
+    //     .then(response => (console.log("OMG",response)))
+    //     .catch((error) => console.log(error))
+    //     .finally(() => this.getPredictionData());
+    // },
     fetchHistoryFromBackend() {
       axios
-        .get("http://6a185c926e69.ngrok.io/historyroute")
+        .get("http://cefb3aec9503.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
         .catch((error) => console.log(error))
         // .finally(() => console.log(this.historyPosition))
         .finally(() => this.insertUserOption());
+    },
+    fetchPositionFromBackend() {
+      axios
+        .post("http://cefb3aec9503.ngrok.io/position",{
+        check: "OK"
+      })
+        // .then(response => (this.info = response))
+        .then((response) => (this.responsePosition = response.data.data))
+        // .then(response => (console.log("OMG",response)))
+        .catch((error) => console.log(error))
+        .finally(() => this.getPredictionData());
     },
   },
   created() {
@@ -905,8 +923,10 @@ export default {
   mounted() {
     console.log("Mounted");
     this.initMap();
-    this.fetchDataFromBackend();
-    this.interval = setInterval(() => this.fetchDataFromBackend(), 10000);
+    // this.fetchDataFromBackend();
+    this.fetchPositionFromBackend();
+    // this.interval = setInterval(() => this.fetchDataFromBackend(), 5000);
+    this.interval = setInterval(() => this.fetchPositionFromBackend(), 1000);
     // setTimeout(() => {
     //   if(readyToBreak){
     //     console.log("ppp");
@@ -919,12 +939,14 @@ export default {
     /** Fetch ข้อมูลมาจากฝั่ง Backend ด้วย public url
      * แบบนี้จริงอยู่ที่ไม่ Secure แต่ในอนาคตเราสามารถ deploy ลงบน cluster อย่าง kubernetes แล้วใช้ internal service ip แทนได้
      */
-    this.fetchDataFromBackend();
+    // this.fetchDataFromBackend();
     this.fetchHistoryFromBackend();
+    this.fetchPositionFromBackend();
   },
   updated() {
-    this.fetchDataFromBackend();
+    // this.fetchDataFromBackend();
     this.fetchHistoryFromBackend();
+    this.fetchPositionFromBackend();
   },
   // updated() {
   //   axios

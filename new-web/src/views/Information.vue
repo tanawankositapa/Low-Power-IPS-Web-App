@@ -292,7 +292,7 @@ export default {
     },
     fetchUserFromBackend() {
       axios
-        .get("http://8c70eb32594e.ngrok.io/getemployee")
+        .get("http://cefb3aec9503.ngrok.io/getemployee")
         // .then(response => (this.info = response))
         .then((response) => (this.user = response.data))
         // .then(response => (console.log(response.data)))
@@ -312,7 +312,7 @@ export default {
     // }
     fetchAlertFromBackend() {
       axios
-        .get("http://8c70eb32594e.ngrok.io/alert")
+        .get("http://cefb3aec9503.ngrok.io/alert")
         // .then(response => (this.info = response))
         .then((response) => (this.alertUser = response.data))
         // .then(response => (console.log(response.data)))
@@ -321,7 +321,7 @@ export default {
     },
     fetchWorkTimeFromBackend() {
       axios
-        .get("http://8c70eb32594e.ngrok.io/worktime")
+        .get("http://cefb3aec9503.ngrok.io/worktime")
         // .then(response => (this.info = response))
         .then((response) => (this.workTime = response.data))
         // .then(response => (console.log(response.data)))
