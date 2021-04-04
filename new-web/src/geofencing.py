@@ -39,15 +39,15 @@ sys.stdout.flush()
 
 # # print(list[0])
 # # print(type(list[0]))
-# point = Point(4, 4.9)
-# polygon = Polygon([[1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1]])
-# # polygon = Polygon([[1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1]])
-# # polygon = Polygon([[5, 1], [3, 2], [2, 5], [4, 5], [5, 3]])
+# point = Point(11, 4.9)
+# # polygon = Polygon([[1, 1], [1, 5], [5.84, 5], [5.84, 1]])
+# # polygon = Polygon([[1, 5], [1, 9], [5.84, 9], [5.84, 5]])
+# polygon = Polygon([[1, 9], [1, 12], [5.84, 12], [5.84, 9]])
 
 # print(polygon.contains(point))
 
 # x, y = polygon.exterior.xy
 # plt.plot(x, y)
-# plt.scatter(4, 4.9)
+# plt.scatter(4.94, 4.95)
 # plt.show()
 # ##############################################################################

@@ -197,18 +197,29 @@ app.post("/", async (req, res) => {
   //     company: company,
   //   },
   // });
-  // console.log("req",req);
-  console.log("req body data",req.body.data); 
+  console.log("req",req.body);
+  console.log(typeof(req.body.data));
+  if(req.body.data === NULL){
+    console.log("Get NULL");
+  }
+  function hexToString(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+  }
+  // console.log("req body data",req.body.data); 
   // var ypred =[];
-  console.log("Check: ",req.body.check);
-  if(req.body.data != NULL && req.body.data != undefined ){ // น่าจะไม่ error ว่่า cannot set header แล้ว พน.ลองเทส อาจจะไม่ต้องใช้ if
+  // console.log("Check: ",req.body.check);
+  if(req.body.data != NULL && req.body.data != undefined && req.body.data != "null"){ // น่าจะไม่ error ว่่า cannot set header แล้ว พน.ลองเทส อาจจะไม่ต้องใช้ if
    
   let buff = Buffer.from(req.body.data, 'base64');
   let base64data = buff.toString('utf-8');
-  console.log(base64data);
-  console.log(typeof(base64data));
+  // console.log(base64data);
+  // console.log(typeof(base64data));
   var strSplit1 = base64data.split(" ");
-  console.log("Split1", strSplit1);
+  // console.log("Split1", strSplit1);
   
   var rssi = [];
   var rssiBig = [];
@@ -223,7 +234,7 @@ app.post("/", async (req, res) => {
     
   }
   rssiBig.push(rssi);
-  console.log("Big: ",rssiBig);
+  // console.log("Big: ",rssiBig);
   // const model = await tfjs.loadLayersModel(
   //   "https://raw.githubusercontent.com/tanawankositapa/Low-Power-IPS-Web-App/master/old-web/model/model.json"
   // );
@@ -348,6 +359,7 @@ app.post("/", async (req, res) => {
         // console.log("Inside Fence: ",database[property].fence);
         // console.log("Inside Restrictfor: ",tempRestrict);
         console.log("Area: ", tempAreaName);
+        /**ถ้าเจอ */
         if (tempAns === "True") {
           // console.log("Holy");
           // timer
@@ -536,8 +548,10 @@ app.post("/", async (req, res) => {
   //     /**ในอนาคตเราจะส่ง object นี้ไป extract ที่ frontend */
   //   }
   // }
-
-  await geoFence();
+  if(ypred[0] != undefined && ypred[1] !=undefined){
+    await geoFence();
+  }
+  
 
   // setTimeout(async () => {
   //  await workForceManage();
@@ -616,49 +630,49 @@ app.get("/getval", (req, res) => {
   console.log("full Body: ", req.body);
   console.log("Data label: ", req.body.data);
   // var decodedString = window.atob(req.body.data);
-  let buff = Buffer.from(req.body.data, 'base64');
-  let base64data = buff.toString('utf-8');
-  console.log(base64data);
-  console.log(typeof(base64data));
-  var strSplit1 = base64data.split(" ");
-  console.log("Split1", strSplit1);
+  // let buff = Buffer.from(req.body.data, 'base64');
+  // let base64data = buff.toString('utf-8');
+  // console.log(base64data);
+  // console.log(typeof(base64data));
+  // var strSplit1 = base64data.split(" ");
+  // console.log("Split1", strSplit1);
   
-  var rssi = [];
-  for (var i in strSplit1){
-    console.log(strSplit1[i]);
-    // console.log();
-    // let strSplit2 = strSplit1[i].split(":");
-    // console.log(strSplit2[1]);
-    var intStrSplit1 = parseInt(strSplit1[i]);
-    rssi.push(intStrSplit1);
-    // rssi.push(strSplit1[i]);
+  // var rssi = [];
+  // for (var i in strSplit1){
+  //   console.log(strSplit1[i]);
+  //   // console.log();
+  //   // let strSplit2 = strSplit1[i].split(":");
+  //   // console.log(strSplit2[1]);
+  //   var intStrSplit1 = parseInt(strSplit1[i]);
+  //   rssi.push(intStrSplit1);
+  //   // rssi.push(strSplit1[i]);
     
-  }
-  console.log(rssi);
-  // console.log(decodedString);
-  // console.log("devEui: ", req.body.devEUI);
-  // console.log(typeof req.body.rxInfo);
-  // console.log("rxInfo: ", req.body.rxInfo);
+  // }
+  // console.log(rssi);
+  // // console.log(decodedString);
+  // // console.log("devEui: ", req.body.devEUI);
+  // // console.log(typeof req.body.rxInfo);
+  // // console.log("rxInfo: ", req.body.rxInfo);
 
-  // this is how to extract rssi from rxInfo
-  // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
-  // var rssi = req.body.rxInfo.map(function(rxInfo) {
-  //   return rxInfo.rssi;
-  // });
-  // console.log(typeof rssi);
-  // var rssiValue = rssi.map(function(rssi) {
-  //   return rssi.values;
-  // });
-  // console.log("rssi: ", rssi);
-  // console.log("rssiValue: ",rssiValue);
-  // console.log(typeof rssi.values);
-  // console.log("rssi: ",rssi.value);
-  // console.log("rssi2: ", req.body.rxInfo[rssi]);
+  // // this is how to extract rssi from rxInfo
+  // // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
+  // // var rssi = req.body.rxInfo.map(function(rxInfo) {
+  // //   return rxInfo.rssi;
+  // // });
+  // // console.log(typeof rssi);
+  // // var rssiValue = rssi.map(function(rssi) {
+  // //   return rssi.values;
+  // // });
+  // // console.log("rssi: ", rssi);
+  // // console.log("rssiValue: ",rssiValue);
+  // // console.log(typeof rssi.values);
+  // // console.log("rssi: ",rssi.value);
+  // // console.log("rssi2: ", req.body.rxInfo[rssi]);
 
-  // res.sendStatus(200);
-  // console.log("ALSO Got Data: ",req.query.event.up);
-  // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
-  // res.render('index.ejs')
+  // // res.sendStatus(200);
+  // // console.log("ALSO Got Data: ",req.query.event.up);
+  // // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
+  // // res.render('index.ejs')
 });
 var myPoly = [
   // [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1] // true DevOps
@@ -823,18 +837,15 @@ app.get("/alert", (req, res) => {
   });
 });
 
-app.get("/worktime", (req, res) => {
-  async function workForceManage() {
-    var timeArray = [],
-      areaNameArray = [],
-      lastTimeStampArray = [],
-      lastAreaNameArray = [];
-    //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) {
-    await locationModel.find({ name: name }, function(err, location) {
+app.get("/worktime", (req,res) =>{
+  async function workForceManage(){
+    var timeArray = [] , areaNameArray = [], lastTimeStampArray =[], lastAreaNameArray = [];
+  //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
+    await locationModel.find({"name" : name}, function(err, location) { 
       if (err) console.log(err);
       else {
         // console.log("locationAreaName: ",locationAreaName);
-        console.log("Name: ", name);
+        // console.log("Name: ",name);
         // console.log("location: ",location);
         database2 = location;
         // console.log("Database2 ",database2);
@@ -842,220 +853,235 @@ app.get("/worktime", (req, res) => {
         var objectLength = Object.keys(database2).length;
         var areaNameCounter = 0;
         var minusDate;
-        /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
-        for (var property in database2) {
-          let tempTimestamp = database2[property].timestamp;
-          let tempLocationName = database2[property].areaname;
-          // let tempFence = database2[property].fence
-          // let fenceString = JSON.stringify(tempFence)
-          // console.log("Iterator: ",property);
-          // console.log("time: ", tempTimestamp);
-          // console.log("Area Name: ", tempLocationName);
-          timeArray.push(database2[property].timestamp);
-          areaNameArray.push(database2[property].areaname);
-          // if (database2[property].areaname){
+      /** ค้นหาใน database 2 ที่เก็บข้อมูลตำแหน่งของ user อยู่ */
+      for (var property in database2){
+        let tempTimestamp = database2[property].timestamp;
+        let tempLocationName = database2[property].areaname;
+        // let tempFence = database2[property].fence
+        // let fenceString = JSON.stringify(tempFence)  
+        // console.log("Iterator: ",property); 
+        // console.log("time: ", tempTimestamp);
+        // console.log("Area Name: ",tempLocationName);
+        timeArray.push(database2[property].timestamp);
+        areaNameArray.push(database2[property].areaname);
+        // console.log("Time Array: ",timeArray);
+        // if (database2[property].areaname){
 
-          // }
-          // console.log("Outside: ",database2[property].areaname);
+        // }
+        // console.log("Outside: ",database2[property].areaname);
 
-          /** ไม่ให้ overflow */
-          if (property < objectLength) {
-            // console.log("inside: ",database2[property].areaname);
-            // console.log("Database[property]: ",database2[property]);
-            // console.log("Counter: ",areaNameCounter);
-            /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า)
-             * ถ้าเป็น 0 มันจะติด - และ error undefined
-             */
-            if (property != 0 && property != objectLength - 1) {
-              /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
-              if (
-                database2[property].areaname == database2[property - 1].areaname
-              ) {
-                areaNameCounter += 1;
+        /** ไม่ให้ overflow */
+        if (property < objectLength){
+          // console.log("inside: ",database2[property].areaname);
+          // console.log("Database[property]: ",database2[property]);
+          // console.log("Counter: ",areaNameCounter); 
+          /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
+           * ถ้าเป็น 0 มันจะติด - และ error undefined
+          */
+        //  console.log("Area name: ",database2[property].areaname);
+        //  console.log("Property: ",property);
+          if(property != 0 && property != 1  && property != objectLength -1 ){
+            /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
+            if(database2[property].areaname == database2[property-1].areaname  ) {
+              areaNameCounter += 1
+              
+            }
+            /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
+            if((database2[property].areaname != database2[property-1].areaname) && property != 0){
+              // console.log(" ");
+              // console.log("Area Changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+              // console.log(" ");
+              var numericProperty = parseInt(property)
+              // console.log("Exc Pro: ", numericProperty);
+              // console.log("Exc AreaNameCounter: ",areaNameCounter);
+              // console.log("TYPE: ",typeof(property));
+              // console.log("WTF: ",numericProperty - areaNameCounter);
+              // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
+              if((numericProperty - areaNameCounter) == (numericProperty-1)){
+                var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
+                var lastTimeStamp = database2[numericProperty].timestamp
+                var pastLocationName = database2[property-1].areaname
+                // console.log("Same");
+              }else{
+                var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
+                var lastTimeStamp = database2[numericProperty-1].timestamp
+                var pastLocationName = database2[property-1].areaname
+                // console.log("Different");
               }
-              /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
-              if (
-                database2[property].areaname !=
-                  database2[property - 1].areaname &&
-                property != 0
-              ) {
-                var numericProperty = parseInt(property);
-                // console.log("Exc Pro: ", numericProperty);
-                // console.log("Exc AreaNameCounter: ",areaNameCounter);
-                // console.log("TYPE: ",typeof(property));
-                // console.log("WTF: ",numericProperty - areaNameCounter);
-                // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
-                var firstTimeStamp =
-                  database2[numericProperty - areaNameCounter].timestamp;
-                var lastTimeStamp = database2[numericProperty - 1].timestamp;
-                var pastLocationName = database2[property - 1].areaname;
-                // console.log("First timestamp:", firstTimeStamp);
-                // console.log("Last timestamp:", lastTimeStamp);
-                const date1 = new Date(firstTimeStamp);
-                const date2 = new Date(lastTimeStamp);
-                var diff = +(
-                  Math.round(Math.abs(date1 - date2) / 1000 + "e+2") + "e-2"
-                );
-                var diffInMin, diffInHour;
-                // var diff = Math.abs(date1 - date2)/1000;
-                // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
-                // lastTimeStampArray.push(lastTimeStamp);
-                // lastAreaNameArray.push(pastLocationName);
-
-                if (diff < 60) {
-                  console.log(
-                    "User " +
-                      name +
-                      " live in the " +
-                      pastLocationName +
-                      " for " +
-                      diff +
-                      " Second"
-                  );
-                  // res.json({name: name, areaname: pastLocationName, time:diff});
-                }
-                if (diff >= 60 && diff < 3600) {
-                  diffInMin = +(Math.round(diff / 60 + "e+2") + "e-2");
-                  console.log(
-                    "User " +
-                      name +
-                      " live in the " +
-                      pastLocationName +
-                      " for " +
-                      diffInMin +
-                      " Minute"
-                  );
-                  // res.json({name: name, areaname: pastLocationName, time:diffInMin});
-                }
-                if (diff >= 3600) {
-                  diffInHour = +(Math.round(diff / 60 / 60 + "e+2") + "e-2");
-                  console.log(
-                    "User " +
-                      name +
-                      " live in the " +
-                      pastLocationName +
-                      " for " +
-                      diffInHour +
-                      " Hour(s)"
-                  );
-                  // res.json({name: name, areaname: pastLocationName, time:diffInHour});
-                }
-                console.log("Duration",diff)
-                // console.log("PastLocation: ",pastLocationName);
-                workTimeModel.findOneAndUpdate(
-                  { areaname: pastLocationName },
-                  {
-                    duration: diff,
-                  },
-                  function(err, area) {
-                    console.log("area ",area);
-                    if (err) console.log(err);
-                    if (area == null) {
-                      console.log("Can't find data");
-                      var saveData = new workTimeModel({
-                        name: name,
-                        areaname: pastLocationName,
-                        duration: diff,
-                      }).save(function(err, result) {
-                        if (err) throw err;
-                        if (result) {
-                          console.log("Save Worktime Complete");
-                          console.log("result", result);
-                        }
-                      });
-                    } else {
-                      // res.json({ data: { status: "update" } });
-                      console.log("Update duration complete!");
-                      // console.log("User: ", user);
-                    }
+              
+              // if(firstTimeStamp == lastTimeStamp){
+              //     console.log("First in database: ",database2[numericProperty - areaNameCounter]);
+              //     console.log("Last in database: ",database2[numericProperty-1]);
+              //     console.log("Past location: ",pastLocationName);
+              //     console.log("Current location: ",database2[property].areaname);
+              //     // break;
+              // }
+              // console.log("Area Name Counter: ",areaNameCounter);
+              // console.log("Numeric Prop: ",numericProperty);
+              // console.log(" ");
+              // console.log("Minus of Numeric Prop and Area Name Counter ",numericProperty-areaNameCounter);
+              // console.log("Minus of Numeric Prop and 1 ",numericProperty-1);
+              // console.log("First timestamp:",firstTimeStamp);
+              // console.log("Last timestamp:",lastTimeStamp);
+              const date1 = new Date(firstTimeStamp);
+              const date2 = new Date(lastTimeStamp);
+              var diff = +(Math.round((Math.abs(date1 - date2)/1000) + "e+2") + "e-2");
+              var diffInMin, diffInHour
+              // var diff = Math.abs(date1 - date2)/1000;
+              // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
+              // lastTimeStampArray.push(lastTimeStamp);
+              // lastAreaNameArray.push(pastLocationName);
+              if (diff < 60){
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diff+ " Second");
+                // res.json({name: name, areaname: pastLocationName, time:diff});
+              }
+              if (diff >=60 && diff <3600){
+                diffInMin = +(Math.round((diff/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
+                // res.json({name: name, areaname: pastLocationName, time:diffInMin});
+              }
+              if (diff >=3600){
+                diffInHour = +(Math.round((diff/60/60) + "e+2") + "e-2")
+                console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
+                // res.json({name: name, areaname: pastLocationName, time:diffInHour});
+              }
+              // console.log(" ");
+              // console.log(" ");
+              // console.log("Duration in "+pastLocationName+" is "+diff);
+              // console.log(" ");
+              // console.log(" ");
+              // var saveData = new workTimeModel({
+              //   name: name,
+              //   areaname: pastLocationName,
+              //   duration: diff,
+              // }).save(function(err, result) {
+              //   if (err) throw err;
+              //   if (result) {
+              //     console.log("Save Worktime Complete");
+              //     console.log(result);
+              //   }
+              // });
+              workTimeModel.findOneAndUpdate(
+                { 
+                  name: name,
+                  areaname: pastLocationName,
+                  duration: diff,
+                },
+                {
+                  name: name,
+                  areaname: pastLocationName,
+                  duration: diff
+                },
+                function(err, area) {
+                  // console.log("area ",area);
+                  if (err) console.log(err);
+                  if (area == null) {
+                    console.log("Can't find data");
+                    var saveData = new workTimeModel({
+                      name: name,
+                      areaname: pastLocationName,
+                      duration: diff,
+                    }).save(function(err, result) {
+                      if (err) throw err;
+                      if (result) {
+                        // console.log("Save Worktime Complete");
+                        console.log("result", result);
+                      }
+                    });
+                  } else {
+                    // res.json({ data: { status: "update" } });
+                    console.log("Update duration complete!");
+                    console.log("User: ", area);
                   }
-                )
-                areaNameCounter = 1;
-              }
-            } else if (property == 0) {
-            /** กรณีเฉพาะตัวแรก */
-              areaNameCounter += 1;
-            } else if (property == objectLength - 1) {
-              // console.log("pro ",property);
-              // console.log("wf ",lastTimeStamp);
-              // console.log("wiq ",pastLocationName);
-              lastTimeStampArray.push(database2[property].timestamp);
-              lastAreaNameArray.push(database2[property].areaname);
+                }
+              )
+              areaNameCounter = 1
             }
           }
-
-          // console.log("Time Array: ", timeArray);
-          // console.log("WTF: ", database2[property].timestamp);
+          /** กรณีเฉพาะตัวแรก */
+         else if(property == 0){
+            areaNameCounter += 1
+          }
+          else if (property == objectLength -1){
+            // console.log("pro ",property);
+            // console.log("wf ",lastTimeStamp);
+            // console.log("wiq ",pastLocationName);
+            lastTimeStampArray.push(database2[property].timestamp);
+            lastAreaNameArray.push(database2[property].areaname);
+          }
+         
         }
-
-        // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
+        
+        // console.log("Time Array: ", timeArray);
+        // console.log("WTF: ", database2[property].timestamp);
+      }
+      
+      // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
       }
     });
     //end of find()
 
     // console.log("dB2: ",database2);
     console.log("Time Array: ", timeArray);
-    console.log("Area Name Array: ", areaNameArray);
-    console.log("Last Area Array: ", lastAreaNameArray);
-    console.log("Last Timestamp Array: ", lastTimeStampArray);
+    // console.log("Area Name Array: ", areaNameArray);
+    // console.log("Last Area Array: ", lastAreaNameArray);
+    // console.log("Last Timestamp Array: ", lastTimeStampArray);
     // var indexOfMaxValue = lastTimeStampArray.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
     // console.log("Index of max: ",indexOfMaxValue);
     // var maxDate = new Date(Math.max.apply(null, lastTimeStampArray.map(function(e) {
     //   return new Date(e.MeasureDate);
     // })));
     // console.log("Max DAET: ",maxDate);
-    var database3 = [],
-      areaWorkTimeName = [],
-      uniqueAreaWorkTimeName = [];
-    await workTimeModel.find({ name: name }, function(err, user) {
-      console.log("User name: ", name);
-      console.log("All location of this user: ", user);
+    var database3 = [] , areaWorkTimeName = [], uniqueAreaWorkTimeName = [];
+    await workTimeModel.find({"name" : name}, function(err, user) {
+      // console.log("User name: ",name);
+      // console.log("All location of this user: ",user);
       database3 = user;
-      // console.log("Database3: ", database3);
+      // console.log("Database3: ",database3);
       // console.log("haha ",user[0].areaname);
-      //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
-      //     if (err) res.send(err);
-      //     res.json(apartments);
-      // });
+    //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
+    //     if (err) res.send(err);
+    //     res.json(apartments);
+    // });
     });
-    for (var i in database3) {
+    for(var i in database3){
       // console.log("OO:", database3[i].areaname);
       areaWorkTimeName.push(database3[i].areaname);
     }
     // end of workForceManage()
-    function removeDuplicate(data) {
-      return data.filter((value, index) => data.indexOf(value) == index);
+    function removeDuplicate(data){
+      return data.filter((value,index) => data.indexOf(value) == index);
     }
     uniqueAreaWorkTimeName = removeDuplicate(areaWorkTimeName);
-    console.log("Unique: ", uniqueAreaWorkTimeName);
+    console.log("Unique: ",uniqueAreaWorkTimeName);
 
     // for(var i in uniqueAreaWorkTimeName){
-    // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
-    workTimeModel.aggregate(
-      [
-        {
-          $group: {
-            // _id: "$areaname",
-            _id: {
-              name: "$name",
-              areaname: "$areaname",
+      // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
+      workTimeModel.aggregate(
+        [
+          {
+            $group: {
+              // _id: "$areaname",
+              "_id": {
+                "name": "$name",
+                "areaname": "$areaname"
             },
-            total: {
-              $sum: "$duration",
-            },
-          },
-        },
-      ],
-      function(err, result) {
-        if (err) {
-          // res.send(err);
-          console.log(err);
-        } else {
-          res.json({ data: result });
-          console.log("Result: ", result);
+              total: {
+                $sum: "$duration"
+              }
+            }
+          }
+        ],
+        function(err, result) {
+          if (err) {
+            // res.send(err);
+            console.log(err);
+          } else {
+            res.json({data: result});
+            console.log("Result: ",result);
+          }
         }
-      }
-    );
+      );
     // }
   }
   workForceManage();
@@ -1074,7 +1100,7 @@ app.get("/historyroute", async (req, res) => {
       if (err) console.log(err);
       else {
         // res.json({data:alert});
-        console.log("location: ", location);
+        // console.log("location: ", location);
 
         database4 = location;
       }
@@ -1088,9 +1114,13 @@ app.get("/historyroute", async (req, res) => {
     diff = 0;
     // console.log("firstdiff: ",diff);
     // console.log(database4[index].timestamp);
+    // if(database4[index].name){
+
+    // }
     firstTimeStamp = database4[0].timestamp;
     secondTimeStamp = database4[index + 1].timestamp;
     immediateTimestamp = database4[index].timestamp;
+    // console.log(database4[index].name);
     // console.log(firstTimeStamp);
     // console.log(secondTimeStamp);
     var date1 = new Date(firstTimeStamp);
@@ -1117,7 +1147,7 @@ app.get("/historyroute", async (req, res) => {
     // }
     index = index + 1;
   }
-  console.log("Informarayartion: ", informationArray);
+  // console.log("Informarayartion: ", informationArray);
   res.json({ data: informationArray });
 });
 

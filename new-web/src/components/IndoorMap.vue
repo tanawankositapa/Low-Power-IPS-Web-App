@@ -7,7 +7,7 @@
     >
       <p>คุณ {{ name }}</p>
       <p v-show="!isDepartmentNull">แผนก {{ department }}</p>
-      <p v-show="!isCompanyNull">บริษัท {{ company }}</p>
+      <!-- <p v-show="!isCompanyNull">บริษัท {{ company }}</p> -->
       <!-- <p>{{value8.code}}</p> -->
       <p>ตำแหน่ง {{ testTime }} นาทีที่ผ่านมา</p>
       <!-- <p>{{ checkElements() }}</p> -->
@@ -111,6 +111,7 @@ export default {
       optionsForSelectButton: ["Off", "On"],
       timeOptionsForDropdown: [
         { time: "ล้างข้อมูล", code: "0" },
+        { time: "ตำแหน่งย้อนหลัง 15 นาที", code: "15" },
         { time: "ตำแหน่งย้อนหลัง 30 นาที", code: "30" },
         { time: "ตำแหน่งย้อนหลัง 1 ชั่วโมง", code: "60" },
         { time: "ตำแหน่งย้อนหลัง 1 ชั่วโมง 30 นาที", code: "90" },
@@ -459,7 +460,10 @@ export default {
             // this.drawLineWithArrows(currentX,currentY,nextX,nextY,5,8,false,true);
             if (currentUser == nextUser) {
               /**reverse logic */
-              this.drawLineWithArrows(
+              // console.log("Current Past: ",typeof(currentPast));
+              // console.log("Next Past: ",typeof(nextPast));
+              // if (nextPast - currentPast){
+                this.drawLineWithArrows(
                 nextX,
                 nextY,
                 currentX,
@@ -469,6 +473,7 @@ export default {
                 false,
                 true
               );
+              // }
               // console.log("Prepare for chaos");
             }
           }
@@ -522,16 +527,18 @@ export default {
                 // console.log("testname value10: ",this.value10[index].name);
 
                 if (this.value8 != null) {
-                  if (this.value8.code == "30") {
-                    if (this.historyPosition[index0].past <= 30) {
+                  // if(this.historyPosition[index0].past)
+                  if (this.value8.code == "15") {
+                    if (this.historyPosition[index0].past <= 15) {
                       // this.name = vm.responsePosition.name;
-                      // console.log("Name:",vm.responsePosition.name);
+                      console.log("Name:",vm.responsePosition.name);
                       console.log("index0: ", parseInt(index0));
                       console.log("objectlength: ", objectLength1 - 1);
                       // if (parseInt(index0) == objectLength1 - 1) {
                       //   // if(this.historyPosition[index0].name = this.historyPosition[index0+1].name)
                       //   console.log("HHHHHHHHHHHHHHH");
                       // }
+                      // console.log("Department: ",vm.responsePosition.department);
                       this.elements.push({
                         // colour: "#55BDCA",
                         // colour: "#" + randomColor,
@@ -543,8 +550,40 @@ export default {
                         eAngle: 2 * Math.PI,
                         counterclockwise: false,
                         user: vm.historyPosition[index0].name,
-                        department: vm.responsePosition.department,
-                        company: vm.responsePosition.company,
+                        // department: vm.responsePosition.department,
+                        department: "Agile & DevOps",
+                        // company: vm.responsePosition.company,
+                       
+                        past: this.historyPosition[index0].past,
+                      });
+                    }
+                  }
+                  if (this.value8.code == "30") {
+                    if (this.historyPosition[index0].past <= 30) {
+                      // this.name = vm.responsePosition.name;
+                      console.log("Name:",vm.responsePosition.name);
+                      console.log("index0: ", parseInt(index0));
+                      console.log("objectlength: ", objectLength1 - 1);
+                      // if (parseInt(index0) == objectLength1 - 1) {
+                      //   // if(this.historyPosition[index0].name = this.historyPosition[index0+1].name)
+                      //   console.log("HHHHHHHHHHHHHHH");
+                      // }
+                      // console.log("Department: ",vm.responsePosition.department);
+                      this.elements.push({
+                        // colour: "#55BDCA",
+                        // colour: "#" + randomColor,
+                        colour: this.globalArrayOfColor[index],
+                        x: this.historyPosition[index0].xy[0] * 52 + 70,
+                        y: -this.historyPosition[index0].xy[1] * 40 + bh - 110,
+                        r: 10,
+                        sAngle: 0,
+                        eAngle: 2 * Math.PI,
+                        counterclockwise: false,
+                        user: vm.historyPosition[index0].name,
+                        // department: vm.responsePosition.department,
+                        department: "Agile & DevOps",
+                        // company: vm.responsePosition.company,
+                       
                         past: this.historyPosition[index0].past,
                       });
                     }
@@ -552,6 +591,7 @@ export default {
                   if (this.value8.code == "60") {
                     if (this.historyPosition[index0].past <= 60) {
                       this.name = vm.responsePosition.name;
+                      console.log("Name:",vm.responsePosition.name);
                       this.elements.push({
                         // colour: "#96FFFF",
                         // colour: "#" + randomColor,
@@ -564,7 +604,7 @@ export default {
                         counterclockwise: false,
                         user: vm.historyPosition[index0].name,
                         department: vm.responsePosition.department,
-                        company: vm.responsePosition.company,
+                        // company: vm.responsePosition.company,
                         past: this.historyPosition[index0].past,
                       });
                     }
@@ -584,7 +624,7 @@ export default {
                         counterclockwise: false,
                         user: vm.historyPosition[index0].name,
                         department: vm.responsePosition.department,
-                        company: vm.responsePosition.company,
+                        // company: vm.responsePosition.company,
                         past: this.historyPosition[index0].past,
                       });
                     }
@@ -676,7 +716,8 @@ export default {
         function (event) {
           var x = event.pageX - elemLeft,
             y = event.pageY - elemTop;
-
+          // alert("Click");
+          console.log("department: ",vm.department);
           // for (i = vm.arrayOfCircle.length - 1; i >= 0; --i) {
           //   console.log("Test circle: ", vm.arrayOfCircle[i]);
           //   console.log("length of Circle: ", vm.arrayOfCircle.length);
@@ -701,14 +742,14 @@ export default {
               vm.display = true;
               vm.name = element.user;
               vm.department = element.department;
-              vm.company = element.company;
+              // vm.company = element.company;
               vm.testTime = element.past;
-              if (element.company == "") {
-                vm.isCompanyNull = true;
-              }
-              if (element.department == "") {
-                vm.isDepartmentNull = true;
-              }
+              // if (element.company == "") {
+              //   vm.isCompanyNull = true;
+              // }
+              // if (element.department == "") {
+              //   vm.isDepartmentNull = true;
+              // }
             }
           });
         },
@@ -776,17 +817,18 @@ export default {
                 x > element.x - element.r
               ) {
                 // vm.toggle(event,element.user);
+               
                 vm.display = true;
                 vm.name = element.user;
                 vm.department = element.department;
-                vm.company = element.company;
+                // vm.company = element.company;
                 vm.testTime = element.past;
-                if (element.company == "") {
-                  vm.isCompanyNull = true;
-                }
-                if (element.department == "") {
-                  vm.isDepartmentNull = true;
-                }
+                // if (element.company == "") {
+                //   vm.isCompanyNull = true;
+                // }
+                // if (element.department == "") {
+                //   vm.isDepartmentNull = true;
+                // }
               }
             });
           },
@@ -803,6 +845,7 @@ export default {
         for (var index in vm.value10) {
           if (vm.value10[index].name != null) {
             // แยก user แต่ละคนออก
+            
             if (vm.responsePosition.name == vm.value10[index].name) {
               if (vm.currentElements.length == 0) {
                 vm.currentElements.push({
@@ -815,7 +858,7 @@ export default {
                   counterclockwise: false,
                   user: vm.responsePosition.name,
                   department: vm.responsePosition.department,
-                  company: vm.responsePosition.company,
+                  // company: vm.responsePosition.company,
                 });
               }
             }
@@ -878,7 +921,7 @@ export default {
           counterclockwise: false,
           user: this.responsePosition.name,
           department: this.responsePosition.department,
-          company: this.responsePosition.company,
+          // company: this.responsePosition.company,
         });
       }
       this.drawMap(this.posX, this.posY); // ต้องเรียกใช้ในนี้ ไม่สามารถเรียกใช้ที่ mounted เพราะค่าจาก NeuralModel มันจะส่งมาหลังจาก mounted lifecycle แล้ว
@@ -886,7 +929,7 @@ export default {
     },
     // fetchDataFromBackend() {
     //   axios
-    //     .post("http://cefb3aec9503.ngrok.io",{
+    //     .post("http://a704fa885753.ngrok.io",{
     //     check: "OK"
     //   })
     //     // .then(response => (this.info = response))
@@ -896,8 +939,9 @@ export default {
     //     .finally(() => this.getPredictionData());
     // },
     fetchHistoryFromBackend() {
+      console.log("Fetch");
       axios
-        .get("http://cefb3aec9503.ngrok.io/historyroute")
+        .get("http://a704fa885753.ngrok.io/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -907,7 +951,7 @@ export default {
     },
     fetchPositionFromBackend() {
       axios
-        .post("http://cefb3aec9503.ngrok.io/position",{
+        .post("http://a704fa885753.ngrok.io/position",{
         check: "OK"
       })
         // .then(response => (this.info = response))
@@ -925,8 +969,10 @@ export default {
     this.initMap();
     // this.fetchDataFromBackend();
     this.fetchPositionFromBackend();
+    this.fetchHistoryFromBackend();
     // this.interval = setInterval(() => this.fetchDataFromBackend(), 5000);
     this.interval = setInterval(() => this.fetchPositionFromBackend(), 1000);
+    this.interval = setInterval(() => this.fetchHistoryFromBackend(), 1000);
     // setTimeout(() => {
     //   if(readyToBreak){
     //     console.log("ppp");

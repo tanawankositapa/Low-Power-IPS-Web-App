@@ -51,7 +51,7 @@ export default {
     sendLoginDataToBackend() {
       //   axios.post('http://localhost:81/lnt/public/member/car_result', {data: this.$data})
       axios
-        .post("http://cefb3aec9503.ngrok.io/login", {
+        .post("http://a704fa885753.ngrok.io/login", {
           username: this.username,
           password: this.password,
         })
@@ -66,14 +66,18 @@ export default {
       console.log("Login Status: ", this.isLoginSucess);
       if (this.isLoginSucess) {
         this.$router.push("/map");
+        
+        localStorage.setItem('Status',this.isLoginSucess)
       } else {
         this.display = true;
+        // alert(localStorage.getItem('Status'))
       }
     },
   },
   created() {
     // this.interval = setInterval(() => this.sendLoginDataToBackend(), 10000);
   },
+  
 };
 </script>
 <style scoped>

@@ -46,6 +46,7 @@ export default {
     },
     methods: {
         logoutHandle(){
+            localStorage.removeItem('Status');
             this.$router.push("/")
         },
     },
