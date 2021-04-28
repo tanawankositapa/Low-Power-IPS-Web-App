@@ -158,7 +158,7 @@ export default {
     SideNavbar,
   },
   customerService: null,
-  created() {
+  mounted() {
     // this.customerService = new CustomerService();
     this.fetchUserFromBackend();
     this.interval = setInterval(() => this.fetchUserFromBackend(), 10000);
@@ -167,7 +167,7 @@ export default {
     this.fetchWorkTimeFromBackend();
     this.interval = setInterval(() => this.fetchWorkTimeFromBackend(), 10000);
   },
-  mounted() {
+  created() {
     // this.customerService.getCustomersMedium().then(data => this.customers = data);
     // this.interval = setInterval(() => this.printf(), 10000);
     this.fetchUserFromBackend();
@@ -272,7 +272,7 @@ export default {
         }
         // console.log("gg", this.basicData[index].datasets[0].label);
         this.basicData[index].datasets[0].data.push(
-          this.workTime.data[label].total / 3600
+          (this.workTime.data[label].total / 3600) 
         );
         // console.log("oo ",this.basicData[index].datasets[0].data);
         // this.basicData[index].datasets.push({label: 'Dataset',backgroundColor: '#42A5F5',
@@ -292,7 +292,7 @@ export default {
     },
     fetchUserFromBackend() {
       axios
-        .get("http://a704fa885753.ngrok.io/getemployee")
+        .get("http://784b21504b71.ngrok.io/getemployee")
         // .then(response => (this.info = response))
         .then((response) => (this.user = response.data))
         // .then(response => (console.log(response.data)))
@@ -312,7 +312,7 @@ export default {
     // }
     fetchAlertFromBackend() {
       axios
-        .get("http://a704fa885753.ngrok.io/alert")
+        .get("http://784b21504b71.ngrok.io/alert")
         // .then(response => (this.info = response))
         .then((response) => (this.alertUser = response.data))
         // .then(response => (console.log(response.data)))
@@ -321,7 +321,7 @@ export default {
     },
     fetchWorkTimeFromBackend() {
       axios
-        .get("http://a704fa885753.ngrok.io/worktime")
+        .get("http://784b21504b71.ngrok.io/worktime")
         // .then(response => (this.info = response))
         .then((response) => (this.workTime = response.data))
         // .then(response => (console.log(response.data)))
