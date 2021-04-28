@@ -5,7 +5,7 @@ const tfjs = require("@tensorflow/tfjs");
 const express = require("express");
 const app = express();
 const port = 3000;
-'use strict';
+("use strict");
 // const spawn  = require("child_process").spawn;
 var proxy = require("express-http-proxy");
 // ********************************ต้องใช้ body parser ในการ extract ค่า req ออกมาจาก method-
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // อันนี้ อาจะไม่ต้องใช้ ถ้าไม่ได้ encode url มา
 app.use(bodyParser.urlencoded({ extended: true }));
 /** จะได้ไม่ต้องใช้ extension */
-const allowCrossDomain = function (req, res, next) {
+const allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
   res.header("Access-Control-Allow-Headers", "*");
@@ -103,7 +103,10 @@ var workTimeTestSchema = new mongoose.Schema({
   duration: Number,
 });
 // สร้าง model ของ db ต่อไปจะเรียกใช้ db ผ่าน object ตัวนี้
-var workTimeTestModel = mongoose.model("worktimetest_table", workTimeTestSchema);
+var workTimeTestModel = mongoose.model(
+  "worktimetest_table",
+  workTimeTestSchema
+);
 
 const { PythonShell } = require("python-shell");
 const path = require("path");
@@ -141,7 +144,6 @@ var alertStatusLevel = 0;
 //   // [-51, -70, -65, -83, -69, -89],
 // ];
 
-
 var rssi = [
   // [-58, -73, -70, -76], //Position (1,1)
   //  [-57, -56, -67, -58],
@@ -150,7 +152,7 @@ var rssi = [
   // [-56, -64, -67, -61], //Position (2,1)
   // [-62, -72, -71, -53],  //Position (3,1)
 ];
-var ypred = []
+var ypred = [];
 app.post("/position", async (req, res) => {
   if (req.body.check == "OK") {
     console.log("Predict1 ", ypred);
@@ -169,7 +171,6 @@ app.post("/position", async (req, res) => {
           company: company,
         },
       });
-
     }
   }
 });
@@ -207,24 +208,29 @@ app.post("/", async (req, res) => {
   //   },
   // });
   console.log("req", req.body);
-  console.log(typeof (req.body.data));
+  console.log(typeof req.body.data);
   if (req.body.data === NULL) {
     console.log("Get NULL");
   }
   function hexToString(hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
+    var hex = hexx.toString(); //force conversion
+    var str = "";
+    for (var i = 0; i < hex.length && hex.substr(i, 2) !== "00"; i += 2)
       str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
     return str;
   }
-  // console.log("req body data",req.body.data); 
+  // console.log("req body data",req.body.data);
   // var ypred =[];
   // console.log("Check: ",req.body.check);
-  if (req.body.data != NULL && req.body.data != undefined && req.body.data != "null") { // น่าจะไม่ error ว่่า cannot set header แล้ว พน.ลองเทส อาจจะไม่ต้องใช้ if
+  if (
+    req.body.data != NULL &&
+    req.body.data != undefined &&
+    req.body.data != "null"
+  ) {
+    // น่าจะไม่ error ว่่า cannot set header แล้ว พน.ลองเทส อาจจะไม่ต้องใช้ if
 
-    let buff = Buffer.from(req.body.data, 'base64');
-    let base64data = buff.toString('utf-8');
+    let buff = Buffer.from(req.body.data, "base64");
+    let base64data = buff.toString("utf-8");
     // console.log(base64data);
     // console.log(typeof(base64data));
     var strSplit1 = base64data.split(" ");
@@ -240,7 +246,6 @@ app.post("/", async (req, res) => {
       var intStrSplit1 = parseInt(strSplit1[i]);
       rssi.push(intStrSplit1);
       // rssi.push(strSplit1[i]);
-
     }
     rssiBig.push(rssi);
     // console.log("Big: ",rssiBig);
@@ -290,7 +295,7 @@ app.post("/", async (req, res) => {
   // });
   /**ตอนนี้ไม่ใช้ floor แล้ว */
   // await areaModel.find({floor:floor}, function(err, area) {
-  await areaModel.find({}, function (err, area) {
+  await areaModel.find({}, function(err, area) {
     if (err) console.log(err);
     else {
       database = area;
@@ -358,7 +363,7 @@ app.post("/", async (req, res) => {
       };
       let tempAreaName = await database[property].name;
 
-      PythonShell.run("geofencing.py", options, function (err, result) {
+      PythonShell.run("geofencing.py", options, function(err, result) {
         // isAlert = false
         // console.log("Inside Fencestring ",fenceString);
         if (err) throw err;
@@ -390,8 +395,25 @@ app.post("/", async (req, res) => {
                 trackerid: trackerId,
                 areaname: tempAreaName,
                 // floor: floor, /**ไม่ได้ใช้ floor แล้ว */
-                timestamp: `${(dt.getMonth() + 1).toString().padStart(2, '0')}/${dt.getDate().toString().padStart(2, '0')}/${dt.getFullYear().toString().padStart(4, '0')} ${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format
-              }).save(function (err, result) {
+                timestamp: `${(dt.getMonth() + 1)
+                  .toString()
+                  .padStart(2, "0")}/${dt
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}/${dt
+                  .getFullYear()
+                  .toString()
+                  .padStart(4, "0")} ${dt
+                  .getHours()
+                  .toString()
+                  .padStart(2, "0")}:${dt
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}:${dt
+                  .getSeconds()
+                  .toString()
+                  .padStart(2, "0")}`, // Time of save the data in unix timestamp format
+              }).save(function(err, result) {
                 if (err) throw err;
                 if (result) {
                   console.log(result);
@@ -405,7 +427,7 @@ app.post("/", async (req, res) => {
                 {
                   alertstatuslevel: alertStatusLevel,
                 },
-                function (err, user) {
+                function(err, user) {
                   // console.log();
                   if (err) console.log(err);
                   if (user == null) {
@@ -418,25 +440,87 @@ app.post("/", async (req, res) => {
                 }
               );
             }
-          } else { /** ไม่ตรงเงื่อนไขละเมิด */
+          } else {
+            /** ไม่ตรงเงื่อนไขละเมิด */
             alertStatusLevel = 0;
             // isAlert = false;
           }
 
-          var saveData = new locationModel({
-            // xy: [2, 3],
-            xy: [ypred[0], ypred[1]],
-            areaname: tempAreaName,
-            // floor: floor, //ไม่ได้ใช้ floor แล้ว
-            name: name,
-            timestamp: `${(dt.getMonth() + 1).toString().padStart(2, '0')}/${dt.getDate().toString().padStart(2, '0')}/${dt.getFullYear().toString().padStart(4, '0')} ${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}`,// Time of save the data in unix timestamp format,
-          }).save(function (err, result) {
-            if (err) throw err;
-            if (result) {
-              console.log(result);
-              console.log("Location Save Complete");
+          locationModel.find(
+            {
+              name: name,
+              xy: [ypred[0], ypred[1]],
+              areaname: tempAreaName,
+            },
+          function(err, data) {
+            // console.log();
+            if (err) console.log(err);
+            if (data == null) {
+              var saveData = new locationModel({
+                // xy: [2, 3],
+                xy: [ypred[0], ypred[1]],
+                areaname: tempAreaName,
+                // floor: floor, //ไม่ได้ใช้ floor แล้ว
+                name: name,
+                timestamp: `${(dt.getMonth() + 1).toString().padStart(2, "0")}/${dt
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")}/${dt
+                  .getFullYear()
+                  .toString()
+                  .padStart(4, "0")} ${dt
+                  .getHours()
+                  .toString()
+                  .padStart(2, "0")}:${dt
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}:${dt
+                  .getSeconds()
+                  .toString()
+                  .padStart(2, "0")}`, // Time of save the data in unix timestamp format,
+              }).save(function(err, result) {
+                if (err) throw err;
+                if (result) {
+                  console.log(result);
+                  console.log("Location Save Complete");
+                }
+              });
+            } else {
+              console.log("Wait until new data sent");
+              
             }
-          });
+          }
+          );
+          /**ของเดิมก่อนแก้ปัญหา save locaiton เดิมๆ ซ้ำ ถ้าอันบนบัต ก็มาเปิดใช้ข้างล่างนี้ */
+          // var saveData = new locationModel({
+          //   // xy: [2, 3],
+          //   xy: [ypred[0], ypred[1]],
+          //   areaname: tempAreaName,
+          //   // floor: floor, //ไม่ได้ใช้ floor แล้ว
+          //   name: name,
+          //   timestamp: `${(dt.getMonth() + 1).toString().padStart(2, "0")}/${dt
+          //     .getDate()
+          //     .toString()
+          //     .padStart(2, "0")}/${dt
+          //     .getFullYear()
+          //     .toString()
+          //     .padStart(4, "0")} ${dt
+          //     .getHours()
+          //     .toString()
+          //     .padStart(2, "0")}:${dt
+          //     .getMinutes()
+          //     .toString()
+          //     .padStart(2, "0")}:${dt
+          //     .getSeconds()
+          //     .toString()
+          //     .padStart(2, "0")}`, // Time of save the data in unix timestamp format,
+          // }).save(function(err, result) {
+          //   if (err) throw err;
+          //   if (result) {
+          //     console.log(result);
+          //     console.log("Location Save Complete");
+          //   }
+          // });
         } else {
           // console.log("Moly");
         }
@@ -548,7 +632,6 @@ app.post("/", async (req, res) => {
   if (ypred[0] != undefined && ypred[1] != undefined) {
     await geoFence();
   }
-
 
   // setTimeout(async () => {
   //  await workForceManage();
@@ -721,7 +804,7 @@ app.post("/login", (req, res) => {
 
   staffModel.findOne(
     { username: staffUsername, password: staffPassword },
-    function (err, user) {
+    function(err, user) {
       // console.log();
       if (err) console.log(err);
       else {
@@ -784,7 +867,7 @@ app.post("/register", (req, res) => {
       macaddress: macaddress,
       alertstatuslevel: alertStatusLevel,
     },
-    function (err, user) {
+    function(err, user) {
       // console.log();
       if (err) console.log(err);
       if (user == null) {
@@ -796,7 +879,7 @@ app.post("/register", (req, res) => {
           trackerid: trackerId,
           macaddress: macaddress,
           alertstatuslevel: alertStatusLevel,
-        }).save(function (err, result) {
+        }).save(function(err, result) {
           if (err) throw err;
           if (result) {
             // res.json({status:"save"})
@@ -815,7 +898,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/getemployee", (req, res) => {
-  userModel.find({}, function (err, user) {
+  userModel.find({}, function(err, user) {
     if (err) console.log(err);
     else {
       // console.log(user);
@@ -825,7 +908,7 @@ app.get("/getemployee", (req, res) => {
 });
 
 app.get("/alert", (req, res) => {
-  alertModel.find({}, function (err, alert) {
+  alertModel.find({}, function(err, alert) {
     // console.log();
     if (err) console.log(err);
     else {
@@ -835,16 +918,15 @@ app.get("/alert", (req, res) => {
 });
 
 app.get("/worktime", async (req, res) => {
-  var database2
+  var database2;
   /**ฟังก์ชั่นนี้ ดึงข้อมูล location ของพนักงานคนนึงออกมา แล้วหาว่า คนนั้นอยู่ใน area ไหน
    * โดยการตรวจสอบการเปลี่ยนแปลง area เมื่อ area ไม่ตรงกับตัวก่อนหน้า แสดงว่ามีการเปลี่ยนพื้นที่
-   * จากนั้นจะทำการคำนวณเวลาที่พนักงานคนนั้นอยู่ใน area ที่ผ่านมาล่าสุด 1 area แล้วบันทึกลงใน worktime table 
+   * จากนั้นจะทำการคำนวณเวลาที่พนักงานคนนั้นอยู่ใน area ที่ผ่านมาล่าสุด 1 area แล้วบันทึกลงใน worktime table
    */
   async function workForceManage() {
-    
-    //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) { 
-      /**ดึงข้อมูลใน location table ออกมาใส่ไว้ใน array*/
-    await locationModel.find({ "name": name }, function (err, location) {
+    //  await locationModel.find({"areaname": locationAreaName,"name" : name}, function(err, location) {
+    /**ดึงข้อมูลใน location table ออกมาใส่ไว้ใน array*/
+    await locationModel.find({ name: name }, function(err, location) {
       if (err) console.log(err);
       else {
         // console.log("locationAreaName: ",locationAreaName);
@@ -853,13 +935,16 @@ app.get("/worktime", async (req, res) => {
         database2 = location;
 
         // console.log("After Database2 ",database2);
-        // console.log("Database2 ", database2);  
+        // console.log("Database2 ", database2);
       }
     });
     console.log("Inside Db2: ", database2.length);
-    var timeArray = [], areaNameArray = [], lastTimeStampArray = [], lastAreaNameArray = [];
+    var timeArray = [],
+      areaNameArray = [],
+      lastTimeStampArray = [],
+      lastAreaNameArray = [];
     // if(database2 != undefined){
-      var objectLength = Object.keys(database2).length;
+    var objectLength = Object.keys(database2).length;
     // }
     var areaNameCounter = 0;
     var minusDate;
@@ -869,59 +954,66 @@ app.get("/worktime", async (req, res) => {
       let tempTimestamp = database2[property].timestamp;
       let tempLocationName = database2[property].areaname;
       // let tempFence = database2[property].fence
-      // let fenceString = JSON.stringify(tempFence)  
-      // console.log("Iterator: ",property); 
+      // let fenceString = JSON.stringify(tempFence)
+      // console.log("Iterator: ",property);
       // console.log("time: ", tempTimestamp);
       // console.log("Area Name: ",tempLocationName);
       timeArray.push(database2[property].timestamp);
       areaNameArray.push(database2[property].areaname);
       // console.log("Time Array: ",timeArray);
       // if (database2[property].areaname){
-  
+
       // }
       // console.log("Outside: ",database2[property].areaname);
-  
+
       /** ไม่ให้ overflow */
       if (property < objectLength) {
         // console.log("inside: ",database2[property].areaname);
         // console.log("Database[property]: ",database2[property]);
-        // console.log("Counter: ",areaNameCounter); 
+        // console.log("Counter: ",areaNameCounter);
         // console.log("Area name: ",database2[property].areaname);
         // console.log("Property: ",property);
 
-        /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า) 
+        /** ต้องไม่เป็น 0 เพราว่าเราใช้การตรวจสอบแบบย้อนหลัง (ตำแหน่งปัจจุบัน กับ ตำแหน่งก่อนหน้า)
          * ถ้าเป็น 0 มันจะติด - และ error undefined
-        */
+         */
         if (property != 0 && property != 1 && property != objectLength - 1) {
           /** ถ้า area name ตรงกับตัวก่อนหน้า (ยังอยู่ใน area เดิม) ใหันับ +1 */
-          if (database2[property].areaname == database2[property - 1].areaname) {
-            areaNameCounter += 1
+          if (
+            database2[property].areaname == database2[property - 1].areaname
+          ) {
+            areaNameCounter += 1;
           }
           /** ถ้า area name ไม่ตรงกับตัวก่อนหน้า (แสดงว่าเปลี่ยน area แล้ว) ให้คำนวณเวลาที่อยู่ในพื่้นที่ล่าสุดที่ผ่านมา */
-          if ((database2[property].areaname != database2[property - 1].areaname) && property != 0) {
+          if (
+            database2[property].areaname != database2[property - 1].areaname &&
+            property != 0
+          ) {
             // console.log(" ");
             // console.log("Area Changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             // console.log(" ");
-            var numericProperty = parseInt(property)
+            var numericProperty = parseInt(property);
             // console.log("Exc Pro: ", numericProperty);
             // console.log("Exc AreaNameCounter: ",areaNameCounter);
             // console.log("TYPE: ",typeof(property));
             // console.log("WTF: ",numericProperty - areaNameCounter);
             // minusDate = database2[property-1].timestamp - database2[(property - 1) - (areaNameCounter+1) -1 ].timestamp
-            if ((numericProperty - areaNameCounter) == (numericProperty - 1)) {
-              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
-              var lastTimeStamp = database2[numericProperty].timestamp
-              var pastLocationName = database2[property - 1].areaname
-              var currentLocation = database2[property].areaname
+            if (numericProperty - areaNameCounter == numericProperty - 1) {
+              var firstTimeStamp =
+                database2[numericProperty - areaNameCounter].timestamp;
+              var lastTimeStamp = database2[numericProperty].timestamp;
+              var pastLocationName = database2[property - 1].areaname;
+              var currentLocation = database2[property].areaname;
               // console.log("Same");
             } else {
-              var firstTimeStamp = database2[numericProperty - areaNameCounter].timestamp
-              var lastTimeStamp = database2[numericProperty - 1].timestamp
-              var pastLocationName = database2[property - 1].areaname
-              var currentLocation = database2[property].areaname
+              var firstTimeStamp =
+                database2[numericProperty - areaNameCounter].timestamp;
+              var lastTimeStamp = database2[numericProperty - 1].timestamp;
+              var pastLocationName = database2[property - 1].areaname;
+              var currentLocation = database2[property].areaname;
               // console.log("Different");
             }
-            
+
             // if(firstTimeStamp == lastTimeStamp){
             //     console.log("First in database: ",database2[numericProperty - areaNameCounter]);
             //     console.log("Last in database: ",database2[numericProperty-1]);
@@ -938,8 +1030,10 @@ app.get("/worktime", async (req, res) => {
             // console.log("Last timestamp:",lastTimeStamp);
             const date1 = new Date(firstTimeStamp);
             const date2 = new Date(lastTimeStamp);
-            var diff = +(Math.round((Math.abs(date1 - date2) / 1000) + "e+2") + "e-2");
-            var diffInMin, diffInHour
+            var diff = +(
+              Math.round(Math.abs(date1 - date2) / 1000 + "e+2") + "e-2"
+            );
+            var diffInMin, diffInHour;
             // var diff = Math.abs(date1 - date2)/1000;
             // var diff = +(Math.round((Math.abs(date1 - date2)/1000/60/60) + "e+2") + "e-2");
             // lastTimeStampArray.push(lastTimeStamp);
@@ -949,12 +1043,12 @@ app.get("/worktime", async (req, res) => {
               // res.json({name: name, areaname: pastLocationName, time:diff});
             }
             if (diff >= 60 && diff < 3600) {
-              diffInMin = +(Math.round((diff / 60) + "e+2") + "e-2")
+              diffInMin = +(Math.round(diff / 60 + "e+2") + "e-2");
               // console.log("User "+name+" live in the "+pastLocationName+" for "+diffInMin + " Minute");
               // res.json({name: name, areaname: pastLocationName, time:diffInMin});
             }
             if (diff >= 3600) {
-              diffInHour = +(Math.round((diff / 60 / 60) + "e+2") + "e-2")
+              diffInHour = +(Math.round(diff / 60 / 60 + "e+2") + "e-2");
               // console.log("User "+name+" live in the "+pastLocationName+" for "+diffInHour+ " Hour(s)");
               // res.json({name: name, areaname: pastLocationName, time:diffInHour});
             }
@@ -987,7 +1081,7 @@ app.get("/worktime", async (req, res) => {
             //     return res.json(results)
             //   }
             // )
-            // // workTimeModel.findOneAndUpdate( 
+            // // workTimeModel.findOneAndUpdate(
             //   // console.log("Location: ",pastLocationName);
             //   workTimeTestModel.find({ "name": name, "areaname": pastLocationName }, async function (err, worktime) {
             //     // console.log("Worktime: ",worktime);
@@ -1004,7 +1098,7 @@ app.get("/worktime", async (req, res) => {
             //           console.log("Save Worktime Complete");
             //           // console.log("result", result);
             //         }
-            //       }); 
+            //       });
             //     }if (worktime.length > 0){
             //       // workTimeTestModel.updateOne(
             //        await workTimeTestModel.findOneAndUpdate(
@@ -1046,115 +1140,112 @@ app.get("/worktime", async (req, res) => {
             //       )
             //     }
             //   });
-            
-            areaNameCounter = 1
+
+            areaNameCounter = 1;
           }
-        }
+        } else if (property == 0) {
         /** กรณีเฉพาะตัวแรก */
-        else if (property == 0) {
-          areaNameCounter += 1
-        }
-        else if (property == objectLength - 1) {
+          areaNameCounter += 1;
+        } else if (property == objectLength - 1) {
           // console.log("pro ",property);
           // console.log("wf ",lastTimeStamp);
           // console.log("wiq ",pastLocationName);
           lastTimeStampArray.push(database2[property].timestamp);
           lastAreaNameArray.push(database2[property].areaname);
         }
-  
       }
-  
+
       // console.log("Time Array: ", timeArray);
       // console.log("WTF: ", database2[property].timestamp);
     }
   }
   /**ดึงข้อมูลจาก worktime table มาคำนวณหาผลรวมของช่วงเวลาในแต่ละพื้นที่ */
   async function countWorktime() {
-  // console.log("Outside Db2: ",database2);
-  // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
-  //end of find()
+    // console.log("Outside Db2: ",database2);
+    // const sortedDate = database2.sort((a, b) => b.timestamp - a.timestamp)
+    //end of find()
 
-  // console.log("dB2: ",database2);
-  // console.log("Time Array: ", timeArray);
-  // console.log("Area Name Array: ", areaNameArray);
-  // console.log("Last Area Array: ", lastAreaNameArray);
-  // console.log("Last Timestamp Array: ", lastTimeStampArray);
-  // var indexOfMaxValue = lastTimeStampArray.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-  // console.log("Index of max: ",indexOfMaxValue);
-  // var maxDate = new Date(Math.max.apply(null, lastTimeStampArray.map(function(e) {
-  //   return new Date(e.MeasureDate);
-  // })));
-  // console.log("Max DAET: ",maxDate);
-  var database3 = [], areaWorkTimeName = [], uniqueAreaWorkTimeName = [];
-  await workTimeModel.find({ "name": name }, function (err, user) {
-    // console.log("User name: ",name);
-    // console.log("All location of this user: ",user);
-    database3 = user;
-    // console.log("Database3: ",database3);
-    // console.log("haha ",user[0].areaname);
-    //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
-    //     if (err) res.send(err);
-    //     res.json(apartments);
-    // });
-  });
-  for (var i in database3) {
-    // console.log("OO:", database3[i].areaname);
-    areaWorkTimeName.push(database3[i].areaname);
-  }
-  // end of workForceManage()
-  function removeDuplicate(data) {
-    return data.filter((value, index) => data.indexOf(value) == index);
-  }
-  uniqueAreaWorkTimeName = removeDuplicate(areaWorkTimeName);
-  // console.log("Unique: ",uniqueAreaWorkTimeName);
+    // console.log("dB2: ",database2);
+    // console.log("Time Array: ", timeArray);
+    // console.log("Area Name Array: ", areaNameArray);
+    // console.log("Last Area Array: ", lastAreaNameArray);
+    // console.log("Last Timestamp Array: ", lastTimeStampArray);
+    // var indexOfMaxValue = lastTimeStampArray.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+    // console.log("Index of max: ",indexOfMaxValue);
+    // var maxDate = new Date(Math.max.apply(null, lastTimeStampArray.map(function(e) {
+    //   return new Date(e.MeasureDate);
+    // })));
+    // console.log("Max DAET: ",maxDate);
+    var database3 = [],
+      areaWorkTimeName = [],
+      uniqueAreaWorkTimeName = [];
+    await workTimeModel.find({ name: name }, function(err, user) {
+      // console.log("User name: ",name);
+      // console.log("All location of this user: ",user);
+      database3 = user;
+      // console.log("Database3: ",database3);
+      // console.log("haha ",user[0].areaname);
+      //   workTimeModel.aggregate({$group:{_id:{'areaname':'$pastLocationName'},count:{$sum:1}}},function(err,  apartments) {
+      //     if (err) res.send(err);
+      //     res.json(apartments);
+      // });
+    });
+    for (var i in database3) {
+      // console.log("OO:", database3[i].areaname);
+      areaWorkTimeName.push(database3[i].areaname);
+    }
+    // end of workForceManage()
+    function removeDuplicate(data) {
+      return data.filter((value, index) => data.indexOf(value) == index);
+    }
+    uniqueAreaWorkTimeName = removeDuplicate(areaWorkTimeName);
+    // console.log("Unique: ",uniqueAreaWorkTimeName);
 
-  // for(var i in uniqueAreaWorkTimeName){
-  // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
-  
+    // for(var i in uniqueAreaWorkTimeName){
+    // console.log("Unique Area: ",uniqueAreaWorkTimeName[i]);
+
     // workTimeModel.aggregate(
-  workTimeTestModel.aggregate(
-    [
-      {
-        $group: {
-          // _id: "$areaname",
-          "_id": {
-            "name": "$name",
-            "areaname": "$areaname"
+    workTimeTestModel.aggregate(
+      [
+        {
+          $group: {
+            // _id: "$areaname",
+            _id: {
+              name: "$name",
+              areaname: "$areaname",
+            },
+            total: {
+              $sum: "$duration",
+            },
           },
-          total: {
-            $sum: "$duration"
-          }
+        },
+      ],
+      function(err, result) {
+        if (err) {
+          // res.send(err);
+          console.log(err);
+        } else {
+          res.json({ data: result });
+          console.log("Result: ", result);
         }
       }
-    ],
-    function (err, result) {
-      if (err) {
-        // res.send(err);
-        console.log(err);
-      } else {
-        res.json({ data: result });
-        console.log("Result: ", result);
-      }
-    }
-  );
-  // }
-
+    );
+    // }
   }
   // await workForceManage();
   // countWorktime();
-  async function clearData(){
+  async function clearData() {
     workTimeTestModel.remove({}, function(err) {
       if (err) {
-          console.log(err)
+        console.log(err);
       } else {
-          // res.end('success');
-          console.log("Cleared Data");
+        // res.end('success');
+        console.log("Cleared Data");
       }
-    }
-  )
+    });
   }
   await Promise.all([workForceManage(), countWorktime()]);
-  clearData()
+  clearData();
 });
 
 app.get("/historyroute", async (req, res) => {
@@ -1165,7 +1256,7 @@ app.get("/historyroute", async (req, res) => {
     // "xy floor timestamp name",
     "xy timestamp name",
     { sort: { timestamp: -1 } },
-    function (err, location) {
+    function(err, location) {
       // console.log();
       if (err) console.log(err);
       else {
