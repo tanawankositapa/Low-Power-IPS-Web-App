@@ -261,24 +261,24 @@ app.post("/", async (req, res) => {
     // res.send(ypred)
     console.log("Predict ", ypred);
   }
-  // console.log(ypred);
-  // if(req.body.check == "OK"){
-  //   // console.log("Inside Ok");
-  //   console.log("Predict2 ",ypred);
-  //   console.log("Outside ypred",ypred.length);
-  //   if(ypred.length != 0){
-  //     console.log("Inside ypred",ypred.length);
-  //     res.json({
-  //       data: {
-  //         ypred: ypred,
-  //         // ypred: [1, 2],
-  //         name: name,
-  //         department: department,
-  //         company: company,
-  //       },
-  //     });
-  //   }
-  // }
+  console.log(ypred);
+  if(req.body.check == "OK"){
+    // console.log("Inside Ok");
+    console.log("Predict2 ",ypred);
+    console.log("Outside ypred",ypred.length);
+    if(ypred.length != 0){
+      console.log("Inside ypred",ypred.length);
+      res.json({
+        data: {
+          ypred: ypred,
+          // ypred: [1, 2],
+          name: name,
+          department: department,
+          company: company,
+        },
+      });
+    }
+  }
   var database = [];
   /**
    * ต้องใส่ await เพราะเราจะต้อง copy ค่าไปไว้ใน global var เพื่อจะทำ striglify แล้วนำไปเป็น argument ของ python
@@ -389,7 +389,7 @@ app.post("/", async (req, res) => {
             // isAlert = true;
             console.log("Alert status level: ", alertStatusLevel);
             if (alertStatusLevel == 6) {
-              // อยู่ในพื้นที่ต้องห้าม 2 นาที
+              // อยู่ในพื้นที่ต้องห้าม 3 นาที
               var saveData = new alertModel({
                 name: name,
                 trackerid: trackerId,
@@ -703,84 +703,58 @@ app.post("/", async (req, res) => {
 //   },
 // }));
 
-app.get("/getval", (req, res) => {
-  // var data = await req.body
-  console.log("Got Data: ", req);
-  // console.log("ALSO Got Data Use Query: ",req.query);
-  console.log("full Body: ", req.body);
-  console.log("Data label: ", req.body.data);
-  // var decodedString = window.atob(req.body.data);
-  // let buff = Buffer.from(req.body.data, 'base64');
-  // let base64data = buff.toString('utf-8');
-  // console.log(base64data);
-  // console.log(typeof(base64data));
-  // var strSplit1 = base64data.split(" ");
-  // console.log("Split1", strSplit1);
+// app.get("/getval", (req, res) => {
+//   // var data = await req.body
+//   console.log("Got Data: ", req);
+//   // console.log("ALSO Got Data Use Query: ",req.query);
+//   console.log("full Body: ", req.body);
+//   console.log("Data label: ", req.body.data);
+//   // var decodedString = window.atob(req.body.data);
+//   // let buff = Buffer.from(req.body.data, 'base64');
+//   // let base64data = buff.toString('utf-8');
+//   // console.log(base64data);
+//   // console.log(typeof(base64data));
+//   // var strSplit1 = base64data.split(" ");
+//   // console.log("Split1", strSplit1);
 
-  // var rssi = [];
-  // for (var i in strSplit1){
-  //   console.log(strSplit1[i]);
-  //   // console.log();
-  //   // let strSplit2 = strSplit1[i].split(":");
-  //   // console.log(strSplit2[1]);
-  //   var intStrSplit1 = parseInt(strSplit1[i]);
-  //   rssi.push(intStrSplit1);
-  //   // rssi.push(strSplit1[i]);
+//   // var rssi = [];
+//   // for (var i in strSplit1){
+//   //   console.log(strSplit1[i]);
+//   //   // console.log();
+//   //   // let strSplit2 = strSplit1[i].split(":");
+//   //   // console.log(strSplit2[1]);
+//   //   var intStrSplit1 = parseInt(strSplit1[i]);
+//   //   rssi.push(intStrSplit1);
+//   //   // rssi.push(strSplit1[i]);
 
-  // }
-  // console.log(rssi);
-  // // console.log(decodedString);
-  // // console.log("devEui: ", req.body.devEUI);
-  // // console.log(typeof req.body.rxInfo);
-  // // console.log("rxInfo: ", req.body.rxInfo);
+//   // }
+//   // console.log(rssi);
+//   // // console.log(decodedString);
+//   // // console.log("devEui: ", req.body.devEUI);
+//   // // console.log(typeof req.body.rxInfo);
+//   // // console.log("rxInfo: ", req.body.rxInfo);
 
-  // // this is how to extract rssi from rxInfo
-  // // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
-  // // var rssi = req.body.rxInfo.map(function(rxInfo) {
-  // //   return rxInfo.rssi;
-  // // });
-  // // console.log(typeof rssi);
-  // // var rssiValue = rssi.map(function(rssi) {
-  // //   return rssi.values;
-  // // });
-  // // console.log("rssi: ", rssi);
-  // // console.log("rssiValue: ",rssiValue);
-  // // console.log(typeof rssi.values);
-  // // console.log("rssi: ",rssi.value);
-  // // console.log("rssi2: ", req.body.rxInfo[rssi]);
+//   // // this is how to extract rssi from rxInfo
+//   // // ต้องทำแบบนี้เพราะว่า rxInfo เป็น object ที่อยู่ใน req.body อีกที ไม่สามารถใช้ req.body.rxInfo.rssi ได้
+//   // // var rssi = req.body.rxInfo.map(function(rxInfo) {
+//   // //   return rxInfo.rssi;
+//   // // });
+//   // // console.log(typeof rssi);
+//   // // var rssiValue = rssi.map(function(rssi) {
+//   // //   return rssi.values;
+//   // // });
+//   // // console.log("rssi: ", rssi);
+//   // // console.log("rssiValue: ",rssiValue);
+//   // // console.log(typeof rssi.values);
+//   // // console.log("rssi: ",rssi.value);
+//   // // console.log("rssi2: ", req.body.rxInfo[rssi]);
 
-  // // res.sendStatus(200);
-  // // console.log("ALSO Got Data: ",req.query.event.up);
-  // // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
-  // // res.render('index.ejs')
-});
-var myPoly = [
-  // [1, 1], [1, 4], [2, 4], [2, 5], [4, 5], [4, 1] // true DevOps
-  // [1, 1], [1, 2], [3, 2], [2, 5], [4, 5], [4, 1] // false Test Automation
-  [5, 1],
-  [3, 2],
-  [2, 5],
-  [4, 5],
-  [5, 3], //false Infras
-];
-
-// var saveData = new areaModel({
-//   fence: myPoly,
-//   // name: "Agile inner meeting room",
-//   name: "Infras working space",
-//   // name: "Test automation data room",
-//   floor: "5",
-//   // restrictfor: "DevOps",
-//   restrictfor: "Infras",
-//   // restrictfor: "Test Automation",
-//   // 'time': Math.floor(Date.now() / 1000) // Time of save the data in unix timestamp format
-// }).save(function(err, result) {
-//   if (err) throw err;
-//   if (result) {
-//     // console.log(result);
-//     console.log("Save Complete");
-//   }
+//   // // res.sendStatus(200);
+//   // // console.log("ALSO Got Data: ",req.query.event.up);
+//   // // console.log("ALSO Got Data: ",req.query.event.up.dev_eui);
+//   // // res.render('index.ejs')
 // });
+
 
 app.post("/login", (req, res) => {
   // console.log("full Body: ", req.body);

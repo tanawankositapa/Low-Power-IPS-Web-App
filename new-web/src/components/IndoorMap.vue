@@ -929,7 +929,7 @@ export default {
     },
     // fetchDataFromBackend() {
     //   axios
-    //     .post("http://a704fa885753.ngrok.io",{
+    //     .post("http://localhost:3000",{
     //     check: "OK"
     //   })
     //     // .then(response => (this.info = response))
@@ -941,7 +941,7 @@ export default {
     fetchHistoryFromBackend() {
       console.log("Fetch");
       axios
-        .get("http://a704fa885753.ngrok.io/historyroute")
+        .get("http://localhost:3000/historyroute")
         // .then(response => (this.info = response))
         .then((response) => (this.historyPosition = response.data.data))
         // .then(response => (console.log("OMG",response.data.data)))
@@ -951,7 +951,7 @@ export default {
     },
     fetchPositionFromBackend() {
       axios
-        .post("http://a704fa885753.ngrok.io/position",{
+        .post("http://localhost:3000/position",{
         check: "OK"
       })
         // .then(response => (this.info = response))

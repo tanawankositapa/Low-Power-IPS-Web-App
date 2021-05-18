@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  frontends:
+    # images:
+    container_name: vuejs
+    build:
+      context: ./src/ #สั่งให้ build ตัว dockerfile อยู่ใน directory ต่ำกว่านี้ คือ backend เพราะว่าเรา
+      dockerfile: Dockerfile-frontend
+    # ต้อง map port ด้วย แค่ EXPOSE ไม่พอ
+    ports:
+      - 8080:8080
+    restart: on-failure
+    links:
+      - backends
+    networks:
+      - front_end
+
+  backends:
+    # images:
+    container_name: node-express
+    build:
+      context: ./src/ #สั่งให้ build ตัว dockerfile อยู่ใน directory ต่ำกว่านี้ คือ backend เพราะว่าเรา
+      dockerfile: Dockerfile-backend
+    # ต้อง map port ด้วย แค่ EXPOSE ไม่พอ
+    ports:
+      - 3000:3000
+    restart: on-failure
+    links:
+      - mongodb
+    networks:
+      - front_end
+      - database
+
+  mongodb:
+    container_name: mongodb
+    # image: mongo
+    build:
+      context: ./src/
+      dockerfile: Dockerfile-db
+    # ports:
+    #   - 27017:27017
+    # - 29000:29000
+    volumes:
+      # - db-data:/usr/src/app #name:directory # Named Volume
+      # - ./data/db:/data/db # bind mount ???
+      # - db-data:/usr/src/app
+      - db-data:/tmp
+    networks:
+      - database
+
+volumes:
+  db-data:
+
+networks:
+  front_end:
+  database:
