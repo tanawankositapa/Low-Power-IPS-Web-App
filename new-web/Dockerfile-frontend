@@ -1,0 +1,24 @@
+FROM node:12.19.0
+
+WORKDIR /usr/src/app
+COPY package.json package-lock.json /usr/src/app/
+RUN npm install
+RUN npm install node-sass@5.0.0
+RUN mkdir -p /usr/src/app/public
+RUN mkdir -p /usr/src/app/src
+RUN mkdir -p /usr/src/app/src/assets
+RUN mkdir -p /usr/src/app/src/components
+RUN mkdir -p /usr/src/app/src/views
+
+COPY ./public/ ./public
+COPY ./src/assets/ ./src/assets/
+COPY ./src/components/ ./src/components/
+COPY ./src/main.js ./src/
+COPY ./src/App.scss ./src/
+COPY ./src/App.vue ./src/
+COPY ./src/router.js ./src/
+COPY ./src/views/ ./src/views/
+
+EXPOSE 8080
+
+CMD ["npm", "run", "serve"]

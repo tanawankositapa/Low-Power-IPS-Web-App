@@ -22,7 +22,6 @@
     "http-proxy-middleware": "^1.0.6",
     "mitt": "^2.1.0",
     "mongoose": "^5.10.9",
-    "node-sass": "^5.0.0",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
     "primevue": "^3.3.5",

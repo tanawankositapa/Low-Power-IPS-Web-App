@@ -28,8 +28,8 @@ var mongoose = require("mongoose");
 // var Long = require('mongodb').Long;
 // mongoose.connect("mongodb://127.0.0.1:27017/beacon").then(() => console.log('MongoDB Connected')).catch(err => console.log(err));
 mongoose
-  // .connect("mongodb://mongodb:27017/indoordb") // for using docker
-  .connect("mongodb://127.0.0.1:27017/indoordb")
+  .connect("mongodb://mongodb:27017/indoordb") // for using docker
+  // .connect("mongodb://127.0.0.1:27017/indoordb")
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 // กำหนด metadata ของ table area_table

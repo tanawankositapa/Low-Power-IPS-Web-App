@@ -1,3 +1,17 @@
 FROM mongo
-VOLUME ./db/data/db
+WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/db
+RUN mkdir -p /usr/src/app/db/data
+RUN mkdir -p /usr/src/app/db/data/db
+# RUN ls
+# RUN ls db
+# RUN ls db/data
+##### ใช้ chmod ไม่ work ต้องใช้ chown
+RUN chown -R mongodb: ./db/data/db 
+# RUN 
+# VOLUME ./db/data/db
+# RUN ls
+# RUN chmod -R go+w /db/data/db
 CMD [ "mongod", "--dbpath", "./db/data/db" ]
+
+##### เกิดอะไรขึ้นไม่รู้ mount แล้วข้อมูลเดิมหาย

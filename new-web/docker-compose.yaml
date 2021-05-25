@@ -5,7 +5,7 @@ services:
     # images:
     container_name: vuejs
     build:
-      context: ./src/ #สั่งให้ build ตัว dockerfile อยู่ใน directory ต่ำกว่านี้ คือ backend เพราะว่าเรา
+      context: .
       dockerfile: Dockerfile-frontend
     # ต้อง map port ด้วย แค่ EXPOSE ไม่พอ
     ports:
@@ -20,7 +20,7 @@ services:
     # images:
     container_name: node-express
     build:
-      context: ./src/ #สั่งให้ build ตัว dockerfile อยู่ใน directory ต่ำกว่านี้ คือ backend เพราะว่าเรา
+      context: . #สั่งให้ build ตัว dockerfile อยู่ใน directory ต่ำกว่านี้ คือ backend เพราะว่าเรา
       dockerfile: Dockerfile-backend
     # ต้อง map port ด้วย แค่ EXPOSE ไม่พอ
     ports:
@@ -43,9 +43,9 @@ services:
     # - 29000:29000
     volumes:
       # - db-data:/usr/src/app #name:directory # Named Volume
-      # - ./data/db:/data/db # bind mount ???
+      - ./src/db/data/:/db/data/ # bind mount ???
       # - db-data:/usr/src/app
-      - db-data:/tmp
+      # - db-data:/tmp
     networks:
       - database
 
